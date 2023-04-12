@@ -17,6 +17,7 @@ config/www/community
 # Secrets
 ip_bans.yaml
 secrets.yaml
+config/ssh/config.*
 
 # SQlite
 *.db

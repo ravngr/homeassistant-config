@@ -1,0 +1,24 @@
+---
+
+pkg_heartbeat:
+  automation:
+    - id: "heartbeat"
+      alias: "Heartbeat"
+      description: "Send heartbeat HTTP(S) request"
+      mode: single
+      trigger:
+        - platform: time_pattern
+          minutes: /15
+      action:
+        - service: rest_command.heartbeat
+
+
+  rest_command:
+    heartbeat:
+      url: !secret heartbeat_url
+
+  
+  homeassistant:
+    customize:
+      automation.heartbeat:
+        friendly_name: "Heartbeat"
