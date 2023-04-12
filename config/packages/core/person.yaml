@@ -1,0 +1,35 @@
+---
+
+pkg_core_person:
+  notify:
+    - platform: group
+      name: "Household"
+      services: !secret notify_household_services
+
+
+  # Define hosuehold
+  # https://www.home-assistant.io/integrations/person/
+  person:
+    - id: electrictoast
+      name: !secret person_electrictoast_name
+      user_id: !secret person_electrictoast_user_id
+
+    - id: nacho
+      name: !secret person_nacho_name
+      user_id: !secret person_nacho_user_id
+
+    - id: snackcake
+      name: !secret person_snackcake_name
+      user_id: !secret person_snackcake_user_id
+
+
+  homeassistant:
+    customize:
+      person.electrictoast:
+        entity_picture: "/local/electrictoast.jpg"
+
+      person.nacho:
+        entity_picture: "/local/nacho.jpg"
+
+      person.snackcake:
+        entity_picture: "/local/snackcake.jpg"
