@@ -1,0 +1,80 @@
+---
+
+pkg_datetime:
+  binary_sensor:
+    - platform: tod
+      unique_id: "78153718-25e5-4e8e-8a16-e70b71810bd8"
+      name: "datetime_tod_morning"
+      after: "sunrise"
+      before: "12:00"
+
+    - platform: tod
+      unique_id: "31b00bf3-21e0-4baf-b9f5-5f63f2046a24"
+      name: "datetime_tod_afternoon"
+      after: "12:00"
+      before: "sunset"
+
+    - platform: tod
+      unique_id: "054a0ee4-09e4-4d86-817b-7c7a03115dbd"
+      name: "datetime_tod_night"
+      after: "sunset"
+      before: "sunrise"
+
+    - platform: workday
+      name: "datetime_workday_today"
+      country: !secret workday_country
+      province: !secret workday_province
+
+    - platform: workday
+      name: "datetime_workday_tomorrow"
+      country: !secret workday_country
+      province: !secret workday_province
+      days_offset: 1
+
+
+  template:
+    binary_sensor:
+      - name: "datetime_week_even"
+        unique_id: "19690948-9dfa-4d98-ab49-805d609c4830"
+        icon: "mdi:calendar-blank"
+        state: "{{ (now().isocalendar().week % 2) == 0 }}"
+        attributes:
+          week: "{{ now().isocalendar().week }}"
+          weekday: "{{ now().isocalendar().weekday }}"
+
+      - name: "datetime_week_odd"
+        unique_id: "563aef58-a83a-4f0f-88e9-2c804625b9d4"
+        icon: "mdi:calendar-blank-outline"
+        state: "{{ (now().isocalendar().week % 2) == 1 }}"
+        attributes:
+          week: "{{ now().isocalendar().week }}"
+          weekday: "{{ now().isocalendar().weekday }}"
+
+
+  homeassistant:
+    customize:
+      binary_sensor.datetime_morning:
+        friendly_name: "Morning"
+        icon: "mdi:weather-sunset-up"
+
+      binary_sensor.datetime_afternoon:
+        friendly_name: "Afternoon"
+        icon: "mdi:weather-sunset-down"
+
+      binary_sensor.datetime_evening:
+        friendly_name: "Evening"
+        icon: "mdi:weather-night"
+
+      binary_sensor.datetime_workday_today:
+        friendly_name: "Work Today"
+        icon: "mdi:briefcase"
+
+      binary_sensor.datetime_workday_tomorrow:
+        friendly_name: "Work Tomorrow"
+        icon: "mdi:briefcase"
+
+      binary_sensor.datetime_week_even:
+        friendly_name: "Even Week"
+
+      binary_sensor.datetime_week_odd:
+        friendly_name: "Odd Week"

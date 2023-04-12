@@ -1,0 +1,83 @@
+---
+
+## Manual MQTT entities to interact with zigbee2mqtt
+pkg_zigbee2mqtt:
+  mqtt:
+    binary_sensor:
+      - name: "Zigbee2MQTT State"
+        icon: "mdi:zigbee"
+        object_id: "z2m_state"
+        unique_id: "f01eecb5-6c09-4719-a86f-71081300bd2d"
+        
+        state_topic: "zigbee2mqtt/bridge/state"
+        value_template: "{{ value_json.state }}"
+        payload_on: "online"
+        payload_off: "offline"
+
+        device: &z2m_device
+          name: "Zigbee2MQTT"
+          configuration_url: !secret zigbee2mqtt_url
+          identifiers:
+            - "zigbee2mqtt@mqtt"
+
+    button:
+      - name: "Zigbee2MQTT Restart"
+        object_id: "z2m_restart"
+        unique_id: "f5eb35f3-b59b-4d9a-9292-76f08d5af3e4"
+        command_topic: "zigbee2mqtt/bridge/request/restart"
+        payload_press: ""
+        entity_category: "config"
+        device_class: "restart"
+
+        availability: &z2m_availability
+          - topic: "zigbee2mqtt/bridge/state"
+            value_template: "{{ value_json.state }}"
+            payload_available: "online"
+            payload_not_available: "offline"
+
+        device: *z2m_device
+
+    sensor:
+      - name: "Zigbee2MQTT Network Map"
+        icon: "mdi:zigbee"
+        object_id: "z2m_networkmap"
+        unique_id: "b168697f-8102-4731-9707-487ab90e27cc"
+        state_topic: "zigbee2mqtt/bridge/response/networkmap"
+        value_template: >-
+          {{ now().strftime('%Y-%m-%d %H:%M:%S') }}
+        json_attributes_topic: "zigbee2mqtt/bridge/response/networkmap"
+        json_attributes_template: "{{ value_json.data.value | to_json }}"
+
+        availability: *z2m_availability
+        device: *z2m_device
+
+      - name: "Zigbee2MQTT Event"
+        icon: "mdi:zigbee"
+        object_id: "z2m_event"
+        unique_id: "7bf7791d-20b8-4fbd-92ee-8e9e393e4418"
+        state_topic: "zigbee2mqtt/bridge/event"
+        value_template: "{{ value_json.type }}"
+        json_attributes_topic: "zigbee2mqtt/bridge/event"
+        json_attributes_template: "{{ value_json.data | to_json }}"
+
+        availability: *z2m_availability
+        device: *z2m_device
+
+    switch:
+      - name: "Zigbee2MQTT Allow Join"
+        icon: "mdi:zigbee"
+        object_id: "z2m_allow_join"
+        unique_id: "9fc80116-9c12-4cca-8c4d-492d6c2b394b"
+        state_topic: "zigbee2mqtt/bridge/info"
+        value_template: "{{ value_json.permit_join }}"
+        state_on: "True"
+        state_off: "False"
+        json_attributes_topic: "zigbee2mqtt/bridge/info"
+        json_attributes_template: "{{ {'join_timeout': value_json.get('permit_join_timeout', 0) } | to_json }}"
+
+        command_topic: "zigbee2mqtt/bridge/request/permit_join"
+        payload_on: "{\"value\": true, \"time\": 300}"
+        payload_off: "{\"value\": false}"
+
+        availability: *z2m_availability
+        device: *z2m_device

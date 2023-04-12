@@ -1,7 +1,7 @@
 ---
 
-null:
-  alias: "Null"
+noop:
+  alias: "No-Operation"
   description: "A dummy null/no-op script"
   icon: "mdi:stop"
   mode: restart

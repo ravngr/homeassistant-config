@@ -1,0 +1,21 @@
+---
+
+pkg_daily:
+  input_datetime:
+    daily_maintinance:
+      name: "Maintinance Time"
+      icon: "mdi:clipboard-text-clock-outline"
+      has_date: false
+      has_time: true
+
+    daily_startup:
+      name: "Startup Time"
+      icon: "mdi:weather-sunset-up"
+      has_date: false
+      has_time: true
+
+    daily_shutdown:
+      name: "Shutdown Time"
+      icon: "mdi:weather-sunset-down"
+      has_date: false
+      has_time: true
