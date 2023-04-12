@@ -1,0 +1,6 @@
+---
+
+pkg_remote_homeassistant:
+  # Remote Home Assistant instances
+  remote_homeassistant:
+    instances:
