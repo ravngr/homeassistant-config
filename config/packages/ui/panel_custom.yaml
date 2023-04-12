@@ -1,0 +1,45 @@
+---
+
+pkg_ui_panel_custom:
+  # Additional sidebar shortcuts
+  # https://www.home-assistant.io/integrations/panel_custom
+  panel_custom:
+    - name: "ha_automations"
+      sidebar_title: "Automations"
+      sidebar_icon: "mdi:cog-outline"
+      js_url: "/api/hassio/app/entrypoint.js"
+      url_path: "config/automation"
+      embed_iframe: true
+      require_admin: true
+      config:
+        ingress: core_configurator
+
+    - name: "ha_entities"
+      sidebar_title: "Entities"
+      sidebar_icon: "mdi:sitemap"
+      js_url: "/api/hassio/app/entrypoint.js"
+      url_path: "config/entities"
+      embed_iframe: true
+      require_admin: true
+      config:
+        ingress: core_configurator
+
+    - name: "ha_integrations"
+      sidebar_title: "Integrations"
+      sidebar_icon: "mdi:chip"
+      js_url: "/api/hassio/app/entrypoint.js"
+      url_path: "config/integrations"
+      embed_iframe: true
+      require_admin: true
+      config:
+        ingress: core_configurator
+
+    - name: "ha_logs"
+      sidebar_title: "Logs"
+      sidebar_icon: "mdi:post"
+      js_url: "/api/hassio/app/entrypoint.js"
+      url_path: "config/logs"
+      embed_iframe: true
+      require_admin: true
+      config:
+        ingress: core_configurator

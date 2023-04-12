@@ -1,0 +1,11 @@
+---
+
+pkg_core_recorder:
+  # Recorder/DB configuration
+  # https://www.home-assistant.io/integrations/recorder/
+  recorder:
+    # Database
+    db_url: !secret recorder_db_url
+
+    # History to keep
+    purge_keep_days: 14

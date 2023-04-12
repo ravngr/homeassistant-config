@@ -1,0 +1,21 @@
+---
+
+# Import packages
+# https://www.home-assistant.io/docs/configuration/packages/
+homeassistant:
+  packages: !include_dir_merge_named packages
+
+# Automations
+# https://www.home-assistant.io/docs/automation/yaml/
+automation ui: !include automations.yaml
+automation manual: !include_dir_merge_list automations
+
+# Scenes
+# https://www.home-assistant.io/docs/automation/yaml/
+scene ui: !include scenes.yaml
+scene manual: !include_dir_merge_list scenes
+
+# Scripts
+# https://www.home-assistant.io/integrations/script/
+script ui: !include scripts.yaml
+script manual: !include_dir_merge_named scripts

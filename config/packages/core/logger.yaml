@@ -1,0 +1,10 @@
+---
+
+pkg_core_logger:
+  # Customise logging
+  # https://www.home-assistant.io/integrations/logger
+  logger:
+    filters:
+      homeassistant.loader:
+        # Supress custom integrations warning
+        - "We found a custom integration"

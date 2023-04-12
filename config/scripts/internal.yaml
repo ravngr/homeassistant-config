@@ -1,0 +1,8 @@
+---
+
+null:
+  alias: "Null"
+  description: "A dummy null/no-op script"
+  icon: "mdi:stop"
+  mode: restart
+  sequence: []

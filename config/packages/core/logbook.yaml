@@ -1,0 +1,30 @@
+---
+
+pkg_core_logbook:
+  # Limit logbook entries
+  # https://www.home-assistant.io/integrations/logbook
+  logbook:
+    include:
+      domains:
+        - alarm_control_panel
+        - alert
+        # - automation
+        # - binary_sensor
+        # - button
+        - climate
+        # - counter
+        - cover
+        - fan
+        # - group
+        - light
+        - lock
+        - logbook
+        # - media_player
+        # - sensor
+        - person
+        - sun
+        # - switch
+        - vacuum
+        # - zone
+      entity_globs:
+        - "input_*"

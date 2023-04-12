@@ -1,0 +1,21 @@
+---
+
+pkg_core_homeassistant_auth:
+  homeassistant:
+    # Authentication providers
+    # https://www.home-assistant.io/docs/authentication/providers/
+    auth_providers:
+      - type: homeassistant
+
+      - type: trusted_networks
+        trusted_networks: !secret homeassistant_auth_trusted_networks
+        trusted_users: !secret homeassistant_auth_trusted_users
+        allow_bypass_login: true
+
+    # 2FA
+    auth_mfa_modules:
+      - type: totp
+
+      - type: notify
+        include: !secret homeassistant_auth_notify_include
+        message: "Home Assistant MFA code: {}"

@@ -1,0 +1,13 @@
+---
+
+pkg_core_python:
+  # Python debugger
+  # https://www.home-assistant.io/integrations/debugpy/
+  debugpy:
+    # Enable manually
+    start: false
+
+
+  # Allow custom python scripts
+  # https://www.home-assistant.io/integrations/python_script/
+  python_script:

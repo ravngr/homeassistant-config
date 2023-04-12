@@ -1,0 +1,7 @@
+---
+
+pkg_core_default_config:
+  # Default integrations
+  # https://www.home-assistant.io/integrations/default_config
+  # https://github.com/home-assistant/core/blob/master/homeassistant/components/default_config/manifest.json
+  default_config:

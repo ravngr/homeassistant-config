@@ -1,0 +1,13 @@
+---
+
+pkg_core_http:
+  # HTTP configuration
+  # https://www.home-assistant.io/integrations/http/
+  http:
+    cors_allowed_origins:
+      - !secret homeassistant_internal_url
+      - !secret homeassistant_external_url
+
+    # Reverse proxy
+    use_x_forwarded_for: true
+    trusted_proxies: !secret http_trusted_proxies

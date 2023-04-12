@@ -1,0 +1,14 @@
+---
+
+pkg_core_tts:
+  tts:
+    # Google translate TTS
+    # https://www.home-assistant.io/integrations/google_translate/
+    - platform: google_translate
+      language: !secret homeassistant_language
+      tld: !secret tts_google_tld
+
+    # PicoTTS
+    # https://www.home-assistant.io/integrations/picotts/
+    - platform: picotts
+      language: !secret tts_picotts_language
