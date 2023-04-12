@@ -1,0 +1,38 @@
+## General
+*.log
+*.log.*
+
+
+## Home Assistant
+config/.cloud
+config/.storage
+config/packages/zone
+!config/packages/zone/home.yaml
+
+# External/dependencies
+config/custom_components
+config/themes
+config/www/community
+
+# Secrets
+ip_bans.yaml
+secrets.yaml
+
+# SQlite
+*.db
+*.db-shm
+*.db-wal
+
+
+## Python
+__pycache__
+*.pyc
+
+
+## SSH
+config/ssh/id_*
+config/ssh/known_hosts
+
+
+# Keep .gitkeep
+!.gitkeep
