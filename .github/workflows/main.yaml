@@ -1,0 +1,60 @@
+---
+
+name: "Home Assistant CI"
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  # lint:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: "Checkout configuration"
+  #       uses: actions/checkout@v3
+
+  #     - name: "Run yamllint"
+  #       uses: frenck/action-yamllint@v1.4.0
+
+  config-check:
+    name: "Validate config (${{ matrix.hass-version }})"
+    # needs: [yamllint]
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        hass-version: 
+          - stable
+          # - beta
+          # - dev
+    steps:
+      - name: "Checkout configuration"
+        uses: actions/checkout@v3
+      
+      - name: "Remove HACS-specific packages"
+        run: |
+          rm -R "${GITHUB_WORKSPACE}/config/packages/hacs"
+
+      - name: "Replace secrets.yaml with CI version"
+        continue-on-error: true
+        run: |
+          mv "${GITHUB_WORKSPACE}/config/secrets.ci.yaml" "${GITHUB_WORKSPACE}/config/secrets.yaml"
+
+      - name: "Get Home Assistant version"
+        shell: "bash"
+        run: |
+          docker run \
+          --rm \
+          "ghcr.io/home-assistant/home-assistant:${{ matrix.hass-version }}" \
+          python -m homeassistant --version
+
+      - name: "Run Home Assistant config test"
+        shell: "bash"
+        run: |
+          ls -l ${GITHUB_WORKSPACE}/config
+          ls -l ${GITHUB_WORKSPACE}/config/packages
+          docker run \
+          --rm \
+          -v "${GITHUB_WORKSPACE}/config:/config" \
+          "ghcr.io/home-assistant/home-assistant:${{ matrix.hass-version }}" \
+          python -m homeassistant --config "/config" --script check_config
