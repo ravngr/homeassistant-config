@@ -53,15 +53,15 @@ pkg_datetime:
 
   homeassistant:
     customize:
-      binary_sensor.datetime_morning:
+      binary_sensor.datetime_tod_morning:
         friendly_name: "Morning"
         icon: "mdi:weather-sunset-up"
 
-      binary_sensor.datetime_afternoon:
+      binary_sensor.datetime_tod_afternoon:
         friendly_name: "Afternoon"
         icon: "mdi:weather-sunset-down"
 
-      binary_sensor.datetime_evening:
+      binary_sensor.datetime_tod_evening:
         friendly_name: "Evening"
         icon: "mdi:weather-night"
 

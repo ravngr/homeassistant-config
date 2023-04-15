@@ -11,25 +11,28 @@ pkg_core_person:
   # https://www.home-assistant.io/integrations/person/
   person:
     - id: electrictoast
-      name: !secret person_electrictoast_name
-      user_id: !secret person_electrictoast_user_id
+      name: electrictoast
+      # user_id: !secret person_electrictoast_user_id
 
     - id: nacho
-      name: !secret person_nacho_name
-      user_id: !secret person_nacho_user_id
+      name: nacho
+      # user_id: !secret person_nacho_user_id
 
     - id: snackcake
-      name: !secret person_snackcake_name
-      user_id: !secret person_snackcake_user_id
+      name: snackcake
+      # user_id: !secret person_snackcake_user_id
 
 
   homeassistant:
     customize:
       person.electrictoast:
+        friendly_name: !secret person_electrictoast_name
         entity_picture: "/local/electrictoast.jpg"
 
       person.nacho:
+        friendly_name: !secret person_nacho_name
         entity_picture: "/local/nacho.jpg"
 
       person.snackcake:
+        friendly_name: !secret person_snackcake_name
         entity_picture: "/local/snackcake.jpg"
