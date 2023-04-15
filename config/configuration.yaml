@@ -1,19 +1,60 @@
 ---
 
-# Import packages
-# https://www.home-assistant.io/docs/configuration/packages/
+
 homeassistant:
+  # Basic configuration
+  # https://www.home-assistant.io/docs/configuration/basic/
+  name: !secret homeassistant_name
+  latitude: !secret homeassistant_latitude
+  longitude: !secret homeassistant_longitude
+  elevation: !secret homeassistant_elevation
+  unit_system: "metric"
+  temperature_unit: "C"
+  time_zone: !secret homeassistant_time_zone
+  currency: !secret homeassistant_currency
+  language: !secret homeassistant_language
+  country: !secret homeassistant_country
+
+  # URLs
+  external_url: !secret homeassistant_external_url
+  internal_url: !secret homeassistant_internal_url
+
+
+  # Authentication providers
+  # https://www.home-assistant.io/docs/authentication/providers/
+  auth_providers:
+    - type: homeassistant
+
+    - type: trusted_networks
+      trusted_networks: !secret homeassistant_auth_trusted_networks
+      trusted_users: !secret homeassistant_auth_trusted_users
+      allow_bypass_login: true
+
+  # 2FA
+  auth_mfa_modules:
+    - type: totp
+
+    - type: notify
+      include: !secret homeassistant_auth_notify_include
+      message: "Home Assistant MFA code: {}"
+
+
+  # Import packages
+  # https://www.home-assistant.io/docs/configuration/packages/
   packages: !include_dir_merge_named packages
+
 
 # Automations
 # https://www.home-assistant.io/docs/automation/yaml/
 automation ui: !include automations.yaml
 automation manual: !include_dir_merge_list automations
 
+
 # Scenes
 # https://www.home-assistant.io/integrations/scene/
 scene ui: !include scenes.yaml
 scene manual: !include_dir_merge_list scenes
+
 
 # Scripts
 # https://www.home-assistant.io/integrations/script/
