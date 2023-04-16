@@ -33,6 +33,26 @@ pkg_internet:
       host: !secret ip_gateway
       count: 2
       scan_interval: 5
+  
+
+  input_number:
+    wan_download_limit:
+      name: "Internet Download Limit"
+      icon: "mdi:download-network"
+      min: 1
+      max: 10000
+      step: 1
+      mode: box
+      unit_of_measurement: Mbps
+    
+    wan_upload_limit:
+      name: "Internet Upload Limit"
+      icon: "mdi:upload-network"
+      min: 1
+      max: 10000
+      step: 1
+      mode: box
+      unit_of_measurement: Mbps
 
 
   sensor:
@@ -67,6 +87,7 @@ pkg_internet:
       value_template: "{{ value | int }}"
       accept_errors: true
       scan_interval: 5
+      state_class: total_increasing
 
     - platform: snmp
       name: "snmp_wan_upload_bytes"
@@ -78,6 +99,7 @@ pkg_internet:
       value_template: "{{ value | int }}"
       accept_errors: true
       scan_interval: 5
+      state_class: total_increasing
 
     - platform: statistics
       name: "stat_wan_download_mbit_rate"
@@ -86,7 +108,7 @@ pkg_internet:
       state_characteristic: "change_second"
       max_age:
         minutes: 1
-      sampling_size: 15
+      sampling_size: 30
 
     - platform: statistics
       name: "stat_wan_upload_mbit_rate"
@@ -95,7 +117,7 @@ pkg_internet:
       state_characteristic: "change_second"
       max_age:
         minutes: 1
-      sampling_size: 15
+      sampling_size: 30
 
 
   template:
@@ -199,6 +221,20 @@ pkg_internet:
               and is_number(states('sensor.snmp_wan_upload_bytes'))
             }}
           state: "{{ (states('sensor.snmp_wan_upload_bytes') | float) * 8 / 1024 / 1024 }}"
+        
+        - name: "wan_download_load"
+          unique_id: "35b96964-5883-4354-bff2-463da81e4655"
+          icon: "mdi:download-network"
+          unit_of_measurement: "%"
+          availability: "{{ is_number(states('sensor.stat_wan_download_mbit_rate')) }}"
+          state: "{{ ((states('sensor.stat_wan_download_mbit_rate') | float) / (states('input_number.wan_download_limit') | float) * 100.0) | round(1) }}"
+
+        - name: "wan_upload_load"
+          unique_id: "2bc03f9c-014b-4fd8-b5b1-f83cc06acdd7"
+          icon: "mdi:upload-network"
+          unit_of_measurement: "%"
+          availability: "{{ is_number(states('sensor.stat_wan_upload_mbit_rate')) }}"
+          state: "{{ ((states('sensor.stat_wan_upload_mbit_rate') | float) / (states('input_number.wan_upload_limit') | float) * 100.0) | round(1) }}"
 
 
   homeassistant:
@@ -256,3 +292,9 @@ pkg_internet:
       binary_sensor.ping_gateway:
         friendly_name: "Router"
         icon: "mdi:router-network"
+
+      sensor.wan_download_load:
+        friendly_name: "Internet Download"
+
+      sensor.wan_upload_load:
+        friendly_name: "Internet Upload"
