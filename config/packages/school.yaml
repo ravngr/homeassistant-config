@@ -1,0 +1,74 @@
+---
+
+pkg_school:
+  input_datetime:
+    school_holiday_start:
+      name: "School Holidays Start"
+      icon: "mdi:school-outline"
+      has_date: true
+      has_time: false
+
+    school_holiday_end:
+      name: "School Holidays End"
+      icon: "mdi:school-outline"
+      has_date: true
+      has_time: false
+
+
+  schedule:
+    school_pickup_dropoff:
+      name: "School Pickup/Dropoff"
+      icon: "mdi:bus-school"
+      monday:
+        - from: "8:05:00"
+          to: "9:05:00"
+        - from: "14:50:00"
+          to: "15:50:00"
+      tuesday:
+        - from: "8:05:00"
+          to: "9:05:00"
+        - from: "14:50:00"
+          to: "15:50:00"
+      wednesday:
+        - from: "8:05:00"
+          to: "9:05:00"
+        - from: "14:50:00"
+          to: "15:50:00"
+      thursday:
+        - from: "8:05:00"
+          to: "9:05:00"
+        - from: "14:50:00"
+          to: "15:50:00"
+      friday:
+        - from: "8:05:00"
+          to: "9:05:00"
+        - from: "14:50:00"
+          to: "15:50:00"
+
+
+  template:
+    - binary_sensor:
+        - name: "school_holiday"
+          icon: "mdi:island"
+          unique_id: "39fff0bb-dc56-4f10-9022-65c7ca56f599"
+          state: >
+            {{ (states('input_datetime.school_holiday_start') | as_datetime).date() <= now().date() <= (states('input_datetime.school_holiday_end') | as_datetime).date() }}
+
+        - name: "school_pickup_dropoff"
+          icon: "mdi:bus-school"
+          unique_id: "50c2c154-12f9-448d-a35e-83ae995142a7"
+          state: >
+            {{ 
+              is_state('schedule.school_pickup_dropoff', 'on')
+              and is_state('school_holiday','off')
+            }}
+          device_class: motion
+
+
+  homeassistant:
+    customize:
+      binary_sensor.school_holiday:
+        friendly_name: "School Holidays"
+      
+      binary_sensor.school_pickup_dropoff:
+        friendly_name: "School Pickup/Dropoff"
