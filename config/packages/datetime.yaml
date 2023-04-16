@@ -61,8 +61,8 @@ pkg_datetime:
         friendly_name: "Afternoon"
         icon: "mdi:weather-sunset-down"
 
-      binary_sensor.datetime_tod_evening:
-        friendly_name: "Evening"
+      binary_sensor.datetime_tod_night:
+        friendly_name: "Night"
         icon: "mdi:weather-night"
 
       binary_sensor.datetime_workday_today:

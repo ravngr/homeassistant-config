@@ -8,14 +8,20 @@ pkg_daily:
       has_date: false
       has_time: true
 
-    daily_startup:
-      name: "Startup Time"
+    daily_begin:
+      name: "Day Start Time"
       icon: "mdi:weather-sunset-up"
       has_date: false
       has_time: true
 
-    daily_shutdown:
-      name: "Shutdown Time"
+    daily_end:
+      name: "Day End Time"
       icon: "mdi:weather-sunset-down"
+      has_date: false
+      has_time: true
+
+    daily_late:
+      name: "Day Late Time"
+      icon: "mdi:weather-night"
       has_date: false
       has_time: true
