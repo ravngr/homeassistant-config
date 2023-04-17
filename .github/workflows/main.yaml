@@ -27,6 +27,8 @@ jobs:
           - stable
           - beta
           - dev
+      # fail-fast: true
+      # max-parallel: 1
     steps:
       - name: "Checkout configuration"
         uses: actions/checkout@v3
@@ -51,8 +53,6 @@ jobs:
       - name: "Run Home Assistant config test"
         shell: "bash"
         run: |
-          ls -l ${GITHUB_WORKSPACE}/config
-          ls -l ${GITHUB_WORKSPACE}/config/packages
           docker run \
           --rm \
           -v "${GITHUB_WORKSPACE}/config:/config" \
