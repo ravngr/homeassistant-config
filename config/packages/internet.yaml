@@ -140,28 +140,28 @@ pkg_internet:
           icon: "mdi:timer-marker"
           unit_of_measurement: "ms"
           availability: "{{ is_state('binary_sensor.ping_cloudflare_ipv4', 'on') }}"
-          state: "{{ state_attr('binary_sensor.ping_cloudflare_ipv4', 'round_trip_time_max') }}"
+          state: "{{ state_attr('binary_sensor.ping_cloudflare_ipv4', 'round_trip_time_max') | float | round(1) }}"
 
         - name: "ping_cloudflare_ipv6_rtt"
           unique_id: "f08615b7-9864-49e9-9717-fc5f2c40db8e"
           icon: "mdi:timer-marker"
           unit_of_measurement: "ms"
           availability: "{{ is_state('binary_sensor.ping_cloudflare_ipv6', 'on') }}"
-          state: "{{ state_attr('binary_sensor.ping_cloudflare_ipv6', 'round_trip_time_max') }}"
+          state: "{{ state_attr('binary_sensor.ping_cloudflare_ipv6', 'round_trip_time_max') | float | round(1) }}"
 
         - name: "ping_google_ipv4_rtt"
           unique_id: "7e48b96d-b5ad-435d-9cbc-f4c2ee0cc5f3"
           icon: "mdi:timer-marker"
           unit_of_measurement: "ms"
           availability: "{{ is_state('binary_sensor.ping_google_ipv4', 'on') }}"
-          state: "{{ state_attr('binary_sensor.ping_google_ipv4', 'round_trip_time_max') }}"
+          state: "{{ state_attr('binary_sensor.ping_google_ipv4', 'round_trip_time_max') | float | round(1) }}"
 
         - name: "ping_google_ipv6_rtt"
           unique_id: "383e283e-6927-40dd-8e6f-3ea06cd32f71"
           icon: "mdi:timer-marker"
           unit_of_measurement: "ms"
           availability: "{{ is_state('binary_sensor.ping_google_ipv6', 'on') }}"
-          state: "{{ state_attr('binary_sensor.ping_google_ipv6', 'round_trip_time_max') }}"
+          state: "{{ state_attr('binary_sensor.ping_google_ipv6', 'round_trip_time_max') | float | round(1) }}"
 
         # Maximum of any ping
         - name: "ping_internet_ipv4_rtt"
@@ -178,7 +178,7 @@ pkg_internet:
               max([
                 state_attr('binary_sensor.ping_cloudflare_ipv4', 'round_trip_time_max') | float(0),
                 state_attr('binary_sensor.ping_google_ipv4', 'round_trip_time_max') | float(0)
-              ])
+              ]) | round(1)
             }}
 
         - name: "ping_internet_ipv6_rtt"
@@ -195,7 +195,7 @@ pkg_internet:
               max([
                 state_attr('binary_sensor.ping_cloudflare_ipv6', 'round_trip_time_max') | float(0),
                 state_attr('binary_sensor.ping_google_ipv6', 'round_trip_time_max') | float(0)
-              ])
+              ]) | round(1)
             }}
 
         - name: "wan_download_mbit"
