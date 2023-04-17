@@ -19,31 +19,15 @@ pkg_school:
     school_pickup_dropoff:
       name: "School Pickup/Dropoff"
       icon: "mdi:bus-school"
-      monday:
+      monday: &school_pickup_dropoff_times
         - from: "8:05:00"
           to: "9:05:00"
         - from: "14:50:00"
           to: "15:50:00"
-      tuesday:
-        - from: "8:05:00"
-          to: "9:05:00"
-        - from: "14:50:00"
-          to: "15:50:00"
-      wednesday:
-        - from: "8:05:00"
-          to: "9:05:00"
-        - from: "14:50:00"
-          to: "15:50:00"
-      thursday:
-        - from: "8:05:00"
-          to: "9:05:00"
-        - from: "14:50:00"
-          to: "15:50:00"
-      friday:
-        - from: "8:05:00"
-          to: "9:05:00"
-        - from: "14:50:00"
-          to: "15:50:00"
+      tuesday: *school_pickup_dropoff_times
+      wednesday: *school_pickup_dropoff_times
+      thursday: *school_pickup_dropoff_times
+      friday: *school_pickup_dropoff_times
 
 
   template:

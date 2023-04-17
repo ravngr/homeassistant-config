@@ -6,53 +6,47 @@ pkg_internet:
     - platform: ping
       name: "ping_cloudflare_ipv4"
       host: "1.1.1.1"
-      count: 2
-      scan_interval: 5
+      <<: &ping_common
+        count: 2
+        scan_interval: 5
 
     - platform: ping
       name: "ping_cloudflare_ipv6"
       host: "2606:4700:4700::1111"
-      count: 2
-      scan_interval: 5
+      <<: *ping_common
 
     - platform: ping
       name: "ping_google_ipv4"
       host: "8.8.8.8"
-      count: 2
-      scan_interval: 5
+      <<: *ping_common
 
     - platform: ping
       name: "ping_google_ipv6"
       host: "2001:4860:4860::8888"
-      count: 2
-      scan_interval: 5
+      <<: *ping_common
 
     # Ping gateway
     - platform: ping
       name: "ping_gateway"
       host: !secret ip_gateway
-      count: 2
-      scan_interval: 5
+      <<: *ping_common
   
 
   input_number:
     wan_download_limit:
       name: "Internet Download Limit"
       icon: "mdi:download-network"
-      min: 1
-      max: 10000
-      step: 1
-      mode: box
-      unit_of_measurement: Mbps
+      <<: &limit_common
+        min: 1
+        max: 10000
+        step: 1
+        mode: box
+        unit_of_measurement: Mbps
     
     wan_upload_limit:
       name: "Internet Upload Limit"
       icon: "mdi:upload-network"
-      min: 1
-      max: 10000
-      step: 1
-      mode: box
-      unit_of_measurement: Mbps
+      <<: *limit_common
 
 
   sensor:
@@ -61,43 +55,38 @@ pkg_internet:
     - platform: snmp
       name: "snmp_wan_interface"
       unique_id: "1795774f-dd43-4191-8e4e-16128994ca46"
-      host: !secret ip_gateway
-      community: "public"
+      <<: &snmp_wan_common
+        host: !secret ip_gateway
+        community: "public"
+        accept_errors: true
       baseoid: "1.3.6.1.2.1.2.2.1.2.9"
-      accept_errors: true
       scan_interval: 30
 
     - platform: snmp
       name: "snmp_wan_state"
       unique_id: "6e0d0821-ba33-4f89-9877-5b85de7dc239"
-      host: !secret ip_gateway
-      community: "public"
+      <<: *snmp_wan_common
       baseoid: "1.3.6.1.2.1.2.2.1.8.9"
       value_template: "{{ value }}"
-      accept_errors: true
       scan_interval: 30
 
     - platform: snmp
       name: "snmp_wan_download_bytes"
       unique_id: "9490e4ed-78f9-492c-a3cd-40050f2f72fe"
-      host: !secret ip_gateway
-      community: "public"
+      <<: *snmp_wan_common
       baseoid: "1.3.6.1.2.1.2.2.1.10.9"
       unit_of_measurement: "B"
       value_template: "{{ value | int }}"
-      accept_errors: true
       scan_interval: 5
       state_class: total_increasing
 
     - platform: snmp
       name: "snmp_wan_upload_bytes"
       unique_id: "748553db-e27a-450f-a315-a830c57c8355"
-      host: !secret ip_gateway
-      community: "public"
+      <<: *snmp_wan_common
       baseoid: "1.3.6.1.2.1.2.2.1.16.9"
       unit_of_measurement: "B"
       value_template: "{{ value | int }}"
-      accept_errors: true
       scan_interval: 5
       state_class: total_increasing
 
@@ -124,50 +113,47 @@ pkg_internet:
     - binary_sensor:
         - name: "ping_internet_ipv4"
           unique_id: "62acbc8f-6e3b-434f-8b2c-250fde0a0160"
-          icon: "mdi:web"
+          <<: &ping_internet_common
+            icon: "mdi:web"
+            device_class: connectivity
           state: "{{ is_state('binary_sensor.ping_cloudflare_ipv4', 'on') or is_state('binary_sensor.ping_google_ipv4', 'on') }}"
-          device_class: connectivity
 
         - name: "ping_internet_ipv6"
           unique_id: "e5297e3f-727e-4067-a5d2-ab5376e19776"
-          icon: "mdi:web"
+          <<: *ping_internet_common
           state: "{{ is_state('binary_sensor.ping_cloudflare_ipv6', 'on') or is_state('binary_sensor.ping_google_ipv6', 'on') }}"
-          device_class: connectivity
 
     - sensor:
         - name: "ping_cloudflare_ipv4_rtt"
           unique_id: "7f387bc7-ae78-4cc6-b48c-c52138746fa2"
-          icon: "mdi:timer-marker"
-          unit_of_measurement: "ms"
+          <<: &ping_internet_rtt_common
+            icon: "mdi:timer-marker"
+            unit_of_measurement: "ms"
           availability: "{{ is_state('binary_sensor.ping_cloudflare_ipv4', 'on') }}"
           state: "{{ state_attr('binary_sensor.ping_cloudflare_ipv4', 'round_trip_time_max') | float | round(1) }}"
 
         - name: "ping_cloudflare_ipv6_rtt"
           unique_id: "f08615b7-9864-49e9-9717-fc5f2c40db8e"
-          icon: "mdi:timer-marker"
-          unit_of_measurement: "ms"
+          <<: *ping_internet_rtt_common
           availability: "{{ is_state('binary_sensor.ping_cloudflare_ipv6', 'on') }}"
           state: "{{ state_attr('binary_sensor.ping_cloudflare_ipv6', 'round_trip_time_max') | float | round(1) }}"
 
         - name: "ping_google_ipv4_rtt"
           unique_id: "7e48b96d-b5ad-435d-9cbc-f4c2ee0cc5f3"
-          icon: "mdi:timer-marker"
-          unit_of_measurement: "ms"
+          <<: *ping_internet_rtt_common
           availability: "{{ is_state('binary_sensor.ping_google_ipv4', 'on') }}"
           state: "{{ state_attr('binary_sensor.ping_google_ipv4', 'round_trip_time_max') | float | round(1) }}"
 
         - name: "ping_google_ipv6_rtt"
           unique_id: "383e283e-6927-40dd-8e6f-3ea06cd32f71"
-          icon: "mdi:timer-marker"
-          unit_of_measurement: "ms"
+          <<: *ping_internet_rtt_common
           availability: "{{ is_state('binary_sensor.ping_google_ipv6', 'on') }}"
           state: "{{ state_attr('binary_sensor.ping_google_ipv6', 'round_trip_time_max') | float | round(1) }}"
 
         # Maximum of any ping
         - name: "ping_internet_ipv4_rtt"
           unique_id: "710291d2-0369-4779-a0c5-3d7c549d081c"
-          icon: "mdi:timer-marker"
-          unit_of_measurement: "ms"
+          <<: *ping_internet_rtt_common
           availability: >
             {{ 
               is_state('binary_sensor.ping_cloudflare_ipv4', 'on')
@@ -183,8 +169,7 @@ pkg_internet:
 
         - name: "ping_internet_ipv6_rtt"
           unique_id: "20b03f7c-0c02-4eb6-84f3-86fbfe647837"
-          icon: "mdi:timer-marker"
-          unit_of_measurement: "ms"
+          <<: *ping_internet_rtt_common
           availability: >
             {{ 
               is_state('binary_sensor.ping_cloudflare_ipv6', 'on') 
@@ -200,8 +185,9 @@ pkg_internet:
 
         - name: "wan_download_mbit"
           unique_id: "24f72373-956f-4b06-b151-4abc9370ded1"
-          icon: "mdi:download-network"
-          unit_of_measurement: "Mb"
+          <<: &wan_mbit_common
+            icon: "mdi:download-network"
+            unit_of_measurement: "Mb"
           availability: >
             {{ 
               is_state('sensor.snmp_wan_interface', 're0_vlan40')
@@ -212,8 +198,7 @@ pkg_internet:
         
         - name: "wan_upload_mbit"
           unique_id: "3d755bfb-4ef4-4a09-bcd1-4f69b66857be"
-          icon: "mdi:upload-network"
-          unit_of_measurement: "Mb"
+          <<: *wan_mbit_common
           availability: >
             {{ 
               is_state('sensor.snmp_wan_interface', 're0_vlan40')
@@ -224,15 +209,15 @@ pkg_internet:
         
         - name: "wan_download_load"
           unique_id: "35b96964-5883-4354-bff2-463da81e4655"
-          icon: "mdi:download-network"
-          unit_of_measurement: "%"
+          <<: &wan_load_common
+            icon: "mdi:download-network"
+            unit_of_measurement: "%"
           availability: "{{ is_number(states('sensor.stat_wan_download_mbit_rate')) }}"
           state: "{{ ((states('sensor.stat_wan_download_mbit_rate') | float) / (states('input_number.wan_download_limit') | float) * 100.0) | round(1) }}"
 
         - name: "wan_upload_load"
           unique_id: "2bc03f9c-014b-4fd8-b5b1-f83cc06acdd7"
-          icon: "mdi:upload-network"
-          unit_of_measurement: "%"
+          <<: *wan_load_common
           availability: "{{ is_number(states('sensor.stat_wan_upload_mbit_rate')) }}"
           state: "{{ ((states('sensor.stat_wan_upload_mbit_rate') | float) / (states('input_number.wan_upload_limit') | float) * 100.0) | round(1) }}"
 
@@ -241,28 +226,29 @@ pkg_internet:
     customize:
       binary_sensor.ping_cloudflare_ipv4:
         friendly_name: "Cloudflare IPv4"
-        icon: "mdi:web"
+        <<: &ping_customize_common
+          icon: "mdi:web"
       
       sensor.ping_cloudflare_ipv4_rtt:
         friendly_name: "Cloudflare IPv4 RTT"
 
       binary_sensor.ping_cloudflare_ipv6:
         friendly_name: "Cloudflare IPv6"
-        icon: "mdi:web"
+        <<: *ping_customize_common
 
       sensor.ping_cloudflare_ipv6_rtt:
         friendly_name: "Cloudflare IPv6 RTT"
       
       binary_sensor.ping_google_ipv4:
         friendly_name: "Google IPv4"
-        icon: "mdi:web"
+        <<: *ping_customize_common
 
       sensor.ping_google_ipv4_rtt:
         friendly_name: "Google IPv4 RTT"
 
       binary_sensor.ping_google_ipv6:
         friendly_name: "Google IPv6"
-        icon: "mdi:web"
+        <<: *ping_customize_common
       
       sensor.ping_google_ipv6_rtt:
         friendly_name: "Google IPv6 RTT"

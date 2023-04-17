@@ -22,13 +22,13 @@ pkg_datetime:
 
     - platform: workday
       name: "datetime_workday_today"
-      country: !secret workday_country
-      province: !secret workday_province
+      <<: &datetime_workday_common
+        country: !secret workday_country
+        province: !secret workday_province
 
     - platform: workday
       name: "datetime_workday_tomorrow"
-      country: !secret workday_country
-      province: !secret workday_province
+      <<: *datetime_workday_common
       days_offset: 1
 
 
@@ -38,7 +38,7 @@ pkg_datetime:
         unique_id: "19690948-9dfa-4d98-ab49-805d609c4830"
         icon: "mdi:calendar-blank"
         state: "{{ (now().isocalendar().week % 2) == 0 }}"
-        attributes:
+        attributes: &datetime_week_commom
           week: "{{ now().isocalendar().week }}"
           weekday: "{{ now().isocalendar().weekday }}"
 
@@ -46,9 +46,7 @@ pkg_datetime:
         unique_id: "563aef58-a83a-4f0f-88e9-2c804625b9d4"
         icon: "mdi:calendar-blank-outline"
         state: "{{ (now().isocalendar().week % 2) == 1 }}"
-        attributes:
-          week: "{{ now().isocalendar().week }}"
-          weekday: "{{ now().isocalendar().weekday }}"
+        attributes: *datetime_week_commom
 
 
   homeassistant:
