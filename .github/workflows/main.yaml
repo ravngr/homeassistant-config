@@ -4,7 +4,13 @@ name: "Home Assistant CI"
 
 on:
   push:
+    paths:
+      - .github/workflows/**
+      - config/**
   pull_request:
+    paths:
+      - .github/workflows/**
+      - config/**
   workflow_dispatch:
 
 jobs:
