@@ -2,34 +2,26 @@
 
 name: "Home Assistant CI"
 
+
 on:
   push:
     paths:
-      - .github/workflows/**
-      - config/**
+      - .github/workflows/ci.yaml
+      - config/**/*.yaml
   pull_request:
     paths:
-      - .github/workflows/**
-      - config/**
+      - .github/workflows/ci.yaml
+      - config/**/*.yaml
   workflow_dispatch:
 
+
 jobs:
-  # lint:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: "Checkout configuration"
-  #       uses: actions/checkout@v3
-
-  #     - name: "Run yamllint"
-  #       uses: frenck/action-yamllint@v1.4.0
-
-  config-check:
+  check_config:
     name: "Validate config (${{ matrix.hass-version }})"
-    # needs: [yamllint]
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        hass-version: 
+        hass-version:
           - stable
           - beta
           - dev
@@ -38,7 +30,7 @@ jobs:
     steps:
       - name: "Checkout configuration"
         uses: actions/checkout@v3
-      
+
       - name: "Remove HACS-specific packages"
         run: |
           rm -R "${GITHUB_WORKSPACE}/config/packages/hacs"
