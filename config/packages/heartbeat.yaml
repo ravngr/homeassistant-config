@@ -8,7 +8,7 @@ pkg_heartbeat:
       mode: single
       trigger:
         - platform: time_pattern
-          minutes: /15
+          minutes: "/15"
       action:
         - service: rest_command.heartbeat
 
@@ -17,7 +17,7 @@ pkg_heartbeat:
     heartbeat:
       url: !secret heartbeat_url
 
-  
+
   homeassistant:
     customize:
       automation.heartbeat:

@@ -30,7 +30,7 @@ pkg_internet:
       name: "ping_gateway"
       host: !secret ip_gateway
       <<: *ping_common
-  
+
 
   input_number:
     wan_download_limit:
@@ -42,7 +42,7 @@ pkg_internet:
         step: 1
         mode: box
         unit_of_measurement: Mbps
-    
+
     wan_upload_limit:
       name: "Internet Upload Limit"
       icon: "mdi:upload-network"
@@ -116,12 +116,20 @@ pkg_internet:
           <<: &ping_internet_common
             icon: "mdi:web"
             device_class: connectivity
-          state: "{{ is_state('binary_sensor.ping_cloudflare_ipv4', 'on') or is_state('binary_sensor.ping_google_ipv4', 'on') }}"
+          state: >
+            {{
+              is_state('binary_sensor.ping_cloudflare_ipv4', 'on')
+              or is_state('binary_sensor.ping_google_ipv4', 'on')
+            }}
 
         - name: "ping_internet_ipv6"
           unique_id: "e5297e3f-727e-4067-a5d2-ab5376e19776"
           <<: *ping_internet_common
-          state: "{{ is_state('binary_sensor.ping_cloudflare_ipv6', 'on') or is_state('binary_sensor.ping_google_ipv6', 'on') }}"
+          state: >
+            {{
+              is_state('binary_sensor.ping_cloudflare_ipv6', 'on')
+              or is_state('binary_sensor.ping_google_ipv6', 'on')
+            }}
 
     - sensor:
         - name: "ping_cloudflare_ipv4_rtt"
@@ -155,7 +163,7 @@ pkg_internet:
           unique_id: "710291d2-0369-4779-a0c5-3d7c549d081c"
           <<: *ping_internet_rtt_common
           availability: >
-            {{ 
+            {{
               is_state('binary_sensor.ping_cloudflare_ipv4', 'on')
               or is_state('binary_sensor.ping_google_ipv4', 'on')
             }}
@@ -171,12 +179,12 @@ pkg_internet:
           unique_id: "20b03f7c-0c02-4eb6-84f3-86fbfe647837"
           <<: *ping_internet_rtt_common
           availability: >
-            {{ 
-              is_state('binary_sensor.ping_cloudflare_ipv6', 'on') 
-              or is_state('binary_sensor.ping_google_ipv6', 'on') 
+            {{
+              is_state('binary_sensor.ping_cloudflare_ipv6', 'on')
+              or is_state('binary_sensor.ping_google_ipv6', 'on')
             }}
           state: >
-            {{ 
+            {{
               max([
                 state_attr('binary_sensor.ping_cloudflare_ipv6', 'round_trip_time_max') | float(0),
                 state_attr('binary_sensor.ping_google_ipv6', 'round_trip_time_max') | float(0)
@@ -189,37 +197,51 @@ pkg_internet:
             icon: "mdi:download-network"
             unit_of_measurement: "Mb"
           availability: >
-            {{ 
+            {{
               is_state('sensor.snmp_wan_interface', 're0_vlan40')
               and is_state('sensor.snmp_wan_state', '1')
               and is_number(states('sensor.snmp_wan_download_bytes'))
             }}
           state: "{{ (states('sensor.snmp_wan_download_bytes') | float) * 8 / 1024 / 1024 }}"
-        
+
         - name: "wan_upload_mbit"
           unique_id: "3d755bfb-4ef4-4a09-bcd1-4f69b66857be"
           <<: *wan_mbit_common
           availability: >
-            {{ 
+            {{
               is_state('sensor.snmp_wan_interface', 're0_vlan40')
               and is_state('sensor.snmp_wan_state', '1')
               and is_number(states('sensor.snmp_wan_upload_bytes'))
             }}
           state: "{{ (states('sensor.snmp_wan_upload_bytes') | float) * 8 / 1024 / 1024 }}"
-        
+
         - name: "wan_download_load"
           unique_id: "35b96964-5883-4354-bff2-463da81e4655"
           <<: &wan_load_common
             icon: "mdi:download-network"
             unit_of_measurement: "%"
           availability: "{{ is_number(states('sensor.stat_wan_download_mbit_rate')) }}"
-          state: "{{ ((states('sensor.stat_wan_download_mbit_rate') | float) / (states('input_number.wan_download_limit') | float) * 100.0) | round(1) }}"
+          state: >
+            {{
+              (
+                (states('sensor.stat_wan_download_mbit_rate') | float)
+                / (states('input_number.wan_download_limit') | float)
+                * 100.0
+              ) | round(1)
+            }}
 
         - name: "wan_upload_load"
           unique_id: "2bc03f9c-014b-4fd8-b5b1-f83cc06acdd7"
           <<: *wan_load_common
           availability: "{{ is_number(states('sensor.stat_wan_upload_mbit_rate')) }}"
-          state: "{{ ((states('sensor.stat_wan_upload_mbit_rate') | float) / (states('input_number.wan_upload_limit') | float) * 100.0) | round(1) }}"
+          state: >
+            {{
+              (
+                (states('sensor.stat_wan_upload_mbit_rate') | float)
+                / (states('input_number.wan_upload_limit') | float)
+                * 100.0
+              ) | round(1)
+            }}
 
 
   homeassistant:
@@ -228,7 +250,7 @@ pkg_internet:
         friendly_name: "Cloudflare IPv4"
         <<: &ping_customize_common
           icon: "mdi:web"
-      
+
       sensor.ping_cloudflare_ipv4_rtt:
         friendly_name: "Cloudflare IPv4 RTT"
 
@@ -238,7 +260,7 @@ pkg_internet:
 
       sensor.ping_cloudflare_ipv6_rtt:
         friendly_name: "Cloudflare IPv6 RTT"
-      
+
       binary_sensor.ping_google_ipv4:
         friendly_name: "Google IPv4"
         <<: *ping_customize_common
@@ -249,13 +271,13 @@ pkg_internet:
       binary_sensor.ping_google_ipv6:
         friendly_name: "Google IPv6"
         <<: *ping_customize_common
-      
+
       sensor.ping_google_ipv6_rtt:
         friendly_name: "Google IPv6 RTT"
 
       binary_sensor.ping_internet_ipv4:
         friendly_name: "Internet IPv4"
-      
+
       sensor.ping_internet_ipv4_rtt:
         friendly_name: "Internet IPv4 RTT"
 
@@ -274,7 +296,7 @@ pkg_internet:
         friendly_name: "Internet Download Rate"
         icon: "mdi:download-network"
         unit_of_measurement: "Mbps"
-      
+
       binary_sensor.ping_gateway:
         friendly_name: "Router"
         icon: "mdi:router-network"

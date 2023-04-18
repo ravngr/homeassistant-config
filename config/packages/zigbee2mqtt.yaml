@@ -8,7 +8,7 @@ pkg_zigbee2mqtt:
         icon: "mdi:zigbee"
         object_id: "z2m_state"
         unique_id: "f01eecb5-6c09-4719-a86f-71081300bd2d"
-        
+
         state_topic: "zigbee2mqtt/bridge/state"
         value_template: "{{ value_json.state }}"
         payload_on: "online"
