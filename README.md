@@ -1,7 +1,7 @@
 ![GitHub](https://img.shields.io/github/license/ravngr/homeassistant-config) ![GitHub last commit (branch)](https://img.shields.io/github/last-commit/ravngr/homeassistant-config/main) ![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/ravngr/homeassistant-config/main.yaml?label=CI)
 
 # homeassistant-config
-My [Home Assistant](https://home-assistant.io/) configuration. It is heavily inspired by the use of packages in [https://github.com/frenck/home-assistant-config](frenck/home-assistant-config), though I made my own spin on the structure. Other shared configurations have also provided inspiration, such as [CCOSTAN/Home-AssistantConfig](https://github.com/CCOSTAN/Home-AssistantConfig).
+My [Home Assistant](https://home-assistant.io/) configuration. It is heavily inspired by the use of packages in [frenck/home-assistant-config](https://github.com/frenck/home-assistant-config), though I made my own spin on the structure. Other shared configurations have also provided inspiration, such as [CCOSTAN/Home-AssistantConfig](https://github.com/CCOSTAN/Home-AssistantConfig).
 
 ## Structure
 - `config` Root for all Home Assistant configuration files.
