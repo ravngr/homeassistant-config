@@ -1,0 +1,13 @@
+---
+
+pkg_cd:
+  automation:
+    - id: cd_handle
+      alias: "[cd] Handle deployment"
+      description: "Restart on continuous deployment (CD) webhook"
+      mode: single
+      trigger:
+        - platform: webhook
+          webhook_id: !secret cd_webhook_id
+      action:
+        - service: homeassistant.restart
