@@ -8,7 +8,7 @@ fi
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 ROOT_DIR="${SCRIPT_DIR}/.."
 
-# rm -R "${ROOT_DIR}/build" 
+# rm -R "${ROOT_DIR}/build"
 mkdir "${ROOT_DIR}/build"
 cp -R "${ROOT_DIR}/config" "${ROOT_DIR}/build"
 
