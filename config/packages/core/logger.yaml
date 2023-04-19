@@ -4,10 +4,10 @@ pkg_core_logger:
   # Customise logging
   # https://www.home-assistant.io/integrations/logger
   logger:
-    # Supress debug messages
+    # Suppress debug messages
     default: info
 
     filters:
       homeassistant.loader:
-        # Supress custom integrations warning
+        # Suppress custom integrations warning
         - "We found a custom integration"

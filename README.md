@@ -11,4 +11,4 @@ My [Home Assistant](https://home-assistant.io/) configuration. It is heavily ins
 - `script` Some utility scripts for validation and testing.
 
 ## CI
-Simple CI is implemented in a GitHub action based upon [frenck/action-home-assistant](https://github.com/frenck/action-home-assistant). My implementation is simplier and is compatible with [nektos/act](https://github.com/nektos/act), which has a slightly funny interpretation of the action workspace that makes it difficult to remove config files before running tests. The workflow workflow removes HACS medules before testing to avoid false-negatives.
+Simple CI is implemented in a GitHub action based upon [frenck/action-home-assistant](https://github.com/frenck/action-home-assistant). My implementation is simpler and is compatible with [nektos/act](https://github.com/nektos/act), which has a slightly funny interpretation of the action workspace that makes it difficult to remove config files before running tests. The workflow workflow removes HACS medules before testing to avoid false-negatives.
