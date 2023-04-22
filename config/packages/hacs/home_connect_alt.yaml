@@ -1,7 +1,8 @@
 ---
 
-# Remove file for CI
+# Remove file for CI/run
 # ci::remove
+# run::remove
 
 pkg_hacs_home_connect_alt:
   home_connect_alt:

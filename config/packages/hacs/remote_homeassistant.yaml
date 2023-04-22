@@ -1,7 +1,8 @@
 ---
 
-# Remove file for CI
+# Remove file for CI/run
 # ci::remove
+# run::remove
 
 pkg_remote_homeassistant:
   # Remote Home Assistant instances
