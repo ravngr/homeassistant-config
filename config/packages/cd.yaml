@@ -2,8 +2,8 @@
 
 pkg_cd:
   automation:
-    - id: cd_handle
-      alias: "[cd] Handle deployment"
+    - id: pkg_cd_restart
+      alias: "[cd] Restart webhook"
       description: "Restart on continuous deployment (CD) webhook"
       mode: single
       trigger:

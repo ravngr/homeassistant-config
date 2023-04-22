@@ -2,9 +2,9 @@
 
 pkg_heartbeat:
   automation:
-    - id: "heartbeat"
-      alias: "Heartbeat"
-      description: "Send heartbeat HTTP(S) request"
+    - id: pkg_heartbeat_update
+      alias: "[pkg_heartbeat] Send heartbeat"
+      description: "Send heartbeat update"
       mode: single
       trigger:
         - platform: time_pattern
