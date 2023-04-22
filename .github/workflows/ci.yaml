@@ -31,22 +31,14 @@ jobs:
       - name: "Checkout configuration"
         uses: actions/checkout@v3
 
-      - name: "Remove HACS-specific packages"
+      - name: "Remove non-CI packages"
         run: |
-          rm -R "${GITHUB_WORKSPACE}/config/packages/hacs"
+          grep -Rl "ci::remove" "${GITHUB_WORKSPACE}/config" | xargs rm -f
 
       - name: "Replace secrets.yaml with CI version"
         continue-on-error: true
         run: |
           mv "${GITHUB_WORKSPACE}/config/secrets.ci.yaml" "${GITHUB_WORKSPACE}/config/secrets.yaml"
-
-      - name: "Get Home Assistant version"
-        shell: "bash"
-        run: |
-          docker run \
-          --rm \
-          "ghcr.io/home-assistant/home-assistant:${{ matrix.hass-version }}" \
-          python -m homeassistant --version
 
       - name: "Run Home Assistant config test"
         shell: "bash"
@@ -56,3 +48,9 @@ jobs:
           -v "${GITHUB_WORKSPACE}/config:/config" \
           "ghcr.io/home-assistant/home-assistant:${{ matrix.hass-version }}" \
           python -m homeassistant --config "/config" --script check_config
+
+      - name: Save Home Assistant version
+        uses: actions/upload-artifact@v3
+        with:
+          name: ha-version
+          path: ${GITHUB_WORKSPACE}/config/.HA_VERSION
