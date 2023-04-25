@@ -16,7 +16,7 @@ cp -R "${ROOT_DIR}/config" "${ROOT_DIR}/build"
 sed -ie 's/^recorder_db_url: .*$/recorder_db_url: "sqlite:\/\/\/\/config\/home-assistant_v2.db"/g' "${ROOT_DIR}/build/config/secrets.yaml"
 
 # Remove optional packages
-grep -Rl "run::remove" "${ROOT_DIR}build/config" | xargs rm -f
+grep -Rl "run::remove" "${ROOT_DIR}/build/config" | xargs rm -f
 
 # Fix permissions
 chown -R root:root "${ROOT_DIR}/build/config/ssh"
