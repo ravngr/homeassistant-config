@@ -1,20 +1,6 @@
 ---
 
 pkg_school:
-  input_datetime:
-    school_holiday_start:
-      name: "School Holidays Start"
-      icon: "mdi:school-outline"
-      has_date: true
-      has_time: false
-
-    school_holiday_end:
-      name: "School Holidays End"
-      icon: "mdi:school-outline"
-      has_date: true
-      has_time: false
-
-
   schedule:
     school_pickup_dropoff:
       name: "School Pickup/Dropoff"
@@ -31,32 +17,68 @@ pkg_school:
 
 
   template:
+    - trigger:
+        - platform: time_pattern
+          minutes: 0
     - binary_sensor:
-        - name: "school_holiday"
-          icon: "mdi:island"
-          unique_id: "39fff0bb-dc56-4f10-9022-65c7ca56f599"
+        - name: "school_term"
+          icon: "mdi:school"
+          unique_id: "67171683-93c2-4530-9fa5-91845909fd74"
+          # Check if current date is between school term dates out to 2030
+          # Ref: https://www.schools.vic.gov.au/school-term-dates-and-holidays-victoria
           state: >
-            {{
-              (states('input_datetime.school_holiday_start') | as_datetime).date()
-              <= now().date()
-              <= (states('input_datetime.school_holiday_end') | as_datetime).date()
-            }}
+            {%- set d = now().date().year, now().date().month, now().date().day -%}
+            {{-
+              (2023, 1, 27) <= d <= (2023, 4, 6) or
+              (2023, 4, 24) <= d <= (2023, 6, 23) or
+              (2023, 7, 10) <= d <= (2023, 9, 15) or
+              (2023, 10, 2) <= d <= (2023, 12, 20) or
+              (2024, 1, 29) <= d <= (2024, 3, 28) or
+              (2024, 4, 15) <= d <= (2024, 6, 28) or
+              (2024, 7, 15) <= d <= (2024, 9, 20) or
+              (2024, 10, 7) <= d <= (2024, 12, 20) or
+              (2025, 1, 28) <= d <= (2025, 4, 4) or
+              (2025, 4, 22) <= d <= (2025, 7, 4) or
+              (2025, 7, 21) <= d <= (2025, 9, 19) or
+              (2025, 10, 6) <= d <= (2025, 12, 19) or
+              (2026, 1, 27) <= d <= (2026, 3, 13) or
+              (2026, 3, 30) <= d <= (2026, 6, 19) or
+              (2026, 7, 6) <= d <= (2026, 9, 18) or
+              (2026, 10, 5) <= d <= (2026, 12, 18) or
+              (2027, 1, 27) <= d <= (2027, 3, 25) or
+              (2027, 4, 12) <= d <= (2027, 6, 25) or
+              (2027, 7, 12) <= d <= (2027, 9, 17) or
+              (2027, 10, 4) <= d <= (2027, 12, 17) or
+              (2028, 1, 27) <= d <= (2028, 3, 31) or
+              (2028, 4, 18) <= d <= (2028, 6, 30) or
+              (2028, 7, 17) <= d <= (2028, 9, 22) or
+              (2028, 10, 9) <= d <= (2028, 12, 21) or
+              (2029, 1, 29) <= d <= (2029, 3, 29) or
+              (2029, 4, 16) <= d <= (2029, 6, 29) or
+              (2029, 7, 16) <= d <= (2029, 9, 21) or
+              (2029, 10, 8) <= d <= (2029, 12, 21) or
+              (2030, 1, 29) <= d <= (2030, 4, 5) or
+              (2030, 4, 23) <= d <= (2030, 6, 28) or
+              (2030, 7, 15) <= d <= (2030, 9, 20) or
+              (2030, 10, 7) <= d <= (2030, 12, 20)
+            -}}
 
+    - binary_sensor:
         - name: "school_pickup_dropoff"
           icon: "mdi:bus-school"
           unique_id: "50c2c154-12f9-448d-a35e-83ae995142a7"
           state: >
             {{
-              is_state('schedule.school_pickup_dropoff', 'on')
-              and is_state('school_holiday','off')
+              is_state('binary_sensor.school_term','on')
+              and is_state('schedule.school_pickup_dropoff', 'on')
             }}
           device_class: motion
 
 
   homeassistant:
     customize:
-      binary_sensor.school_holiday:
-        friendly_name: "School Holidays"
+      binary_sensor.school_term:
+        friendly_name: "School Term"
 
       binary_sensor.school_pickup_dropoff:
         friendly_name: "School Pickup/Dropoff"
