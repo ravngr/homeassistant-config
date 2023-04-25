@@ -16,9 +16,3 @@ pkg_heartbeat:
   rest_command:
     heartbeat:
       url: !secret heartbeat_url
-
-
-  homeassistant:
-    customize:
-      automation.heartbeat:
-        friendly_name: "Heartbeat"
