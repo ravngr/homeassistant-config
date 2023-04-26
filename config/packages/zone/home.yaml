@@ -1,0 +1,16 @@
+---
+
+pkg_zone_home:
+  zone:
+    - name: "Home"
+      icon: "mdi:home"
+      latitude: !secret homeassistant_latitude
+      longitude: !secret homeassistant_longitude
+      radius: 100
+
+    - name: "Near Home"
+      icon: "mdi:home-automation"
+      latitude: !secret homeassistant_latitude
+      longitude: !secret homeassistant_longitude
+      radius: 400
+      passive: true

@@ -7,7 +7,6 @@ pkg_core_python:
     # Enable manually
     start: false
 
-
   # Allow custom python scripts
   # https://www.home-assistant.io/integrations/python_script/
   python_script:
