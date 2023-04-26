@@ -8,23 +8,21 @@ pkg_core_logbook:
       domains:
         - alarm_control_panel
         - alert
-        # - automation
-        # - binary_sensor
-        # - button
+        - automation
         - climate
-        # - counter
+        - counter
         - cover
         - fan
-        # - group
         - light
         - lock
-        - logbook
-        # - media_player
-        # - sensor
         - person
+        - scene
+        - script
         - sun
-        # - switch
+        - switch
         - vacuum
-        # - zone
       entity_globs:
         - "input_*"
+    exclude:
+      entity_globs:
+        - "cover.zb_*_motor"
