@@ -7,7 +7,7 @@ build
 ## Home Assistant
 config/.cloud
 config/.storage
-config/packages/zone
+config/packages/zone/*.yaml
 !config/packages/zone/home.yaml
 
 # External/dependencies
