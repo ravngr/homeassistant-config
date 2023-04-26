@@ -1,6 +1,11 @@
 ---
 
-pkg_ui_panel_custom:
+pkg_ui_themes:
+  # Frontend themes
+  # https://www.home-assistant.io/integrations/frontend/
+  frontend:
+    themes: !include_dir_merge_named ../../themes
+
   # Additional sidebar shortcuts
   # https://www.home-assistant.io/integrations/panel_custom
   panel_custom:
