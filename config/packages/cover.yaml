@@ -1,0 +1,114 @@
+---
+
+pkg_cover:
+  cover:
+    - platform: template
+      covers:
+        study_curtain:
+          <<: &cover_common
+            device_class: "curtain"
+            optimistic: true
+          friendly_name: "Study Curtains"
+          unique_id: "66fe59c2-e95c-4612-884e-7336104858df"
+          value_template: "{{ state_attr('cover.zb_study_curtain_motor', 'current_position') | float(0) > 5 }}"
+          position_template: "{{ state_attr('cover.zb_study_curtain_motor', 'current_position') | float(0) }}"
+          availability_template: "{{ is_state('cover.zb_study_curtain_motor', ['open', 'closed']) }}"
+          open_cover:
+            service: cover.open_cover
+            data:
+              entity_id: cover.zb_study_curtain_motor
+          close_cover:
+            service: cover.close_cover
+            data:
+              entity_id: cover.zb_study_curtain_motor
+          stop_cover:
+            service: cover.stop_cover
+            data:
+              entity_id: cover.zb_study_curtain_motor
+          set_cover_position:
+            service: cover.set_cover_position
+            data_template:
+              entity_id: cover.zb_study_curtain_motor
+              position: "{{ position }}"
+
+    - platform: template
+      covers:
+        master_curtain:
+          <<: *cover_common
+          friendly_name: "Master Bedroom Curtains"
+          unique_id: "f7131551-49c7-4ce1-807a-433f369cda7a"
+          value_template: "{{ state_attr('cover.zb_master_curtain_motor', 'current_position') | float(0) > 5 }}"
+          position_template: "{{ state_attr('cover.zb_master_curtain_motor', 'current_position') | float(0) }}"
+          availability_template: "{{ is_state('cover.zb_master_curtain_motor', ['open', 'closed']) }}"
+          open_cover:
+            service: cover.open_cover
+            data:
+              entity_id: cover.zb_master_curtain_motor
+          close_cover:
+            service: cover.close_cover
+            data:
+              entity_id: cover.zb_master_curtain_motor
+          stop_cover:
+            service: cover.stop_cover
+            data:
+              entity_id: cover.zb_master_curtain_motor
+          set_cover_position:
+            service: cover.set_cover_position
+            data_template:
+              entity_id: cover.zb_master_curtain_motor
+              position: "{{ position }}"
+
+    - platform: template
+      covers:
+        kids_curtain:
+          <<: *cover_common
+          friendly_name: "Kid's Bedroom Curtains"
+          unique_id: "9f404f1f-547f-45d2-931f-878ab4f0e46b"
+          value_template: "{{ state_attr('cover.zb_kids_curtain_motor', 'current_position') | float(0) > 5 }}"
+          position_template: "{{ state_attr('cover.zb_kids_curtain_motor', 'current_position') | float(0) }}"
+          availability_template: "{{ is_state('cover.zb_kids_curtain_motor', ['open', 'closed']) }}"
+          open_cover:
+            service: cover.open_cover
+            data:
+              entity_id: cover.zb_kids_curtain_motor
+          close_cover:
+            service: cover.close_cover
+            data:
+              entity_id: cover.zb_kids_curtain_motor
+          stop_cover:
+            service: cover.stop_cover
+            data:
+              entity_id: cover.zb_kids_curtain_motor
+          set_cover_position:
+            service: cover.set_cover_position
+            data_template:
+              entity_id: cover.zb_kids_curtain_motor
+              position: "{{ position }}"
+
+    - platform: template
+      covers:
+        lounge_blind:
+          device_class: "blind"
+          optimistic: true
+          friendly_name: "Lounge Blinds"
+          unique_id: "ebb8fb57-9b16-43cc-b2a5-9ab7c3dfbdd4"
+          value_template: "{{ state_attr('cover.zb_lounge_blind_motor', 'current_position') | float(0) > 5 }}"
+          position_template: "{{ state_attr('cover.zb_lounge_blind_motor', 'current_position') | float(0) }}"
+          availability_template: "{{ is_state('cover.zb_lounge_blind_motor', ['open', 'closed']) }}"
+          open_cover:
+            service: cover.open_cover
+            data:
+              entity_id: cover.zb_lounge_blind_motor
+          close_cover:
+            service: cover.close_cover
+            data:
+              entity_id: cover.zb_lounge_blind_motor
+          stop_cover:
+            service: cover.stop_cover
+            data:
+              entity_id: cover.zb_lounge_blind_motor
+          set_cover_position:
+            service: cover.set_cover_position
+            data_template:
+              entity_id: cover.zb_lounge_blind_motor
+              position: "{{ position }}"
