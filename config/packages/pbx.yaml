@@ -1,0 +1,96 @@
+---
+
+pkg_pbx:
+  notify:
+    # Notifications - play
+    - name: "Study Phone Play"
+      platform: command_line
+      command: "ssh -F /config/ssh/config.pbx pbx /custom/play.sh 901"
+
+    - name: "Kid Phone Play"
+      platform: command_line
+      command: "ssh -F /config/ssh/config.pbx pbx /custom/play.sh 902"
+
+    - name: "Lounge Phone Play"
+      platform: command_line
+      command: "ssh -F /config/ssh/config.pbx pbx /custom/play.sh 903"
+
+    - name: "Master Bedroom Phone Play"
+      platform: command_line
+      command: "ssh -F /config/ssh/config.pbx pbx /custom/play.sh 904"
+
+    - name: "All IP Phones Play"
+      platform: command_line
+      command: "ssh -F /config/ssh/config.pbx pbx /custom/play.sh 9001"
+
+    # Notifications - TTS
+    - name: "Study Phone Announce"
+      platform: command_line
+      command: "ssh -F /config/ssh/config.pbx pbx /custom/tts.sh 901"
+
+    - name: "Kid Phone Announce"
+      platform: command_line
+      command: "ssh -F /config/ssh/config.pbx pbx /custom/tts.sh 902"
+
+    - name: "Lounge Phone Announce"
+      platform: command_line
+      command: "ssh -F /config/ssh/config.pbx pbx /custom/tts.sh 903"
+
+    - name: "Master Bedroom Phone Announce"
+      platform: command_line
+      command: "ssh -F /config/ssh/config.pbx pbx /custom/tts.sh 904"
+
+    - name: "All IP Phones Announce"
+      platform: command_line
+      command: "ssh -F /config/ssh/config.pbx pbx /custom/tts.sh 9001"
+
+    # End calls
+    - name: "Phone Hangup"
+      platform: command_line
+      command: "ssh -F /config/ssh/config.pbx pbx /custom/hangup.sh"
+
+
+  binary_sensor:
+    # Activity sensors
+    - platform: command_line
+      name: "ip_phone_kids_active"
+      unique_id: "fc79292d-f0a6-4777-af8b-dd8f29cf4fb4"
+      command: "ssh -F /config/ssh/config.pbx pbx /custom/active.sh 102 902"
+      device_class: connectivity
+
+    - platform: command_line
+      name: "ip_phone_lounge_active"
+      unique_id: "844d57fb-d621-4a6d-9477-3d38dddf1e31"
+      command: "ssh -F /config/ssh/config.pbx pbx /custom/active.sh 103 903"
+      device_class: connectivity
+
+    - platform: command_line
+      name: "ip_phone_master_active"
+      unique_id: "e75933e9-7bd5-4bdb-be0b-d69691a419c2"
+      command: "ssh -F /config/ssh/config.pbx pbx /custom/active.sh 104 904"
+      device_class: connectivity
+
+    - platform: command_line
+      name: "ip_phone_study_active"
+      unique_id: "ee375019-75dc-4ebc-a8ef-1e59a9fe9cfc"
+      command: "ssh -F /config/ssh/config.pbx pbx /custom/active.sh 101 901"
+      device_class: connectivity
+
+
+  homeassistant:
+    customize:
+      binary_sensor.ip_phone_kids_active:
+        friendly_name: "Xander's Room Phone"
+        icon: "mdi:phone-forward"
+
+      binary_sensor.ip_phone_study_active:
+        friendly_name: "Study Phone"
+        icon: "mdi:phone-forward"
+
+      binary_sensor.ip_phone_lounge_active:
+        friendly_name: "Lounge Phone"
+        icon: "mdi:phone-forward"
+
+      binary_sensor.ip_phone_master_active:
+        friendly_name: "Master Bedroom Phone"
+        icon: "mdi:phone-forward"
