@@ -1,0 +1,82 @@
+---
+
+pkg_forecast:
+  input_number:
+    forecast_threshold_cold:
+      name: "Cold Threshold"
+      icon: "mdi:thermometer-chevron-down"
+      min: -5
+      max: 25
+      step: 0.5
+      unit_of_measurement: "°C"
+
+    forecast_threshold_hot:
+      name: "Hot Threshold"
+      icon: "mdi:thermometer-chevron-up"
+      min: 15
+      max: 40
+      step: 0.5
+      unit_of_measurement: "°C"
+
+    forecast_hours:
+      name: "Forecast Window"
+      icon: "mdi:clock-start"
+      min: 1
+      max: 24
+      step: 1
+      unit_of_measurement: "hour"
+
+
+  template:
+    binary_sensor:
+      - name: "Forecast Hot"
+        unique_id: "5f2ae338-8897-4ab3-a462-62bcc458d260"
+        icon: "mdi:thermometer-chevron-up"
+        device_class: heat
+        <<: &forecast_common
+          availability: >
+            {{
+              not is_state(
+                'weather.bom_home_hourly',
+                [
+                  'unknown',
+                  'unavailable'
+                ]
+              )
+            }}
+          attributes:
+            forecast: >
+              {{
+                state_attr('weather.bom_home_hourly', 'forecast') or [] |
+                selectattr(
+                  'datetime',
+                  '<=',
+                  (
+                    now() +
+                    timedelta(
+                      hours=states('input_number.forecast_hours') | float
+                    )
+                  ).isoformat()
+                ) |
+                list
+              }}
+        state: >
+          {{
+            this.attributes.forecast |
+            selectattr('temperature', '>=', states('input_number.temperature_hot')) |
+            list |
+            count > 0
+          }}
+
+      - name: "Forecast Cold"
+        unique_id: "258ea6db-d37e-406f-aa30-6c26c41ade66"
+        icon: "mdi:thermometer-chevron-down"
+        device_class: cold
+        <<: *forecast_common
+        state: >
+          {{
+            this.attributes.forecast |
+            selectattr('temperature', '<=', states('input_number.forecast_threshold_cold')) |
+            list |
+            count > 0
+          }}
