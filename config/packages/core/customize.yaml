@@ -1,0 +1,8 @@
+---
+
+pkg_customize:
+  homeassistant:
+    customize_glob:
+      # Replace icon for automatins defined in packages
+      "automation.pkg_*":
+        icon: "mdi:robot-outline"

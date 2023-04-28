@@ -138,15 +138,12 @@ pkg_occupy:
     customize:
       automation.pkg_occupy_away_clear:
         friendly_name: "[pkg_occupy] Clear away after homecoming"
-        icon: "mdi:robot-outline"
 
       automation.pkg_occupy_handle_entry:
         friendly_name: "[pkg_occupy] Handle entry detection"
-        icon: "mdi:robot-outline"
 
       automation.pkg_occupy_handle_motion:
         friendly_name: "[pkg_occupy] Handle motion detection"
-        icon: "mdi:robot-outline"
 
       binary_sensor.occupy_any_person:
         friendly_name: "Any Person"

@@ -17,4 +17,3 @@ pkg_cd:
     customize:
       automation.pkg_cd_restart:
         friendly_name: "[pkg_cd] Restart webhook"
-        icon: "mdi:robot-outline"

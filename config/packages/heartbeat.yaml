@@ -22,4 +22,3 @@ pkg_heartbeat:
     customize:
       automation.pkg_heartbeat_update:
         friendly_name: "[pkg_heartbeat] Update"
-        icon: "mdi:robot-outline"

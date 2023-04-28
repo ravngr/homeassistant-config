@@ -94,4 +94,3 @@ pkg_daily:
     customize:
       automation.pkg_daily_update:
         friendly_name: "[pkg_daily] Update datetimes"
-        icon: "mdi:robot-outline"
