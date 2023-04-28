@@ -1,0 +1,114 @@
+---
+
+blueprint:
+  name: "[z2m-remote] Handle 4-Button Remote"
+  description: "Run actions in response to 4-button/12-Scene remote events"
+  domain: automation
+  input:
+    topic_remote_action:
+      name: "Remote action topic"
+      description: "MQTT topic to listen to for actions, usually `zigbee2mqtt/<device name>/action`"
+      selector:
+        text:
+
+    action_1_single:
+      name: Button 1 - Single
+      description: "Actions run on single press of button 1 (upper-left)"
+      <<: &action_common
+        default: []
+        selector:
+          action: {}
+    action_1_double:
+      name: Button 1 - Double
+      description: "Run on double press of button 1 (upper-left)"
+      <<: *action_common
+    action_1_hold:
+      name: Button 1 - Hold
+      description: "Run on hold of button 1 (upper-left)"
+      <<: *action_common
+
+    action_2_single:
+      name: Button 2 - Single
+      description: "Run on single press of button 2 (upper-right)"
+      <<: *action_common
+    action_2_double:
+      name: Button 2 - Double
+      description: "Run on double press of button 2 (upper-right)"
+      <<: *action_common
+    action_2_hold:
+      name: Button 2 - Hold
+      description: "Run on hold of button 2 (upper-right)"
+      <<: *action_common
+
+    action_3_single:
+      name: Button 3 - Single
+      description: "Run on single press of button 3 (lower-left)"
+      <<: *action_common
+    action_3_double:
+      name: Button 3 - Double
+      description: "Run on double press of button 3 (lower-left)"
+      <<: *action_common
+    action_3_hold:
+      name: Button 3 - Hold
+      description: "Run on hold of button 3 (lower-left)"
+      <<: *action_common
+
+    action_4_single:
+      name: Button 4 - Single
+      description: "Run on single press of button 4 (lower-right)"
+      <<: *action_common
+    action_4_double:
+      name: Button 4 - Double
+      description: "Run on double press of button 4 (lower-right)"
+      <<: *action_common
+    action_4_hold:
+      name: Button 4 - Hold
+      description: "Run on hold of button 3 (lower-right)"
+      <<: *action_common
+
+mode: queued
+max_exceeded: silent
+trigger:
+  - platform: mqtt
+    topic: !input topic_remote_action
+action:
+  - choose:
+      - conditions:
+          - "{{ trigger.payload == '1_single' }}"
+        sequence: !input "action_1_single"
+      - conditions:
+          - "{{ trigger.payload == '1_double' }}"
+        sequence: !input "action_1_double"
+      - conditions:
+          - "{{ trigger.payload == '1_hold' }}"
+        sequence: !input "action_1_hold"
+
+      - conditions:
+          - "{{ trigger.payload == '2_single' }}"
+        sequence: !input "action_2_single"
+      - conditions:
+          - "{{ trigger.payload == '2_double' }}"
+        sequence: !input "action_2_double"
+      - conditions:
+          - "{{ trigger.payload == '2_hold' }}"
+        sequence: !input "action_2_hold"
+
+      - conditions:
+          - "{{ trigger.payload == '3_single' }}"
+        sequence: !input "action_3_single"
+      - conditions:
+          - "{{ trigger.payload == '3_double' }}"
+        sequence: !input "action_3_double"
+      - conditions:
+          - "{{ trigger.payload == '3_hold' }}"
+        sequence: !input "action_3_hold"
+
+      - conditions:
+          - "{{ trigger.payload == '4_single' }}"
+        sequence: !input "action_4_single"
+      - conditions:
+          - "{{ trigger.payload == '4_double' }}"
+        sequence: !input "action_4_double"
+      - conditions:
+          - "{{ trigger.payload == '4_hold' }}"
+        sequence: !input "action_4_hold"

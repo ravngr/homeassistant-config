@@ -1,0 +1,132 @@
+---
+
+blueprint:
+  name: "[z2m-remote] Handle 4-Button Remote with Common Actions"
+  description: "Run actions in response to 4-button/12-Scene remote events with common functions"
+  domain: automation
+  input:
+    topic_remote_action:
+      name: "Remote action topic"
+      description: "MQTT topic to listen to for actions, usually `zigbee2mqtt/<device name>/action`"
+      selector:
+        text:
+
+    target_light:
+      name: "Room light(s)"
+      description: "Lights to control with button 1 (upper-left)"
+      selector:
+        target:
+          entity:
+            domain: light
+    target_cover:
+      name: "Room cover(s)"
+      description: "Covers to control with button 4 (lower-right)"
+      selector:
+        target:
+          entity:
+            domain: cover
+
+    number_cover_partial_position:
+      name: "Room cover partially opened position"
+      description: "Room cover target position when double pressing button 4 (lower-right)"
+      selector:
+        number:
+          min: 0
+          max: 100
+          step: 5
+          unit_of_measurement: "%"
+          mode: slider
+
+    action_2_single:
+      name: Button 2 - Single
+      description: "Run on single press of button 2 (upper-right)"
+      <<: &action_common
+        default: []
+        selector:
+          action: {}
+    action_2_double:
+      name: Button 2 - Double
+      description: "Run on double press of button 2 (upper-right)"
+      <<: *action_common
+    action_2_hold:
+      name: Button 2 - Hold
+      description: "Run on hold of button 2 (upper-right)"
+      <<: *action_common
+
+    action_3_single:
+      name: Button 3 - Single
+      description: "Run on single press of button 3 (lower-left)"
+      <<: *action_common
+    action_3_double:
+      name: Button 3 - Double
+      description: "Run on double press of button 3 (lower-left)"
+      <<: *action_common
+    action_3_hold:
+      name: Button 3 - Hold
+      description: "Run on hold of button 3 (lower-left)"
+      <<: *action_common
+
+mode: queued
+max_exceeded: silent
+trigger:
+  - platform: mqtt
+    topic: !input topic_remote_action
+action:
+  - choose:
+      - conditions:
+          - "{{ trigger.payload == '1_single' }}"
+        sequence:
+          - service: light.toggle
+            data:
+              brightness_pct: 100
+            target: !input target_light
+      - conditions:
+          - "{{ trigger.payload == '1_double' }}"
+        sequence:
+          - service: light.toggle
+            data:
+              brightness_pct: 5
+            target: !input target_light
+      - conditions:
+          - "{{ trigger.payload == '1_hold' }}"
+        sequence:
+          - service: light.turn_off
+            target: !input target_light
+
+      - conditions:
+          - "{{ trigger.payload == '2_single' }}"
+        sequence: !input "action_2_single"
+      - conditions:
+          - "{{ trigger.payload == '2_double' }}"
+        sequence: !input "action_2_double"
+      - conditions:
+          - "{{ trigger.payload == '2_hold' }}"
+        sequence: !input "action_2_hold"
+
+      - conditions:
+          - "{{ trigger.payload == '3_single' }}"
+        sequence: !input "action_3_single"
+      - conditions:
+          - "{{ trigger.payload == '3_double' }}"
+        sequence: !input "action_3_double"
+      - conditions:
+          - "{{ trigger.payload == '3_hold' }}"
+        sequence: !input "action_3_hold"
+
+      - conditions:
+          - "{{ trigger.payload == '4_single' }}"
+        sequence:
+          - service: cover.toggle
+            target: !input target_cover
+      - conditions:
+          - "{{ trigger.payload == '4_double' }}"
+        sequence:
+          - service: cover.set_cover_position
+            data:
+              position: !input number_cover_partial_position
+            target: !input target_cover
+      - conditions:
+          - "{{ trigger.payload == '4_hold' }}"
+        sequence:
+          - service: cover.close
+            target: !input target_cover
