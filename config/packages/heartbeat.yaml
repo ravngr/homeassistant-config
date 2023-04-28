@@ -2,8 +2,8 @@
 
 pkg_heartbeat:
   automation:
-    - id: pkg_heartbeat_update
-      alias: "[pkg_heartbeat] Send heartbeat"
+    - id: "dd0bed00-4a19-454b-8a93-09080b8d6388"
+      alias: "pkg_heartbeat_update"
       description: "Send heartbeat update"
       mode: single
       trigger:
@@ -16,3 +16,10 @@ pkg_heartbeat:
   rest_command:
     heartbeat:
       url: !secret heartbeat_url
+
+
+  homeassistant:
+    customize:
+      automation.pkg_heartbeat_update:
+        friendly_name: "[pkg_heartbeat] Update"
+        icon: "mdi:robot-outline"
