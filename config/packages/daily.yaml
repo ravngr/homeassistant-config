@@ -1,6 +1,69 @@
 ---
 
 pkg_daily:
+  automation:
+    - id: "112b31ff-24e7-4cdf-9566-57c2ab6c015d"
+      alias: "pkg_daily_update"
+      description: "Update daily datetimes"
+      mode: single
+      trigger:
+        - platform: time
+          at: input_datetime.daily_maintinance
+          id: time
+        - platform: homeassistant
+          event: start
+          id: start
+      condition:
+        - condition: or
+          conditions:
+            - condition: trigger
+              id: time
+            - condition: and
+              conditions:
+                - condition: trigger
+                  id: start
+                - condition: template
+                  value_template: >
+                    {{
+                      (state_attr(this.entity_id, 'last_triggered') is none) or
+                      (
+                        (
+                          now() - state_attr(this.entity_id, 'last_triggered')
+                        ).total_seconds() / 3600 >= (60 * 60 * 23)
+                      )
+                    }}
+      action:
+        - service: input_datetime.set_datetime
+          data:
+            timestamp: >
+              {{
+                state_attr('sun.sun', 'next_rising') | as_timestamp
+              }}
+          target:
+            entity_id: input_datetime.daily_begin
+        - service: input_datetime.set_datetime
+          data:
+            timestamp: >
+              {{
+                state_attr('sun.sun', 'next_setting') | as_timestamp
+              }}
+          target:
+            entity_id: input_datetime.daily_end
+        - service: input_datetime.set_datetime
+          data:
+            timestamp: >
+              {{
+                (
+                  today_at('20:00') +
+                  timedelta(
+                    minutes=range(240) | random,
+                    seconds=range(60) | random
+                  )
+                ).timestamp()
+              }}
+          target:
+            entity_id: input_datetime.daily_late
+
   input_datetime:
     daily_maintinance:
       name: "Maintinance Time"
@@ -9,19 +72,26 @@ pkg_daily:
       has_time: true
 
     daily_begin:
-      name: "Day Start Time"
+      name: "Day Start"
       icon: "mdi:weather-sunset-up"
       has_date: false
       has_time: true
 
     daily_end:
-      name: "Day End Time"
+      name: "Day End"
       icon: "mdi:weather-sunset-down"
       has_date: false
       has_time: true
 
     daily_late:
-      name: "Day Late Time"
+      name: "Late"
       icon: "mdi:weather-night"
       has_date: false
       has_time: true
+
+
+  homeassistant:
+    customize:
+      automation.pkg_daily_update:
+        friendly_name: "[pkg_daily] Update datetimes"
+        icon: "mdi:robot-outline"
