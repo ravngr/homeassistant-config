@@ -2,8 +2,8 @@
 
 pkg_cd:
   automation:
-    - id: pkg_cd_restart
-      alias: "[cd] Restart webhook"
+    - id: "61f3c4a0-f808-494a-851b-867c152c4dcf"
+      alias: "pkg_cd_restart"
       description: "Restart on continuous deployment (CD) webhook"
       mode: single
       trigger:
@@ -11,3 +11,10 @@ pkg_cd:
           webhook_id: !secret cd_webhook_id
       action:
         - service: homeassistant.restart
+
+
+  homeassistant:
+    customize:
+      automation.pkg_cd_restart:
+        friendly_name: "[pkg_cd] Restart webhook"
+        icon: "mdi:robot-outline"
