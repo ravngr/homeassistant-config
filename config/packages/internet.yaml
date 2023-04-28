@@ -50,6 +50,19 @@ pkg_internet:
 
 
   sensor:
+    # Fetch DNS records
+    - platform: command_line
+      name: "dns_etoast_ipv4"
+      command: "cat /config/shell_scripts/dns_check.sh ipv4.etoast.net A"
+      unique_id: "37ad39dd-7a40-4795-9bd4-53ee9bfc9899"
+      scan_interval: 30
+
+    - platform: command_line
+      name: "dns_etoast_ipv6"
+      command: "cat /config/shell_scripts/dns_check.sh ipv6.etoast.net AAAA"
+      unique_id: "18a873be-fc6f-4553-a95d-394825e433ea"
+      scan_interval: 30
+
     # SNMP from router
     # IF-MIB::ifDescr.9 STRING: XXX
     - platform: snmp
@@ -248,7 +261,7 @@ pkg_internet:
     customize:
       binary_sensor.ping_cloudflare_ipv4:
         friendly_name: "Cloudflare IPv4"
-        <<: &ping_customize_common
+        <<: &web_common
           icon: "mdi:web"
 
       sensor.ping_cloudflare_ipv4_rtt:
@@ -256,21 +269,21 @@ pkg_internet:
 
       binary_sensor.ping_cloudflare_ipv6:
         friendly_name: "Cloudflare IPv6"
-        <<: *ping_customize_common
+        <<: *web_common
 
       sensor.ping_cloudflare_ipv6_rtt:
         friendly_name: "Cloudflare IPv6 RTT"
 
       binary_sensor.ping_google_ipv4:
         friendly_name: "Google IPv4"
-        <<: *ping_customize_common
+        <<: *web_common
 
       sensor.ping_google_ipv4_rtt:
         friendly_name: "Google IPv4 RTT"
 
       binary_sensor.ping_google_ipv6:
         friendly_name: "Google IPv6"
-        <<: *ping_customize_common
+        <<: *web_common
 
       sensor.ping_google_ipv6_rtt:
         friendly_name: "Google IPv6 RTT"
@@ -286,6 +299,14 @@ pkg_internet:
 
       sensor.ping_internet_ipv6_rtt:
         friendly_name: "Internet IPv6 RTT"
+
+      sensor.dns_etoast_ipv4:
+        friendly_name: "etoast.net IPv4 Record"
+        <<: *web_common
+
+      sensor.dns_etoast_ipv6:
+        friendly_name: "etoast.net IPv6 Record"
+        <<: *web_common
 
       sensor.stat_wan_upload_mbit_rate:
         friendly_name: "Internet Upload Rate"
