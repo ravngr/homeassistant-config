@@ -1,0 +1,283 @@
+---
+
+pkg_vacuum:
+  automation:
+    - id: pkg_vacuum_boopbot_handle_bin
+      alias: "[pkg_vacuum] Handle boopbot bin status"
+      description: "Clear boopbot bin flag on webhook"
+      mode: single
+      trigger:
+        - platform: webhook
+          webhook_id: !secret boopbot_bin_webhook_id
+      condition:
+        - condition: template
+          value_template: "{{ trigger.json.state }}"
+      action:
+        - service: input_boolean.turn_off
+          target:
+            entity_id: input_boolean.boopbot_bin_full
+        - service: vacuum.return_to_base
+          target:
+            entity_id: vacuum.valetudo_boopbot
+
+    - id: pkg_vacuum_boopbot_handle
+      alias: "[pkg_vacuum] Handle boopbot events"
+      description: "Track boopbot runtime and last clean"
+      mode: single
+      trigger:
+        - platform: state
+          entity_id: vacuum.valetudo_boopbot
+      action:
+        - choose:
+            - conditions:
+                - "{{ trigger.from_state.state == 'error' }}"
+              sequence:
+                - service: persistent_notification.create
+                  data:
+                    notification_id: boopbot_error
+                    title: boopbot Error
+                    message: "{{ states('sensor.valetudo_boopbot_error') }}"
+            - conditions:
+                - "{{ trigger.from_state.state == 'cleaning' }}"
+              sequence:
+                - service: input_boolean.turn_on
+                  target:
+                    entity_id: input_boolean.boopbot_bin_full
+
+                - service: input_datetime.set_datetime
+                  data:
+                    datetime: "{{ now() }}"
+                  target:
+                    entity_id: input_datetime.boopbot_last_clean
+
+    - id: pkg_vacuum_minesweeper_handle
+      alias: "[pkg_vacuum] Handle minesweeper events"
+      description: "Track minesweeper runtime and last clean"
+      mode: single
+      trigger:
+        - platform: state
+          entity_id: vacuum.valetudo_minesweeper
+      action:
+        - choose:
+            - conditions:
+                - "{{ trigger.from_state.state == 'error' }}"
+              sequence:
+                - service: persistent_notification.create
+                  data:
+                    notification_id: minesweeper_error
+                    title: minesweeper Error
+                    message: "{{ states('sensor.valetudo_minesweeper_error') }}"
+            - conditions:
+                - "{{ trigger.from_state.state == 'cleaning' }}"
+              sequence:
+                - service: input_boolean.turn_on
+                  target:
+                    entity_id: input_boolean.minesweeper_bin_full
+
+                - service: input_datetime.set_datetime
+                  data:
+                    datetime: "{{ now() }}"
+                  target:
+                    entity_id: input_datetime.minesweeper_last_clean
+
+
+  input_boolean:
+    boopbot_bin_full:
+      name: "boopbot Bin Full"
+      icon: "mdi:delete-empty"
+
+    minesweeper_bin_full:
+      name: "minesweeper Bin Full"
+      icon: "mdi:delete-empty"
+
+
+  input_datetime:
+    boopbot_last_clean:
+      name: "boopbot Last Clean"
+      icon: "mdi:silverware-clean"
+      has_date: true
+      has_time: true
+
+    minesweeper_last_clean:
+      name: "boopbot Last Clean"
+      icon: "mdi:silverware-clean"
+      has_date: true
+      has_time: true
+
+
+  input_number:
+    boopbot_bin_x:
+      name: "boopbot Bin X Position"
+      icon: "mdi:map-marker-circle"
+      min: -10000
+      max: 10000
+      step: 1
+      mode: box
+
+    boopbot_bin_y:
+      name: "boopbot Bin Y Position"
+      icon: "mdi:map-marker-circle"
+      min: -10000
+      max: 10000
+      step: 1
+      mode: box
+
+    minesweeper_bin_x:
+      name: "minesweeper Bin X Position"
+      icon: "mdi:map-marker-circle"
+      min: -10000
+      max: 10000
+      step: 1
+      mode: box
+
+    minesweeper_bin_y:
+      name: "minesweeper Bin Y Position"
+      icon: "mdi:map-marker-circle"
+      min: -10000
+      max: 10000
+      step: 1
+      mode: box
+
+
+  script:
+    pkg_vacuum_boopbot_goto_bin:
+      alias: "[pkg_vacuum] boopbot GoTo Bin"
+      icon: "mdi:trash-can"
+      description: "Send boopbot to bin"
+      mode: restart
+      sequence:
+        - service: mqtt.publish
+          data:
+            topic: "valetudo/boopbot/GoToLocationCapability/go/set"
+            payload_template: >
+              {{
+                {
+                  'coordinates': {
+                    'x': states('input_number.boopbot_bin_x') | int(0),
+                    'y': states('input_number.boopbot_bin_y') | int(0)
+                  }
+                } | to_json
+              }}
+
+    pkg_vacuum_boopbot_update_bin:
+      alias: "[pkg_vacuum] Update boopbot bin location"
+      icon: "mdi:map-check"
+      description: "Update bin location from vacuum current position"
+      mode: single
+      sequence:
+        - service: input_number.set_value
+          target:
+            entity_id: input_number.boopbot_bin_x
+          data:
+            value: "{{ states('sensor.boopbot_x_position') | int(0) }}"
+        - service: input_number.set_value
+          target:
+            entity_id: input_number.boopbot_bin_y
+          data:
+            value: "{{ states('sensor.boopbot_y_position') | int(0) }}"
+
+    pkg_vacuum_minesweeper_update_bin:
+      alias: "[pkg_vacuum] Update minesweeper bin location"
+      icon: "mdi:map-check"
+      description: "Update bin location from vacuum current position"
+      mode: single
+      sequence:
+        - service: input_number.set_value
+          target:
+            entity_id: input_number.minesweeper_bin_x
+          data:
+            value: "{{ states('sensor.minesweeper_x_position') | int(0) }}"
+        - service: input_number.set_value
+          target:
+            entity_id: input_number.minesweeper_bin_y
+          data:
+            value: "{{ states('sensor.minesweeper_y_position') | int(0) }}"
+
+
+  sensor:
+    - platform: rest
+      name: "boopbot_x_position"
+      icon: "mdi:map-marker"
+      unique_id: "78d24a56-d973-44c2-989f-cdd238378446"
+      resource: !secret boopbot_state_map_url
+      username: !secret boopbot_username
+      password: !secret boopbot_password
+      value_template: >
+        {{
+          (value_json.get('entities', {}) | selectattr('type', 'eq', 'robot_position') | first)['points'][0]
+        }}
+
+    - platform: rest
+      name: "boopbot_y_position"
+      icon: "mdi:map-marker"
+      unique_id: "39efecac-4b42-49d7-befe-4823bf686a19"
+      resource: !secret boopbot_state_map_url
+      username: !secret boopbot_username
+      password: !secret boopbot_password
+      value_template: >
+        {{
+          (value_json.get('entities', {}) | selectattr('type', 'eq', 'robot_position') | first)['points'][1]
+        }}
+
+    - platform: rest
+      name: "boopbot_version"
+      icon: "mdi:robot-vacuum"
+      unique_id: "eae1d422-87b9-4c88-aea1-63c522aacf9e"
+      resource: !secret boopbot_updater_state_url
+      username: !secret boopbot_username
+      password: !secret boopbot_password
+      value_template: "{{ value_json.get('currentVersion', 'unknown') }}"
+
+    - platform: rest
+      name: "minesweeper_x_position"
+      icon: "mdi:map-marker"
+      unique_id: "d8eb92bc-65f3-482d-9ef2-4e5d15803326"
+      resource: !secret minesweeper_state_map_url
+      username: !secret minesweeper_username
+      password: !secret minesweeper_password
+      value_template: >
+        {{
+          (value_json.get('entities', {}) | selectattr('type', 'eq', 'robot_position') | first)['points'][0]
+        }}
+
+    - platform: rest
+      name: "minesweeper_y_position"
+      icon: "mdi:map-marker"
+      unique_id: "8900be43-7ec6-4d84-b997-169fca5f0cc2"
+      resource: !secret minesweeper_state_map_url
+      username: !secret minesweeper_username
+      password: !secret minesweeper_password
+      value_template: >
+        {{
+          (value_json.get('entities', {}) | selectattr('type', 'eq', 'robot_position') | first)['points'][1]
+        }}
+
+    - platform: rest
+      name: "minesweeper_version"
+      icon: "mdi:robot-vacuum"
+      unique_id: "062d3cc7-d7c1-4253-9967-f8bc429edf2c"
+      resource: !secret minesweeper_updater_state_url
+      username: !secret minesweeper_username
+      password: !secret minesweeper_password
+      value_template: "{{ value_json.get('currentVersion', 'unknown') }}"
+
+
+  homeassistant:
+    customize:
+      sensor.boopbot_x_position:
+        friendly_name: "boopbot X Position"
+
+      sensor.boopbot_y_position:
+        friendly_name: "boopbot Y Position"
+
+      sensor.boopbot_version:
+        friendly_name: "boopbot Valetudo Version"
+
+      sensor.minesweeper_x_position:
+        friendly_name: "minesweeper X Position"
+
+      sensor.minesweeper_y_position:
+        friendly_name: "minesweeper Y Position"
+
+      sensor.minesweeper_version:
+        friendly_name: "minesweeper Valetudo Version"
