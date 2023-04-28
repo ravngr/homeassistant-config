@@ -1,0 +1,158 @@
+---
+
+pkg_occupy:
+  automation:
+    - id: "38ac2ff3-b632-46aa-a47e-6bf3476a511a"
+      alias: "pkg_occupy_away_clear"
+      description: "Clear away flag when home for a while"
+      mode: single
+      trigger:
+        - platform: state
+          entity_id: binary_sensor.occupy_any_user
+          to: "on"
+      condition:
+        - condition: state
+          entity_id: input_boolean.occupy_away
+          for:
+            hours: 0
+            minutes: 30
+            seconds: 0
+          state: "on"
+      action:
+        - service: input_boolean.turn_off
+          target:
+            entity_id: input_boolean.occupy_away
+
+    - id: "0bee0200-d027-4b5d-aeea-95aad427e6e1"
+      alias: "pkg_occupy_handle_entry"
+      description: "Update timer based upon detected entry/exit"
+      mode: single
+      trigger:
+        - platform: event
+          event_type: state_changed
+      condition:
+        - condition: template
+          value_template: >
+            {{
+              trigger.event.data.entity_id in (expand('binary_sensor.occupy_motion') |
+              map(attribute='entity_id'))
+            }}
+      action:
+        - service: timer.start
+          data:
+            duration: "{{ timedelta(minutes=states('input_number.occupy_timeout_entry')) }}"
+          target:
+            entity_id: timer.occupy_timeout
+
+    - id: "c17fe9d7-4d93-441d-822e-b29ae9be6fdf"
+      alias: "pkg_occupy_handle_motion"
+      description: "Update timer based upon detected motion"
+      mode: single
+      trigger:
+        - platform: event
+          event_type: state_changed
+      condition:
+        - condition: template
+          value_template: >
+            {{
+              trigger.event.data.entity_id in (expand('binary_sensor.occupy_entry') |
+              map(attribute='entity_id'))
+            }}
+      action:
+        - service: timer.start
+          data:
+            duration: "{{ timedelta(minutes=states('input_number.occupy_timeout_motion')) }}"
+          target:
+            entity_id: timer.occupy_timeout
+
+
+  # Configure in UI to allow editing
+  # binary_sensor:
+    # - platform: group
+    #   name: "occupy_entry"
+    #   unique_id: "5d63e6d3-f30f-4f0a-8437-3d3c47420d13"
+    #   device_class: opening
+    #   entities: []
+
+    # - platform: group
+    #   name: "occupy_motion"
+    #   unique_id: "88de8938-8379-40d5-ad3d-2a1def652024"
+    #   device_class: opening
+    #   entities: []
+
+
+  input_boolean:
+    occupy_away:
+      name: "Household Away"
+      icon: "mdi:island"
+
+
+  input_number:
+    occupy_timeout_motion:
+      name: "Occupation Motion Timeout"
+      icon: "mdi:account-clock"
+      min: 1
+      max: 720
+      step: 1
+      mode: slider
+      unit_of_measurement: minute
+
+    occupy_timeout_entry:
+      name: "Occupation Entry Timeout"
+      icon: "mdi:account-clock"
+      min: 1
+      max: 720
+      step: 1
+      mode: slider
+      unit_of_measurement: minute
+
+
+  template:
+    binary_sensor:
+      - name: "occupy_any_person"
+        unique_id: "24fead11-261d-442b-b054-8fca6e65c344"
+        <<: &occupy_binary_sensor_common
+          icon: "mdi:home-account"
+          device_class: presence
+        state: "{{ is_state('binary_sensor.occupy_any_user', 'on') or is_state('timer.occupy_timeout', 'active') }}"
+
+      - name: "occupy_any_user"
+        unique_id: "6a2fe571-8530-47f7-87d7-3c950a635a64"
+        <<: *occupy_binary_sensor_common
+        state: "{{ is_state('person.electrictoast', 'home') or is_state('person.nacho', 'home') }}"
+
+      - name: "occupy_all_user"
+        unique_id: "c10fc9bb-9875-4445-8a50-f4ad4e743292"
+        <<: *occupy_binary_sensor_common
+        state: "{{ is_state('person.electrictoast', 'home') and is_state('person.nacho', 'home') }}"
+
+
+  timer:
+    occupy_timeout:
+      name: "Occupancy Timeout"
+      icon: "mdi:home-account"
+      restore: true
+
+
+  homeassistant:
+    customize:
+      automation.pkg_occupy_away_clear:
+        friendly_name: "[pkg_occupy] Clear away after homecoming"
+        icon: "mdi:robot-outline"
+
+      automation.pkg_occupy_handle_entry:
+        friendly_name: "[pkg_occupy] Handle entry detection"
+        icon: "mdi:robot-outline"
+
+      automation.pkg_occupy_handle_motion:
+        friendly_name: "[pkg_occupy] Handle motion detection"
+        icon: "mdi:robot-outline"
+
+      binary_sensor.occupy_any_person:
+        friendly_name: "Any Person"
+
+      binary_sensor.pkg_occupy_handle_entry:
+        friendly_name: "Any User"
+
+      binary_sensor.occupy_all_user:
+        friendly_name: "All Users"
