@@ -28,3 +28,20 @@ repos:
     hooks:
       - id: detect-secrets
         exclude: config/secrets.ci.yaml
+
+  - repo: https://github.com/shellcheck-py/shellcheck-py
+    rev: v0.9.0.2
+    hooks:
+      - id: shellcheck
+        args:
+          - "--severity=warning"
+
+  - repo: local
+    hooks:
+      - id: check-secrets
+        name: check-secrets
+        entry: bash -c './script/check_secrets.sh'
+        language: system
+        types:
+          - yaml
+        pass_filenames: false
