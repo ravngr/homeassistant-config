@@ -1,54 +1,66 @@
 #!/bin/bash
+# shellcheck disable=SC2199,SC2076
 
-function array_diff {
-    local -n a=$1
-    local -n b=$2
-    local result=()
-
-    for i in "${a[@]}"; do
-        if [[ ! " ${b[*]} " =~ " $i " ]]; then
-            result+=("$i")
-        fi
-    done
-
-    echo "${result[@]}"
-}
-
-
-config_secrets=()
-
+## Globals
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
-CONFIG_DIR="${SCRIPT_DIR}/../config"
+REPO_DIR=$(readlink -f "${SCRIPT_DIR}/..")
+CONFIG_DIR=$(readlink -f "${REPO_DIR}/config")
 
-# Scan configuration
-for file in $(find "${CONFIG_DIR}" -type f -name "*.yaml"); do
-    config_secrets+=( $(sed -rn "s/^.*\!secret (.*)$/\1/p" "${file}") )
-done
 
-# Scan secrets file
-secrets_secrets=$(sed -rn "s/^([a-z_0-9]*):.*$/\1/p" "${CONFIG_DIR}/secrets.yaml")
+# Scan configuration files for secrets
+declare -a secrets=()
 
-# Scan secrets CI file
-ci_secrets=$(sed -rn "s/^([a-z_0-9]*):.*$/\1/p" "${CONFIG_DIR}/secrets.ci.yaml")
+while IFS= read -r -d '' file; do
+    readarray -t file_secrets < <(sed -rn "s/^.*\!secret (.*)$/\1/p" "$file")
+
+    if [ ${#file_secrets[@]} -gt 0 ]; then
+        # echo "$file"
+        # printf "  %s\n" "${file_secrets[@]}"
+        secrets+=("${file_secrets[@]}")
+    fi
+done < <(find "${CONFIG_DIR}" -type f -name "*.yaml" -print0)
 
 # Sort secrets
-config_secrets=( $(printf '%s\n' "${config_secrets[@]}" | sort -u) )
-secrets_secrets=( $(printf '%s\n' "${secrets_secrets[@]}" | sort -u) )
-ci_secrets=( $(printf '%s\n' "${ci_secrets[@]}" | sort -u) )
+mapfile -t secrets < <(echo "${secrets[@]}" | tr ' ' '\n' | sort -u | awk 'NF > 0 {print $0}')
 
-# Get diff
-diff=$( array_diff config_secrets secrets_secrets )
-echo "Missing from secrets.yaml"
-printf '  %s\n' "${diff[@]}"
+if [ ${#secrets[@]} -eq 0 ]; then
+    exit 0
+fi
 
-diff=$( array_diff config_secrets ci_secrets )
-echo "Missing from secrets.ci.yaml"
-printf '  %s\n' "${diff[@]}"
+# echo "Required secrets"
+# printf "  - %s\n" "${secrets[@]}"
 
-diff=$( array_diff secrets_secrets config_secrets )
-echo "Unused in secrets.yaml"
-printf '  %s\n' "${diff[@]}"
 
-diff=$( array_diff ci_secrets config_secrets )
-echo "Unused in secrets.ci.yaml"
-printf '  %s\n' "${diff[@]}"
+# Scan secrets.ci.yaml
+ci_secrets=$(sed -rn "s/^([a-z_0-9]*):.*$/\1/p" "${CONFIG_DIR}/secrets.ci.yaml")
+mapfile -t ci_secrets < <(echo "${ci_secrets[@]}" | tr ' ' '\n' | sort -u | awk 'NF > 0 {print $0}')
+
+
+missing=false
+
+for secret in "${secrets[@]}"; do
+    if [[ ! " ${ci_secrets[@]} " =~ " ${secret} " ]]; then
+        missing=true
+        echo "ERROR: $secret missing from secrets.ci.yaml"
+    fi
+done
+
+
+# Repeat for secrets.yaml if present
+if [ -f "${CONFIG_DIR}/secrets.yaml" ]; then
+    external_secrets=$(sed -rn "s/^([a-z_0-9]*):.*$/\1/p" "${CONFIG_DIR}/secrets.ci.yaml")
+    mapfile -t external_secrets < <(echo "${external_secrets[@]}" | tr ' ' '\n' | sort -u | awk 'NF > 0 {print $0}')
+
+    for secret in "${secrets[@]}"; do
+        if [[ ! " ${external_secrets[@]} " =~ " ${secret} " ]]; then
+            missing=true
+            echo "ERROR: $secret missing from secrets.yaml"
+        fi
+    done
+fi
+
+if $missing; then
+    exit 1
+else
+    exit 0
+fi
