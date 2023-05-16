@@ -1,0 +1,40 @@
+---
+
+pkg_study:
+  binary_sensor:
+    - platform: ping
+      name: "ping_study_pc"
+      host: !secret ip_study_pc
+      count: 2
+      scan_interval: 5
+
+
+  shell_command:
+    wol_study_pc: "ssh -F /config/ssh/config.host host {{ states('sensor.secret_study_shell_command_wol') }}"
+
+
+  switch:
+    - platform: template
+      switches:
+        study_pc:
+          friendly_name: "Study PC"
+          unique_id: "cb8ccf4b-f3c0-4a55-80a7-d7d0ff4eacd6"
+          value_template: "{{ is_state('binary_sensor.ping_study_pc', 'on') }}"
+          availability_template: "{{ is_state('binary_sensor.ping_study_pc', ['on', 'off']) }}"
+          turn_on:
+            service: shell_command.wol_study_pc
+          turn_off:
+            service: script.noop
+          icon_template: >
+            {% if is_state('binary_sensor.ping_study_pc', 'on') %}
+              mdi:monitor
+            {% else %}
+              mdi:monitor-off
+            {% endif %}
+
+
+  homeassistant:
+    customize:
+      binary_sensor.ping_study_pc:
+        friendly_name: "Study PC"
+        icon: "mdi:desktop-tower-monitor"
