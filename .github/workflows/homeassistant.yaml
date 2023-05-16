@@ -24,7 +24,6 @@ jobs:
         hass-version:
           - stable
           - beta
-          - dev
       fail-fast: true
       max-parallel: 1
     steps:
@@ -52,4 +51,4 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: ha-version
-          path: ${GITHUB_WORKSPACE}/config/.HA_VERSION
+          path: ${RUNNER_TEMP}/config/.HA_VERSION
