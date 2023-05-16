@@ -7,6 +7,8 @@ pkg_heartbeat:
       description: "Send heartbeat update"
       mode: single
       trigger:
+        - platform: homeassistant
+          event: start
         - platform: time_pattern
           minutes: "/15"
       action:
