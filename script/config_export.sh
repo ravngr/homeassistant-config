@@ -1,14 +1,13 @@
 #!/bin/bash
 
-## Globals
-GREEN='\033[1;32m'
-YELLOW='\033[1;33m'
-RESET='\033[0m'
+## Globals/imports
+SCRIPT_PATH=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+export SCRIPT_PATH
 
-# Locate script directory
-SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
-REPO_DIR=$(readlink -f "${SCRIPT_DIR}/..")
-CONFIG_DIR=$(readlink -f "${REPO_DIR}/config")
+REPO_PATH=$(readlink -f "${SCRIPT_PATH}/..")
+export REPO_PATH
+
+. "${REPO_PATH}/deps/bashplate/bashplate.sh"
 
 
 ## Arguments
@@ -22,34 +21,59 @@ export_path="$1"
 shift 1
 
 
+## Check secrets
+# pragma: allowlist nextline secret
+secrets_name="secrets.yaml"
+
+if [ ! -e "${config_path}/secrets.yaml" ]; then
+    if [ -n "${CI:-}" ]; then
+        print_warn "Running in CI mode, using secrets.ci.yaml"
+        # pragma: allowlist nextline secret
+        secrets_name="secrets.ci.yaml"
+    else
+        print_critical "Missing secrets.yaml"
+        exit 1
+    fi
+fi
+
+
 ## Export configuration
+# Locate config directory
+config_path="${REPO_PATH}/config"
+
 # Copy files but do not overwrite (preserve UI defined entities)
 for file in "automations.yaml" "scenes.yaml" "scripts.yaml"; do
     if [ ! -e "${export_path}/${file}" ]; then
-        printf "${YELLOW}Using default ${file}${RESET}\n"
-        cp "${CONFIG_DIR}/${file}" "${export_path}/${file}"
+        print_warn "Using default $(print_style "${file}" ${TERM_STYLE_BOLD})"
+        cp "${config_path}/${file}" "${export_path}/${file}"
     fi
 done
 
 # Cleanup old packages and SSH configs
-printf "${GREEN}Removing old files${RESET}\n"
+print_info "Removing old files"
 rm -Rf "${export_path}/packages"
 rm -f "${export_path}/ssh/config*"
 
 # Copy configuration core files
-printf "${GREEN}Copying configuration.yaml${RESET}\n"
-cp "${CONFIG_DIR}/configuration.yaml" "${export_path}"
-printf "${GREEN}Copying secrets.yaml${RESET}\n"
-cp "${CONFIG_DIR}/secrets.yaml" "${export_path}"
+print_info "Copying $(print_style "configuration.yaml" ${TERM_STYLE_BOLD})"
+cp "${config_path}/configuration.yaml" "${export_path}/configuration.yaml"
+print_info "Copying $(print_style "${secrets_name}" ${TERM_STYLE_BOLD})"
+cp "${config_path}/${secrets_name}" "${export_path}/secrets.yaml"
 
 # Copy directories
-find "${CONFIG_DIR}" -maxdepth 1 -type d -print0 | while read -d $'\0' dir; do
-    printf "${GREEN}Copying directory $dir${RESET}\n"
+find "${config_path}" -maxdepth 1 -type d -print0 | while read -rd $'\0' dir; do
+    print_info "Copying directory $(print_style "${dir}" ${TERM_STYLE_BOLD})"
     cp -R "$dir" "${export_path}"
 done
 
+# Cleanup non-CI files in CI mode
+if [ -n "${CI:-}" ]; then
+    print_warn "Remove non-CI files"
+    grep -Rl "ci::remove" "${export_path}" | xargs rm -f
+fi
+
 # Fix permissions on SSH files
-printf "${GREEN}Fixing SSH file permissions${RESET}\n"
+print_info "Fixing SSH file permissions"
 chown -R root:root "${export_path}/ssh"
 find "${export_path}/ssh" -type d -exec chmod 700 {} +
 find "${export_path}/ssh" -type f -exec chmod 600 {} +

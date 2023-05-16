@@ -5,23 +5,31 @@ if [ "$EUID" -ne 0 ]
   exit
 fi
 
-SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
-BUILD_DIR=$(readlink -f "${SCRIPT_DIR}/../build")
+## Globals/imports
+SCRIPT_PATH=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+export SCRIPT_PATH
 
-mkdir -p "${BUILD_DIR}"
+REPO_PATH=$(readlink -f "${SCRIPT_PATH}/..")
+export REPO_PATH
 
-${SCRIPT_DIR}/config_export.sh "${BUILD_DIR}"
+. "${REPO_PATH}/deps/bashplate/bashplate.sh"
+
+build_path="${REPO_PATH}/build"
+
+mkdir -p "${build_path}"
+
+"${SCRIPT_DIR}/config_export.sh" "${build_path}"
 
 # Use SQLite DB
-sed -ie 's/^recorder_db_url: .*$/recorder_db_url: "sqlite:\/\/\/\/config\/home-assistant_v2.db"/g' "${BUILD_DIR}/secrets.yaml"
+sed -ie 's/^recorder_db_url: .*$/recorder_db_url: "sqlite:\/\/\/\/config\/home-assistant_v2.db"/g' "${build_path}/secrets.yaml"
 
 # Remove optional packages
-grep -Rl "run::remove" "${BUILD_DIR}" | xargs rm -f
+grep -Rl "run::remove" "${build_path}" | xargs rm -f
 
 docker run \
     --name homeassistant_config \
     --rm \
-    -v "${BUILD_DIR}:/config" \
+    -v "${build_path}:/config" \
     -p "18123:8123/tcp" \
     -e "TZ=${TZ}" \
     "ghcr.io/home-assistant/home-assistant:stable" \
