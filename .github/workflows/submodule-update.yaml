@@ -1,0 +1,17 @@
+---
+
+name: "Automated submodule updates"
+
+
+permissions:
+  pull-requests: write
+  contents: write
+
+
+on:
+  workflow_dispatch:
+
+
+jobs:
+  call-submodule-update:
+    uses: ravngr/github-workflows/.github/workflows/submodule-update.yaml@main
