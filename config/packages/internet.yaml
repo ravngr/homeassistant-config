@@ -36,6 +36,7 @@ pkg_internet:
     wan_download_limit:
       name: "Internet Download Limit"
       icon: "mdi:download-network"
+      initial: !secret internet_wan_download_rate
       <<: &limit_common
         min: 1
         max: 10000
@@ -46,6 +47,7 @@ pkg_internet:
     wan_upload_limit:
       name: "Internet Upload Limit"
       icon: "mdi:upload-network"
+      initial: !secret internet_wan_upload_rate
       <<: *limit_common
 
 
