@@ -37,7 +37,7 @@ pkg_forecast:
           availability: >
             {{
               not is_state(
-                'weather.bom_home_hourly',
+                states('sensor.secret_forecast_weather_entity_id'),
                 [
                   'unknown',
                   'unavailable'
@@ -47,7 +47,7 @@ pkg_forecast:
           attributes:
             forecast: >
               {{
-                state_attr('weather.bom_home_hourly', 'forecast') or [] |
+                state_attr(states('sensor.secret_forecast_weather_entity_id'), 'forecast') or [] |
                 selectattr(
                   'datetime',
                   '<=',
