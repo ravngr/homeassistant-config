@@ -3,7 +3,7 @@
 pkg_forecast:
   input_number:
     forecast_threshold_cold:
-      name: "Cold Threshold"
+      name: "Forecast Cold Threshold"
       icon: "mdi:thermometer-chevron-down"
       min: -5
       max: 25
@@ -11,7 +11,7 @@ pkg_forecast:
       unit_of_measurement: "°C"
 
     forecast_threshold_hot:
-      name: "Hot Threshold"
+      name: "Forecast Hot Threshold"
       icon: "mdi:thermometer-chevron-up"
       min: 15
       max: 40
@@ -36,6 +36,7 @@ pkg_forecast:
         <<: &forecast_common
           availability: >
             {{
+              states('sensor.secret_forecast_weather_entity_id') in states.weather | map(attribute='entity_id') and
               not is_state(
                 states('sensor.secret_forecast_weather_entity_id'),
                 [
@@ -63,7 +64,7 @@ pkg_forecast:
         state: >
           {{
             this.attributes.forecast |
-            selectattr('temperature', '>=', states('input_number.temperature_hot')) |
+            selectattr('temperature', '>=', states('input_number.forecast_threshold_hot')) |
             list |
             count > 0
           }}
