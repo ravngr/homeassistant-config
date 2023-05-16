@@ -1,6 +1,6 @@
 ---
 
-name: "Home Assistant CI"
+name: "Home Assistant Configuration Check"
 
 
 on:
@@ -17,7 +17,7 @@ on:
 
 jobs:
   check_config:
-    name: "Validate config (${{ matrix.hass-version }})"
+    name: "Validate using Home Assistant (${{ matrix.hass-version }})"
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -25,27 +25,26 @@ jobs:
           - stable
           - beta
           - dev
-      # fail-fast: true
-      # max-parallel: 1
+      fail-fast: true
+      max-parallel: 1
     steps:
       - name: "Checkout configuration"
         uses: actions/checkout@v3
+        with:
+          submodules: 'recursive'
 
-      - name: "Remove non-CI packages"
-        run: |
-          grep -Rl "ci::remove" "${GITHUB_WORKSPACE}/config" | xargs rm -f
-
-      - name: "Replace secrets.yaml with CI version"
+      - name: "Export configuration to temporary path"
         continue-on-error: true
         run: |
-          mv "${GITHUB_WORKSPACE}/config/secrets.ci.yaml" "${GITHUB_WORKSPACE}/config/secrets.yaml"
+          mkdir "${RUNNER_TEMP}/config"
+          "${GITHUB_WORKSPACE}/script/config_export.sh" "${RUNNER_TEMP}/config"
 
       - name: "Run Home Assistant config test"
         shell: "bash"
         run: |
           docker run \
           --rm \
-          -v "${GITHUB_WORKSPACE}/config:/config" \
+          -v "${RUNNER_TEMP}/config:/config" \
           "ghcr.io/home-assistant/home-assistant:${{ matrix.hass-version }}" \
           python -m homeassistant --config "/config" --script check_config
 

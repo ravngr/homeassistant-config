@@ -1,0 +1,14 @@
+---
+
+name: "YAML Lint"
+
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+
+jobs:
+  call-pre-commit:
+    uses: ravngr/github-workflows/.github/workflows/pre-commit.yaml@main
