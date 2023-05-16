@@ -39,6 +39,7 @@ docker run \
     --name homeassistant_config \
     --rm \
     -v "${export_path}:/config" \
+    -v "${REPO_PATH}/staging/.storage:/config/.storage" \
     -p "18123:8123/tcp" \
     -e "TZ=${TZ}" \
     "ghcr.io/home-assistant/home-assistant:stable" \
