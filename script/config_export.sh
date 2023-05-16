@@ -17,6 +17,7 @@ if [ $# -lt 1 ]; then
     exit 1
 fi
 
+config_path="${REPO_PATH}/config"
 export_path="$1"
 shift 1
 
@@ -38,9 +39,6 @@ fi
 
 
 ## Export configuration
-# Locate config directory
-config_path="${REPO_PATH}/config"
-
 # Copy files but do not overwrite (preserve UI defined entities)
 for file in "automations.yaml" "scenes.yaml" "scripts.yaml"; do
     if [ ! -e "${export_path}/${file}" ]; then
@@ -74,6 +72,5 @@ fi
 
 # Fix permissions on SSH files
 print_info "Fixing SSH file permissions"
-chown -R root:root "${export_path}/ssh"
 find "${export_path}/ssh" -type d -exec chmod 700 {} +
 find "${export_path}/ssh" -type f -exec chmod 600 {} +

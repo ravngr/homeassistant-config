@@ -38,10 +38,16 @@ repos:
 
   - repo: local
     hooks:
+      - id: test-export
+        name: test-export
+        entry: bash -c './script/test_export.sh'
+        language: system
+        pass_filenames: false
+
+  - repo: local
+    hooks:
       - id: test-secrets
         name: test-secrets
         entry: bash -c './script/test_secrets.sh'
         language: system
-        types:
-          - yaml
         pass_filenames: false
