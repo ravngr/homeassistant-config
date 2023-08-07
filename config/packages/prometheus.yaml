@@ -1,0 +1,30 @@
+---
+
+pkg_prometheus:
+  prometheus:
+    namespace: hass
+    filter:
+      include_domains:
+        - alarm_control_panel
+        - alert
+        - binary_sensor
+        - button
+        - climate
+        - counter
+        - cover
+        - device_tracker
+        - fan
+        - group
+        - light
+        - lock
+        - logbook
+        - media_player
+        - person
+        - sensor
+        - sun
+        - switch
+        - timer
+        - vacuum
+        - weather
+      include_entity_globs:
+        - "input_*"
