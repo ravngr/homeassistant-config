@@ -4,7 +4,7 @@
 pkg_zigbee2mqtt:
   mqtt:
     binary_sensor:
-      - name: "Zigbee2MQTT State"
+      - name: "Bridge State"
         icon: "mdi:zigbee"
         object_id: "z2m_state"
         unique_id: "f01eecb5-6c09-4719-a86f-71081300bd2d"
@@ -21,7 +21,7 @@ pkg_zigbee2mqtt:
             - "zigbee2mqtt@mqtt"
 
     button:
-      - name: "Zigbee2MQTT Restart"
+      - name: "Bridge Restart"
         object_id: "z2m_restart"
         unique_id: "f5eb35f3-b59b-4d9a-9292-76f08d5af3e4"
         command_topic: "zigbee2mqtt/bridge/request/restart"
@@ -38,7 +38,7 @@ pkg_zigbee2mqtt:
         device: *z2m_device
 
     sensor:
-      - name: "Zigbee2MQTT Network Map"
+      - name: "Bridge Network Map"
         icon: "mdi:zigbee"
         object_id: "z2m_networkmap"
         unique_id: "b168697f-8102-4731-9707-487ab90e27cc"
@@ -51,7 +51,7 @@ pkg_zigbee2mqtt:
         availability: *z2m_availability
         device: *z2m_device
 
-      - name: "Zigbee2MQTT Event"
+      - name: "Bridge Event"
         icon: "mdi:zigbee"
         object_id: "z2m_event"
         unique_id: "7bf7791d-20b8-4fbd-92ee-8e9e393e4418"
@@ -64,7 +64,7 @@ pkg_zigbee2mqtt:
         device: *z2m_device
 
     switch:
-      - name: "Zigbee2MQTT Allow Join"
+      - name: "Bridge Allow Join"
         icon: "mdi:zigbee"
         object_id: "z2m_allow_join"
         unique_id: "9fc80116-9c12-4cca-8c4d-492d6c2b394b"
