@@ -153,3 +153,9 @@ pkg_occupy:
 
       binary_sensor.occupy_all_user:
         friendly_name: "All Users"
+
+      binary_sensor.occupy_entry:
+        friendly_name: "[pkg_occupy] Entry sensors"
+
+      binary_sensor.occupy_motion:
+        friendly_name: "[pkg_occupy] Motion sensors"
