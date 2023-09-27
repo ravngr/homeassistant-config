@@ -37,7 +37,13 @@ pkg_daily:
           data:
             timestamp: >
               {{
-                state_attr('sun.sun', 'next_rising') | as_timestamp
+                (
+                  state_attr('sun.sun', 'next_rising') | as_datetime +
+                  timedelta(
+                    minutes=range(-3, 4) | random,
+                    seconds=range(-59, 60) | random
+                  )
+                ).timestamp()
               }}
           target:
             entity_id: input_datetime.daily_begin
@@ -45,7 +51,12 @@ pkg_daily:
           data:
             timestamp: >
               {{
-                state_attr('sun.sun', 'next_setting') | as_timestamp
+                state_attr('sun.sun', 'next_setting') | as_datetime +
+                  timedelta(
+                    minutes=range(-3, 4) | random,
+                    seconds=range(-59, 60) | random
+                  )
+                ).timestamp()
               }}
           target:
             entity_id: input_datetime.daily_end
@@ -72,19 +83,19 @@ pkg_daily:
       has_time: true
 
     daily_begin:
-      name: "Day Start"
+      name: "Daily Start"
       icon: "mdi:weather-sunset-up"
       has_date: false
       has_time: true
 
     daily_end:
-      name: "Day End"
+      name: "Daily End"
       icon: "mdi:weather-sunset-down"
       has_date: false
       has_time: true
 
     daily_late:
-      name: "Late"
+      name: "Daily Late"
       icon: "mdi:weather-night"
       has_date: false
       has_time: true
