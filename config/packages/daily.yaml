@@ -51,7 +51,8 @@ pkg_daily:
           data:
             timestamp: >
               {{
-                state_attr('sun.sun', 'next_setting') | as_datetime +
+                (
+                  state_attr('sun.sun', 'next_setting') | as_datetime +
                   timedelta(
                     minutes=range(-3, 4) | random,
                     seconds=range(-59, 60) | random
