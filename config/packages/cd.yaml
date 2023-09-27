@@ -9,6 +9,10 @@ pkg_cd:
       trigger:
         - platform: webhook
           webhook_id: !secret cd_webhook_id
+          allowed_methods:
+            - POST
+            - PUT
+          local_only: false
       action:
         - service: homeassistant.restart
 

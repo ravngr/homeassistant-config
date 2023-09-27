@@ -9,6 +9,10 @@ pkg_vacuum:
       trigger:
         - platform: webhook
           webhook_id: !secret boopbot_bin_webhook_id
+          allowed_methods:
+            - POST
+            - PUT
+          local_only: true
       condition:
         - condition: template
           value_template: "{{ trigger.json.state }}"
