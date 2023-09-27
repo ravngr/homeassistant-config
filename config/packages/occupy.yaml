@@ -155,7 +155,9 @@ pkg_occupy:
         friendly_name: "All Users"
 
       binary_sensor.occupy_entry:
-        friendly_name: "[pkg_occupy] Entry sensors"
+        friendly_name: "Occupancy entry sensors"
+        device_class: door
 
       binary_sensor.occupy_motion:
-        friendly_name: "[pkg_occupy] Motion sensors"
+        friendly_name: "Occupancy motion sensors"
+        device_class: motion
