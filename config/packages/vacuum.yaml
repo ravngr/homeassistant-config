@@ -103,7 +103,7 @@ pkg_vacuum:
       has_time: true
 
     minesweeper_last_clean:
-      name: "boopbot Last Clean"
+      name: "minesweeper Last Clean"
       icon: "mdi:silverware-clean"
       has_date: true
       has_time: true
@@ -120,22 +120,6 @@ pkg_vacuum:
 
     boopbot_bin_y:
       name: "boopbot Bin Y Position"
-      icon: "mdi:map-marker-circle"
-      min: -10000
-      max: 10000
-      step: 1
-      mode: box
-
-    minesweeper_bin_x:
-      name: "minesweeper Bin X Position"
-      icon: "mdi:map-marker-circle"
-      min: -10000
-      max: 10000
-      step: 1
-      mode: box
-
-    minesweeper_bin_y:
-      name: "minesweeper Bin Y Position"
       icon: "mdi:map-marker-circle"
       min: -10000
       max: 10000
@@ -179,23 +163,6 @@ pkg_vacuum:
             entity_id: input_number.boopbot_bin_y
           data:
             value: "{{ states('sensor.boopbot_y_position') | int(0) }}"
-
-    pkg_vacuum_minesweeper_update_bin:
-      alias: "[pkg_vacuum] Update minesweeper bin location"
-      icon: "mdi:map-check"
-      description: "Update bin location from vacuum current position"
-      mode: single
-      sequence:
-        - service: input_number.set_value
-          target:
-            entity_id: input_number.minesweeper_bin_x
-          data:
-            value: "{{ states('sensor.minesweeper_x_position') | int(0) }}"
-        - service: input_number.set_value
-          target:
-            entity_id: input_number.minesweeper_bin_y
-          data:
-            value: "{{ states('sensor.minesweeper_y_position') | int(0) }}"
 
 
   sensor:
