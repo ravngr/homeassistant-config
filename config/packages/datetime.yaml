@@ -20,17 +20,6 @@ pkg_datetime:
       after: "sunset"
       before: "sunrise"
 
-    - platform: workday
-      name: "datetime_workday_today"
-      <<: &datetime_workday_common
-        country: !secret workday_country
-        province: !secret workday_province
-
-    - platform: workday
-      name: "datetime_workday_tomorrow"
-      <<: *datetime_workday_common
-      days_offset: 1
-
 
   template:
     binary_sensor:
