@@ -59,8 +59,8 @@ print_info "Copying $(print_style "${secrets_name}" ${TERM_STYLE_BOLD})"
 cp "${config_path}/${secrets_name}" "${export_path}/secrets.yaml"
 
 # Copy directories
-find "${config_path}" -maxdepth 1 -type d -print0 | while read -rd $'\0' dir; do
-    print_info "Copying directory $(print_style "${dir}" ${TERM_STYLE_BOLD})"
+find "${config_path}" -maxdepth 1 -type d -not -path "${config_path}" -print0 | while read -rd $'\0' dir; do
+    print_info "Copying directory $(print_style "${dir}" ${TERM_STYLE_BOLD}) to $(print_style "${export_path}" ${TERM_STYLE_BOLD})"
     cp -R "$dir" "${export_path}"
 done
 
