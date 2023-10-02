@@ -41,17 +41,22 @@ pkg_zigbee2mqtt:
         device: *z2m_device
 
     sensor:
-      - name: "Bridge Network Map"
+      - name: "Bridge Coordinator"
         icon: "mdi:zigbee"
-        object_id: "z2m_networkmap"
-        unique_id: "b168697f-8102-4731-9707-487ab90e27cc"
+        object_id: "z2m_coordinator"
+        unique_id: "a64465a0-e5d2-4d84-a7d6-3a422e4265f7"
         entity_category: "config"
 
-        state_topic: "zigbee2mqtt/bridge/response/networkmap"
-        value_template: >-
-          {{ now().strftime('%Y-%m-%d %H:%M:%S') }}
-        json_attributes_topic: "zigbee2mqtt/bridge/response/networkmap"
-        json_attributes_template: "{{ value_json.data.value | to_json }}"
+        state_topic: "zigbee2mqtt/bridge/info"
+        value_template: "{{ value_json.coordinator.type }}"
+        json_attributes_topic: "zigbee2mqtt/bridge/info"
+        json_attributes_template: >-
+          {{
+            {
+              'address': value_json.coordinator.ieee_address,
+              'meta': value_json.coordinator.meta
+            } | to_json
+          }}
 
         availability: *z2m_availability
         device: *z2m_device
@@ -70,6 +75,42 @@ pkg_zigbee2mqtt:
         availability: *z2m_availability
         device: *z2m_device
 
+      - name: "Bridge Network Map"
+        icon: "mdi:zigbee"
+        object_id: "z2m_networkmap"
+        unique_id: "b168697f-8102-4731-9707-487ab90e27cc"
+        entity_category: "config"
+
+        state_topic: "zigbee2mqtt/bridge/response/networkmap"
+        value_template: >-
+          {{
+            now().strftime('%Y-%m-%d %H:%M:%S')
+          }}
+        json_attributes_topic: "zigbee2mqtt/bridge/response/networkmap"
+        json_attributes_template: "{{ value_json.data.value | to_json }}"
+
+        availability: *z2m_availability
+        device: *z2m_device
+
+      - name: "Bridge Version"
+        icon: "mdi:zigbee"
+        object_id: "z2m_version"
+        unique_id: "8bce30ae-4952-4a35-8b52-ab3545333939"
+        entity_category: "config"
+
+        state_topic: "zigbee2mqtt/bridge/info"
+        value_template: "{{ value_json.version }}"
+        json_attributes_topic: "zigbee2mqtt/bridge/info"
+        json_attributes_template: >-
+          {{
+            {
+              'commit': value_json.get('commit')
+            } | to_json
+          }}
+
+        availability: *z2m_availability
+        device: *z2m_device
+
     switch:
       - name: "Bridge Allow Join"
         icon: "mdi:zigbee"
@@ -82,7 +123,12 @@ pkg_zigbee2mqtt:
         state_on: "True"
         state_off: "False"
         json_attributes_topic: "zigbee2mqtt/bridge/info"
-        json_attributes_template: "{{ {'join_timeout': value_json.get('permit_join_timeout', 0) } | to_json }}"
+        json_attributes_template: >-
+          {{
+            {
+              'join_timeout': value_json.get('permit_join_timeout', 0)
+            } | to_json
+          }}
 
         command_topic: "zigbee2mqtt/bridge/request/permit_join"
         payload_on: "{\"value\": true, \"time\": 300}"
