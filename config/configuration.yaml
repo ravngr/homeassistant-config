@@ -8,8 +8,7 @@ homeassistant:
   latitude: !secret homeassistant_latitude
   longitude: !secret homeassistant_longitude
   elevation: !secret homeassistant_elevation
-  unit_system: "metric"
-  temperature_unit: "C"
+  unit_system: metric
   time_zone: !secret homeassistant_time_zone
   currency: !secret homeassistant_currency
   language: !secret homeassistant_language
