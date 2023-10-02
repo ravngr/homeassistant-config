@@ -1,57 +1,49 @@
 ---
 
 ## Manual MQTT entities to interact with mosquitto
-pkg_mosquitto:
+pkg_mqtt:
   mqtt:
     sensor:
-      - name: "Messages Received"
+      - name: "Broker Messages Received"
         object_id: "mqtt_broker_message_rx"
         unique_id: "4b4d3277-6d83-4700-9318-e6dff3b1325f"
         <<: &mqtt-broker-common
           icon: "mdi:message-bulleted"
           entity_category: "config"
 
+          device:
+            name: "Mosquitto"
+            identifiers:
+              - "mosquitto@mqtt"
+
         state_topic: "$SYS/broker/messages/received"
         unit_of_measurement: "message"
 
-        device: &mosquitto-device
-          name: "Mosquitto"
-          identifiers:
-            - "mosquitto@mqtt"
-
-      - name: "Messages Sent"
+      - name: "Broker Messages Sent"
         object_id: "mqtt_broker_message_tx"
         unique_id: "5914c7fd-4274-4d90-8a4f-f36e8de88e20"
-        <<:
-          - *mqtt-broker-common
-          - *mosquitto-device
+        <<: *mqtt-broker-common
 
         state_topic: "$SYS/broker/messages/sent"
         unit_of_measurement: "message"
 
-      - name: "Clients Connected"
+      - name: "Broker Clients Connected"
         object_id: "mqtt_broker_clients"
         unique_id: "8a53a1e2-4711-4001-b2b1-6149cb1887d9"
-        <<:
-          - *mqtt-broker-common
-          - *mosquitto-device
+        <<: *mqtt-broker-common
 
         state_topic: "$SYS/broker/clients/connected"
 
-      - name: "Total Messages"
+      - name: "Broker Total Messages"
         object_id: "mqtt_broker_message"
         unique_id: "dda906b1-5db4-463b-89ee-1b785633766d"
-        <<:
-          - *mqtt-broker-common
-          - *mosquitto-device
+        <<: *mqtt-broker-common
 
         state_topic: "$SYS/broker/store/messages/count"
 
-      - name: "Mosquitto Version"
+      - name: "Broker Mosquitto Version"
         object_id: "mqtt_broker_version"
         unique_id: "5670f963-14f8-4168-962f-9236ec21e7dd"
-        <<:
-          - *mqtt-broker-common
-          - *mosquitto-device
+        <<: *mqtt-broker-common
 
         state_topic: "$SYS/broker/version"
