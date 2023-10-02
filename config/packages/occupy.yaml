@@ -40,7 +40,7 @@ pkg_occupy:
       action:
         - service: timer.start
           data:
-            duration: "{{ timedelta(minutes=states('input_number.occupy_timeout_entry')) }}"
+            duration: "{{ timedelta(minutes=states('input_number.occupy_timeout_entry') | int) }}"
           target:
             entity_id: timer.occupy_timeout
 
@@ -61,7 +61,7 @@ pkg_occupy:
       action:
         - service: timer.start
           data:
-            duration: "{{ timedelta(minutes=states('input_number.occupy_timeout_motion')) }}"
+            duration: "{{ timedelta(minutes=states('input_number.occupy_timeout_motion') | int) }}"
           target:
             entity_id: timer.occupy_timeout
 
