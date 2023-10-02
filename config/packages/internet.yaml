@@ -25,6 +25,20 @@ pkg_internet:
         scan_interval: 10
 
 
+  rest:
+    - resource: "https://ipv4.etoast.net/ip.json"
+      scan_interval: 10
+      sensor:
+        - name: "ip_external_ipv4"
+          value_template: "{{ json_value['ip'] }}"
+
+    - resource: "https://ipv6.etoast.net/ip.json"
+      scan_interval: 10
+      sensor:
+        - name: "ip_external_ipv6"
+          value_template: "{{ json_value['ip'] }}"
+
+
   homeassistant:
     customize:
       binary_sensor.ping_gateway:
@@ -38,4 +52,12 @@ pkg_internet:
 
       sensor.dns_etoast_ipv6:
         friendly_name: "etoast.net IPv6 Record"
+        <<: *web_common
+
+      sensor.ip_external_ipv4:
+        friendly_name: "External IPv4 Address"
+        <<: *web_common
+
+      sensor.ip_external_ipv6:
+        friendly_name: "External IPv6 Address"
         <<: *web_common
