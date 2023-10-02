@@ -14,6 +14,18 @@ pkg_heartbeat:
       action:
         - service: rest_command.heartbeat
 
+    - id: "a05979de-04ff-4748-a271-9d195e448cb4"
+      alias: "pkg_heartbeat_webhook"
+      description: "Receive heartbeat update"
+      mode: single
+      trigger:
+        - platform: webhook
+          webhook_id: !secret heartbeat_webhook_id
+          allowed_methods:
+            - GET
+          local_only: true
+      action: []
+
 
   rest_command:
     heartbeat:
