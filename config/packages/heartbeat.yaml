@@ -15,7 +15,7 @@ pkg_heartbeat:
         - service: rest_command.heartbeat
 
     - id: "a05979de-04ff-4748-a271-9d195e448cb4"
-      alias: "pkg_heartbeat_webhook"
+      alias: "pkg_heartbeat_receive"
       description: "Receive heartbeat update"
       mode: single
       trigger:
@@ -36,3 +36,6 @@ pkg_heartbeat:
     customize:
       automation.pkg_heartbeat_update:
         friendly_name: "[pkg_heartbeat] Update"
+
+      automation.pkg_heartbeat_receive:
+        friendly_name: "[pkg_heartbeat] Receive"
