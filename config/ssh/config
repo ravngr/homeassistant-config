@@ -1,8 +1,15 @@
 Host *
+    # Suppress banners
+    LogLevel error
+
+    # Public key auth
     IdentityFile /config/ssh/id_homeassistant
     PreferredAuthentications publickey
+
+    # Local known hosts file
     UserKnownHostsFile /config/ssh/known_hosts
 
+# Github
 Host github.com
     User git
     Hostname github.com
