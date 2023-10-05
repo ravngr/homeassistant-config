@@ -34,8 +34,8 @@ pkg_occupy:
         - condition: template
           value_template: >
             {{
-              trigger.event.data.entity_id in (expand('binary_sensor.occupy_motion') |
-              map(attribute='entity_id'))
+              trigger.event.data.entity_id in (expand('binary_sensor.occupy_entry') |
+              map(attribute='entity_id')) and trigger.event.data.new_state.state == 'on'
             }}
       action:
         - service: timer.start
@@ -55,8 +55,8 @@ pkg_occupy:
         - condition: template
           value_template: >
             {{
-              trigger.event.data.entity_id in (expand('binary_sensor.occupy_entry') |
-              map(attribute='entity_id'))
+              trigger.event.data.entity_id in (expand('binary_sensor.occupy_motion') |
+              map(attribute='entity_id')) and trigger.event.data.new_state.state == 'on'
             }}
       action:
         - service: timer.start
