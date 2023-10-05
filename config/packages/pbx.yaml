@@ -5,84 +5,87 @@ pkg_pbx:
     # Notifications - play/TTS
     - notify:
         name: "Study Phone Play"
-        command: "ssh -F /config/ssh/config.pbx pbx /custom/play.sh 901"
+        command: "ssh -F /config/ssh/config.pbx pbx sudo -u asterisk /opt/homeassistant/play.sh - 151"
 
     - notify:
         name: "Study Phone Announce"
-        command: "ssh -F /config/ssh/config.pbx pbx /custom/tts.sh 901"
+        command: "ssh -F /config/ssh/config.pbx pbx sudo -u asterisk /opt/homeassistant/tts.sh - 151"
 
     - notify:
         name: "Kids Phone Play"
-        command: "ssh -F /config/ssh/config.pbx pbx /custom/play.sh 902"
+        command: "ssh -F /config/ssh/config.pbx pbx sudo -u asterisk /opt/homeassistant/play.sh - 152"
 
     - notify:
         name: "Kids Phone Announce"
-        command: "ssh -F /config/ssh/config.pbx pbx /custom/tts.sh 902"
+        command: "ssh -F /config/ssh/config.pbx pbx sudo -u asterisk /opt/homeassistant/tts.sh - 152"
 
     - notify:
         name: "Lounge Phone Play"
-        command: "ssh -F /config/ssh/config.pbx pbx /custom/play.sh 903"
+        command: "ssh -F /config/ssh/config.pbx pbx sudo -u asterisk /opt/homeassistant/play.sh - 153"
 
     - notify:
         name: "Lounge Phone Announce"
-        command: "ssh -F /config/ssh/config.pbx pbx /custom/tts.sh 903"
+        command: "ssh -F /config/ssh/config.pbx pbx sudo -u asterisk /opt/homeassistant/tts.sh - 153"
 
     - notify:
         name: "Master Bedroom Phone Play"
-        command: "ssh -F /config/ssh/config.pbx pbx /custom/play.sh 904"
+        command: "ssh -F /config/ssh/config.pbx pbx sudo -u asterisk /opt/homeassistant/play.sh - 154"
 
     - notify:
         name: "Master Bedroom Phone Announce"
-        command: "ssh -F /config/ssh/config.pbx pbx /custom/tts.sh 904"
+        command: "ssh -F /config/ssh/config.pbx pbx sudo -u asterisk /opt/homeassistant/tts.sh - 154"
 
     - notify:
-        name: "All Phones Play"
-        command: "ssh -F /config/ssh/config.pbx pbx /custom/play.sh 9001"
+        name: "Global Phone Play"
+        command: "ssh -F /config/ssh/config.pbx pbx sudo -u asterisk /opt/homeassistant/play.sh - 151 153 154"
 
     - notify:
-        name: "All Phones Announce"
-        command: "ssh -F /config/ssh/config.pbx pbx /custom/tts.sh 9001"
+        name: "Global Phone Announce"
+        command: "ssh -F /config/ssh/config.pbx pbx sudo -u asterisk /opt/homeassistant/tts.sh - 151 153 154"
 
-    - binary_sensor:
-        name: "ip_phone_kids_active"
+    - switch:
+        name: "ip_phone_kids_room"
         unique_id: "fc79292d-f0a6-4777-af8b-dd8f29cf4fb4"
-        command: "ssh -F /config/ssh/config.pbx pbx /custom/active.sh 102 902"
-        device_class: connectivity
+        command_on: ""
+        command_off: "ssh -F /config/ssh/config.pbx pbx sudo -u asterisk /opt/homeassistant/hangup.sh 102 152"
+        command_state: "ssh -F /config/ssh/config.pbx pbx sudo -u asterisk /opt/homeassistant/active.sh 102 152"
 
-    # Activity sensors
-    - binary_sensor:
-        name: "ip_phone_lounge_active"
+    - switch:
+        name: "ip_phone_lounge"
         unique_id: "844d57fb-d621-4a6d-9477-3d38dddf1e31"
-        command: "ssh -F /config/ssh/config.pbx pbx /custom/active.sh 103 903"
-        device_class: connectivity
+        command_on: ""
+        command_off: "ssh -F /config/ssh/config.pbx pbx sudo -u asterisk /opt/homeassistant/hangup.sh 103 153"
+        command_state: "ssh -F /config/ssh/config.pbx pbx sudo -u asterisk /opt/homeassistant/active.sh 103 153"
 
-    - binary_sensor:
-        name: "ip_phone_master_active"
+    - switch:
+        name: "ip_phone_master_bedroom"
         unique_id: "e75933e9-7bd5-4bdb-be0b-d69691a419c2"
-        command: "ssh -F /config/ssh/config.pbx pbx /custom/active.sh 104 904"
-        device_class: connectivity
+        command_on: ""
+        command_off: "ssh -F /config/ssh/config.pbx pbx sudo -u asterisk /opt/homeassistant/hangup.sh 104 154"
+        command_state: "ssh -F /config/ssh/config.pbx pbx sudo -u asterisk /opt/homeassistant/active.sh 104 154"
 
-    - binary_sensor:
-        name: "ip_phone_study_active"
+    - switch:
+        name: "ip_phone_study"
         unique_id: "ee375019-75dc-4ebc-a8ef-1e59a9fe9cfc"
-        command: "ssh -F /config/ssh/config.pbx pbx /custom/active.sh 101 901"
-        device_class: connectivity
+        command_on: ""
+        command_off: "ssh -F /config/ssh/config.pbx pbx sudo -u asterisk /opt/homeassistant/hangup.sh 101 151"
+        command_state: "ssh -F /config/ssh/config.pbx pbx sudo -u asterisk /opt/homeassistant/active.sh 101 151"
 
 
   homeassistant:
     customize:
-      binary_sensor.ip_phone_kids_active:
-        friendly_name: "Kids Room Phone"
+      switch.ip_phone_kids_room:
+        friendly_name: "Kid's Room Phone"
         icon: "mdi:phone-forward"
 
-      binary_sensor.ip_phone_study_active:
+      switch.ip_phone_study:
         friendly_name: "Study Phone"
         icon: "mdi:phone-forward"
 
-      binary_sensor.ip_phone_lounge_active:
+      switch.ip_phone_lounge:
         friendly_name: "Lounge Phone"
         icon: "mdi:phone-forward"
 
-      binary_sensor.ip_phone_master_active:
+      switch.ip_phone_master_bedroom:
         friendly_name: "Master Bedroom Phone"
         icon: "mdi:phone-forward"
