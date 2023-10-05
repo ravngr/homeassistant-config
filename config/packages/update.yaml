@@ -1,0 +1,5 @@
+---
+
+pkg_update:
+  shell_command:
+    repo_update: "cd /repo/homeassistant-config && git pull && ./script/config_export.sh /config"
