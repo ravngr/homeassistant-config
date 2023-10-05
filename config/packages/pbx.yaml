@@ -46,28 +46,30 @@ pkg_pbx:
     - switch:
         name: "ip_phone_kids_room"
         unique_id: "fc79292d-f0a6-4777-af8b-dd8f29cf4fb4"
-        command_on: ""
+        <<: &ip-phone-common
+          command_on: ""
+          value_template: "{{ value == 'ON' }}"
         command_off: "ssh -F /config/ssh/config.pbx pbx sudo -u asterisk /opt/homeassistant/hangup.sh 102 152"
         command_state: "ssh -F /config/ssh/config.pbx pbx sudo -u asterisk /opt/homeassistant/active.sh 102 152"
 
     - switch:
         name: "ip_phone_lounge"
         unique_id: "844d57fb-d621-4a6d-9477-3d38dddf1e31"
-        command_on: ""
+        <<: *ip-phone-common
         command_off: "ssh -F /config/ssh/config.pbx pbx sudo -u asterisk /opt/homeassistant/hangup.sh 103 153"
         command_state: "ssh -F /config/ssh/config.pbx pbx sudo -u asterisk /opt/homeassistant/active.sh 103 153"
 
     - switch:
         name: "ip_phone_master_bedroom"
         unique_id: "e75933e9-7bd5-4bdb-be0b-d69691a419c2"
-        command_on: ""
+        <<: *ip-phone-common
         command_off: "ssh -F /config/ssh/config.pbx pbx sudo -u asterisk /opt/homeassistant/hangup.sh 104 154"
         command_state: "ssh -F /config/ssh/config.pbx pbx sudo -u asterisk /opt/homeassistant/active.sh 104 154"
 
     - switch:
         name: "ip_phone_study"
         unique_id: "ee375019-75dc-4ebc-a8ef-1e59a9fe9cfc"
-        command_on: ""
+        <<: *ip-phone-common
         command_off: "ssh -F /config/ssh/config.pbx pbx sudo -u asterisk /opt/homeassistant/hangup.sh 101 151"
         command_state: "ssh -F /config/ssh/config.pbx pbx sudo -u asterisk /opt/homeassistant/active.sh 101 151"
 
