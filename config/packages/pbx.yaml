@@ -12,11 +12,11 @@ pkg_pbx:
         command: "ssh -F /config/ssh/config.pbx pbx /opt/homeassistant/tts.sh - 151"
 
     - notify:
-        name: "Kids Phone Play"
+        name: "Kid Phone Play"
         command: "ssh -F /config/ssh/config.pbx pbx /opt/homeassistant/play.sh - 152"
 
     - notify:
-        name: "Kids Phone Announce"
+        name: "Kid Phone Announce"
         command: "ssh -F /config/ssh/config.pbx pbx /opt/homeassistant/tts.sh - 152"
 
     - notify:
