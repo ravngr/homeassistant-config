@@ -15,7 +15,7 @@ pkg_cd:
           local_only: false
       action:
         - alias: "Update configuration repository"
-          service: shell_command.update_repo
+          service: shell_command.repo_update
           response_variable: update
 
         - alias: "Check update return status"
