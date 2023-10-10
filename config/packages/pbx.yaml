@@ -110,12 +110,19 @@ pkg_pbx:
         command_state: "ssh -F /config/ssh/config.pbx pbx /opt/homeassistant/active.sh 104 154"
 
 
-  switch:
+  light:
     - platform: template
-      switches:
-        ip_phone_master_bedroom_display:
+      lights:
+        ip_phone_study_display:
           friendly_name: "Study Phone Display"
           unique_id: "5373eb73-b2cd-4fa2-9c30-89551991b7c4"
+          <<: &phone-display-common
+            icon_template: >-
+              {% if is_state(this.entity_id, 'on') %}
+                mdi:card-account-phone
+              {% else %}
+                mdi:card-account-phone-outline
+              {% endif %}
           turn_on:
             service: notify.study_phone_command
             data: &phone-display-on
@@ -132,22 +139,49 @@ pkg_pbx:
                 <CiscoIPPhoneExecute>
                 <ExecuteItem URL="Display:Off:1080" Priority="0" />
                 </CiscoIPPhoneExecute>
-          icon_template: >-
-            {% if is_state(this.entity_id, 'on') %}
-              mdi:card-account-phone
-            {% else %}
-              mdi:card-account-phone-outline
-            {% endif %}
+
+        ip_phone_kids_room_display:
+          friendly_name: "Kid's Room Phone Display"
+          unique_id: "41d779a3-3ae5-4838-b2b8-5390c2d1f776"
+          <<: *phone-display-common
+          turn_on:
+            service: notify.kid_phone_command
+            data: *phone-display-on
+          turn_off:
+            service: notify.kid_phone_command
+            data: *phone-display-off
+
+        ip_phone_lounge_display:
+          friendly_name: "Lounge Phone Display"
+          unique_id: "7dfed8bb-0e2c-4d82-ac7f-a6a91e308cd2"
+          <<: *phone-display-common
+          turn_on:
+            service: notify.lounge_phone_command
+            data: *phone-display-on
+          turn_off:
+            service: notify.lounge_phone_command
+            data: *phone-display-off
+
+        ip_phone_master_bedroom_display:
+          friendly_name: "Master Bedroom Phone Display"
+          unique_id: "3305deff-65df-4dbe-aa85-68fb6eae2268"
+          <<: *phone-display-common
+          turn_on:
+            service: notify.master_bedroom_phone_command
+            data: *phone-display-on
+          turn_off:
+            service: notify.master_bedroom_phone_command
+            data: *phone-display-off
 
 
   homeassistant:
     customize:
-      switch.ip_phone_kids_room_call:
-        friendly_name: "Kid's Room Phone Call"
-        icon: "mdi:phone-forward"
-
       switch.ip_phone_study_call:
         friendly_name: "Study Phone Call"
+        icon: "mdi:phone-forward"
+
+      switch.ip_phone_kids_room_call:
+        friendly_name: "Kid's Room Phone Call"
         icon: "mdi:phone-forward"
 
       switch.ip_phone_lounge_call:
