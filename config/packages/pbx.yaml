@@ -110,6 +110,36 @@ pkg_pbx:
         command_state: "ssh -F /config/ssh/config.pbx pbx /opt/homeassistant/active.sh 104 154"
 
 
+  switch:
+    - platform: template
+      switches:
+        ip_phone_master_bedroom_display:
+          friendly_name: "Study Phone Display"
+          unique_id: "5373eb73-b2cd-4fa2-9c30-89551991b7c4"
+          turn_on:
+            service: notify.study_phone_command
+            data: &phone-display-on
+              message: >
+                <?xml version="1.0" encoding="UTF-8"?>
+                <CiscoIPPhoneExecute>
+                <ExecuteItem URL="Display:On:1080" Priority="0" />
+                </CiscoIPPhoneExecute>
+          turn_off:
+            service: notify.study_phone_command
+            data: &phone-display-off
+              message: >
+                <?xml version="1.0" encoding="UTF-8"?>
+                <CiscoIPPhoneExecute>
+                <ExecuteItem URL="Display:Off:1080" Priority="0" />
+                </CiscoIPPhoneExecute>
+          icon_template: >-
+            {% if is_state(this.entity_id, 'on') %}
+              mdi:card-account-phone
+            {% else %}
+              mdi:card-account-phone-outline
+            {% endif %}
+
+
   homeassistant:
     customize:
       switch.ip_phone_kids_room_call:
