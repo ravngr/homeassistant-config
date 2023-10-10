@@ -82,7 +82,7 @@ pkg_pbx:
     - switch:
         name: "ip_phone_study_call"
         unique_id: "ee375019-75dc-4ebc-a8ef-1e59a9fe9cfc"
-        <<: &ip-phone-display-common
+        <<: &ip-phone-call-common
           command_on: ""
           value_template: "{{ value == 'ON' }}"
         command_off: "ssh -F /config/ssh/config.pbx pbx /opt/homeassistant/hangup.sh 101 151"
