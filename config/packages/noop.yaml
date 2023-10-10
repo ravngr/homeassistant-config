@@ -12,7 +12,7 @@ pkg_noop:
   light:
     - platform: template
       lights:
-        nolight:
+        dummy:
           friendly_name: "Dummy Light"
           unique_id: "eddf2a92-3b76-4b3d-8e0c-8d7e25011af4"
           turn_on: &noop-sevice
@@ -23,8 +23,8 @@ pkg_noop:
 
   switch:
     - platform: template
-      lights:
-        noswitch:
+      switches:
+        dummy:
           friendly_name: "Dummy Switch"
           unique_id: "827f1afa-8032-41e4-99b0-5e1c673b944c"
           turn_on: *noop-sevice
