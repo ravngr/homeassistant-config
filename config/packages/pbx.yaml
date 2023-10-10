@@ -12,12 +12,20 @@ pkg_pbx:
         command: "ssh -F /config/ssh/config.pbx pbx /opt/homeassistant/tts.sh - 151"
 
     - notify:
+        name: "Study Phone Command"
+        command: "ssh -F /config/ssh/config.pbx pbx /opt/homeassistant/command.sh 10.0.97.32 -"
+
+    - notify:
         name: "Kid Phone Play"
         command: "ssh -F /config/ssh/config.pbx pbx /opt/homeassistant/play.sh - 152"
 
     - notify:
         name: "Kid Phone Announce"
         command: "ssh -F /config/ssh/config.pbx pbx /opt/homeassistant/tts.sh - 152"
+
+    - notify:
+        name: "Kid Phone Command"
+        command: "ssh -F /config/ssh/config.pbx pbx /opt/homeassistant/command.sh 10.0.97.33 -"
 
     - notify:
         name: "Lounge Phone Play"
@@ -28,12 +36,20 @@ pkg_pbx:
         command: "ssh -F /config/ssh/config.pbx pbx /opt/homeassistant/tts.sh - 153"
 
     - notify:
+        name: "Lounge Phone Command"
+        command: "ssh -F /config/ssh/config.pbx pbx /opt/homeassistant/command.sh 10.0.97.34 -"
+
+    - notify:
         name: "Master Bedroom Phone Play"
         command: "ssh -F /config/ssh/config.pbx pbx /opt/homeassistant/play.sh - 154"
 
     - notify:
         name: "Master Bedroom Phone Announce"
         command: "ssh -F /config/ssh/config.pbx pbx /opt/homeassistant/tts.sh - 154"
+
+    - notify:
+        name: "Master Bedroom Phone Command"
+        command: "ssh -F /config/ssh/config.pbx pbx /opt/homeassistant/command.sh 10.0.97.35 -"
 
     - notify:
         name: "Global Phone Play"
@@ -43,51 +59,71 @@ pkg_pbx:
         name: "Global Phone Announce"
         command: "ssh -F /config/ssh/config.pbx pbx /opt/homeassistant/tts.sh - 151 153 154"
 
+    - notify:
+        name: "Global Phone Command"
+        command: >-
+          ssh
+          -F /config/ssh/config.pbx
+          pbx
+          /opt/homeassistant/command.sh
+          10.0.97.32,10.0.97.34,10.0.97.35
+          -
+
+    - notify:
+        name: "All Phone Command"
+        command: >-
+          ssh
+          -F /config/ssh/config.pbx
+          pbx
+          /opt/homeassistant/command.sh
+          10.0.97.32,10.0.97.33,10.0.97.34,10.0.97.35
+          -
+
     - switch:
-        name: "ip_phone_kids_room"
-        unique_id: "fc79292d-f0a6-4777-af8b-dd8f29cf4fb4"
-        <<: &ip-phone-common
+        name: "ip_phone_study_call"
+        unique_id: "ee375019-75dc-4ebc-a8ef-1e59a9fe9cfc"
+        <<: &ip-phone-display-common
           command_on: ""
           value_template: "{{ value == 'ON' }}"
+        command_off: "ssh -F /config/ssh/config.pbx pbx /opt/homeassistant/hangup.sh 101 151"
+        command_state: "ssh -F /config/ssh/config.pbx pbx /opt/homeassistant/active.sh 101 151"
+
+    - switch:
+        name: "ip_phone_kids_room_call"
+        unique_id: "fc79292d-f0a6-4777-af8b-dd8f29cf4fb4"
+        <<: *ip-phone-call-common
         command_off: "ssh -F /config/ssh/config.pbx pbx /opt/homeassistant/hangup.sh 102 152"
         command_state: "ssh -F /config/ssh/config.pbx pbx /opt/homeassistant/active.sh 102 152"
 
     - switch:
-        name: "ip_phone_lounge"
+        name: "ip_phone_lounge_call"
         unique_id: "844d57fb-d621-4a6d-9477-3d38dddf1e31"
-        <<: *ip-phone-common
+        <<: *ip-phone-call-common
         command_off: "ssh -F /config/ssh/config.pbx pbx /opt/homeassistant/hangup.sh 103 153"
         command_state: "ssh -F /config/ssh/config.pbx pbx /opt/homeassistant/active.sh 103 153"
 
     - switch:
-        name: "ip_phone_master_bedroom"
+        name: "ip_phone_master_bedroom_call"
         unique_id: "e75933e9-7bd5-4bdb-be0b-d69691a419c2"
-        <<: *ip-phone-common
+        <<: *ip-phone-call-common
         command_off: "ssh -F /config/ssh/config.pbx pbx /opt/homeassistant/hangup.sh 104 154"
         command_state: "ssh -F /config/ssh/config.pbx pbx /opt/homeassistant/active.sh 104 154"
-
-    - switch:
-        name: "ip_phone_study"
-        unique_id: "ee375019-75dc-4ebc-a8ef-1e59a9fe9cfc"
-        <<: *ip-phone-common
-        command_off: "ssh -F /config/ssh/config.pbx pbx /opt/homeassistant/hangup.sh 101 151"
-        command_state: "ssh -F /config/ssh/config.pbx pbx /opt/homeassistant/active.sh 101 151"
 
 
   homeassistant:
     customize:
-      switch.ip_phone_kids_room:
-        friendly_name: "Kid's Room Phone"
+      switch.ip_phone_kids_room_call:
+        friendly_name: "Kid's Room Phone Call"
         icon: "mdi:phone-forward"
 
-      switch.ip_phone_study:
-        friendly_name: "Study Phone"
+      switch.ip_phone_study_call:
+        friendly_name: "Study Phone Call"
         icon: "mdi:phone-forward"
 
-      switch.ip_phone_lounge:
-        friendly_name: "Lounge Phone"
+      switch.ip_phone_lounge_call:
+        friendly_name: "Lounge Phone Call"
         icon: "mdi:phone-forward"
 
-      switch.ip_phone_master_bedroom:
-        friendly_name: "Master Bedroom Phone"
+      switch.ip_phone_master_bedroom_call:
+        friendly_name: "Master Bedroom Phone Call"
         icon: "mdi:phone-forward"
