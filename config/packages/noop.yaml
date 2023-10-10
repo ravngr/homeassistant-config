@@ -8,3 +8,26 @@ pkg_noop:
       icon: "mdi:stop"
       mode: restart
       sequence: []
+
+  light:
+    - platform: template
+      lights:
+        nolight:
+          friendly_name: "Dummy Light"
+          unique_id: "eddf2a92-3b76-4b3d-8e0c-8d7e25011af4"
+          turn_on: &noop-sevice
+            service: script.noop
+          turn_off: *noop-sevice
+          icon_template: "mdi:lightbulb-off-outline"
+          value_template: "off"
+
+  switch:
+    - platform: template
+      lights:
+        noswitch:
+          friendly_name: "Dummy Switch"
+          unique_id: "827f1afa-8032-41e4-99b0-5e1c673b944c"
+          turn_on: *noop-sevice
+          turn_off: *noop-sevice
+          icon_template: "mdi:toggle-switch-off-outline"
+          value_template: "off"
