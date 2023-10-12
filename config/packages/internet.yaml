@@ -24,19 +24,18 @@ pkg_internet:
         unique_id: "18a873be-fc6f-4553-a95d-394825e433ea"
         scan_interval: 10
 
+    # Fetch IP
+    - sensor:
+        name: "ip_external_ipv4"
+        unique_id: "f6b0e912-8283-43aa-bbac-99bb7d6f8820"
+        command: "curl -s http://ipv4.etoast.net/ip"
+        scan_interval: 10
 
-  rest:
-    - resource: "https://ipv4.etoast.net/ip.json"
-      scan_interval: 10
-      sensor:
-        - name: "ip_external_ipv4"
-          value_template: "{{ json_value['ip'] }}"
-
-    - resource: "https://ipv6.etoast.net/ip.json"
-      scan_interval: 10
-      sensor:
-        - name: "ip_external_ipv6"
-          value_template: "{{ json_value['ip'] }}"
+    - sensor:
+        name: "ip_external_ipv6"
+        unique_id: "9a0716c2-dbe2-490b-9d6e-4ce41c5c97ae"
+        command: "curl -s http://ipv6.etoast.net/ip"
+        scan_interval: 10
 
 
   homeassistant:
