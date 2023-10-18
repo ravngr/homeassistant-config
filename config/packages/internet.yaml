@@ -37,6 +37,58 @@ pkg_internet:
         command: "curl -Ls -m 5 https://ipv6.etoast.net/ip"
         scan_interval: 10
 
+  # Prometheus metrics
+  sensor:
+    - name: "net_gateway_bytes_rx"
+      unique_id: "05a7c7c7-a621-4d81-954f-ef0a3be6fa61"
+      <<: &prometheus-common
+        platform: rest
+        resource: !secret prometheus_api_url
+        method: GET
+        scan_interval: 10
+        timeout: 5
+      <<: &prometheus-data-rate
+        device_class: data_rate
+        icon: "mdi:router-network"
+        unit_of_measurement: "B"
+        value_template: "{{ value_json.data.result[0].value[1] | float }}"
+      params:
+        query: "node_network_receive_bytes_total{device=\"mass-relay\",exported_device=\"vtnet7\"}"
+
+    - name: "net_gateway_bytes_tx"
+      unique_id: "de2cf410-a5b0-4062-b111-517b7628adc2"
+      <<:
+        - *prometheus-common
+        - *prometheus-data-rate
+      params:
+        query: "node_network_transmit_bytes_total{device=\"mass-relay\",exported_device=\"vtnet7\"}"
+
+    - name: "ping_google_ipv4"
+      unique_id: "dc076d78-354e-439a-93a5-4354c1a2c9b3"
+      <<: *prometheus-common
+      <<: &prometheus-ping
+        device_class: duration
+        icon: "mdi:timer-outline"
+        unit_of_measurement: "s"
+        value_template: "{{ value_json.data.result[0].value[1] | float }}"
+      params:
+        query: "ping_rtt_worst_seconds{ip=\"8.8.8.8\"}"
+
+    - name: "ping_cloudflare_ipv4"
+      unique_id: "dc076d78-354e-439a-93a5-4354c1a2c9b3"
+      <<:
+        - *prometheus-common
+        - *prometheus-ping
+      params:
+        query: "ping_rtt_worst_seconds{ip=\"1.1.1.1\"}"
+
+    - name: "ping_etoast_ipv4"
+      unique_id: "dc076d78-354e-439a-93a5-4354c1a2c9b3"
+      <<:
+        - *prometheus-common
+        - *prometheus-ping
+      params:
+        query: "ping_rtt_worst_seconds{ip=\"119.42.53.202\"}"
 
   homeassistant:
     customize:
@@ -59,4 +111,12 @@ pkg_internet:
 
       sensor.ip_external_ipv6:
         friendly_name: "External IPv6 Address"
+        <<: *web_common
+
+      sensor.net_gateway_bytes_rx:
+        friendly_name: "WAN Received"
+        <<: *web_common
+
+      sensor.net_gateway_bytes_tx:
+        friendly_name: "WAN Transmitted"
         <<: *web_common
