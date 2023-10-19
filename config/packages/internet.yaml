@@ -120,3 +120,15 @@ pkg_internet:
       sensor.net_gateway_bytes_tx:
         friendly_name: "WAN Transmitted"
         <<: *web_common
+
+      sensor.ping_google_ipv4:
+        friendly_name: "Google IPv4 Ping"
+        <<: *web_common
+
+      sensor.ping_cloudflare_ipv4:
+        friendly_name: "Cloudflare IPv4 Ping"
+        <<: *web_common
+
+      sensor.ping_etoast_ipv4:
+        friendly_name: "etoast.net IPv4 Ping"
+        <<: *web_common
