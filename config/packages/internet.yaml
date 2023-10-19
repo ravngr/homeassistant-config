@@ -51,7 +51,7 @@ pkg_internet:
         device_class: data_rate
         icon: "mdi:router-network"
         unit_of_measurement: "B"
-        value_template: "{{ value_json.data.result[0].value[1] | float }}"
+        value_template: "{{ value_json.data.result[0].value[1] | int }}"
       params:
         query: "node_network_receive_bytes_total{device=\"mass-relay\",exported_device=\"vtnet7\"}"
 
@@ -69,8 +69,8 @@ pkg_internet:
       <<: &prometheus-ping
         device_class: duration
         icon: "mdi:timer-outline"
-        unit_of_measurement: "s"
-        value_template: "{{ value_json.data.result[0].value[1] | float }}"
+        unit_of_measurement: "ms"
+        value_template: "{{ (value_json.data.result[0].value[1] | float) * 1000 }}"
       params:
         query: "ping_rtt_worst_seconds{ip=\"8.8.8.8\"}"
 
