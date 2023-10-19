@@ -50,8 +50,8 @@ pkg_internet:
       <<: &prometheus-data-rate
         device_class: data_rate
         icon: "mdi:router-network"
-        unit_of_measurement: "B"
-        value_template: "{{ value_json.data.result[0].value[1] | int }}"
+        unit_of_measurement: "MB"
+        value_template: "{{ (value_json.data.result[0].value[1] | int) / 1024 / 1024 }}"
       params:
         query: "node_network_receive_bytes_total{device=\"mass-relay\",exported_device=\"vtnet7\"}"
 
@@ -62,6 +62,24 @@ pkg_internet:
         - *prometheus-data-rate
       params:
         query: "node_network_transmit_bytes_total{device=\"mass-relay\",exported_device=\"vtnet7\"}"
+
+    - platform: statistics
+      name: "stat_net_gateway_rx_rate"
+      unique_id: "480950d3-6eff-445a-bbe9-8cac4de9d611"
+      entity_id: "sensor.net_gateway_bytes_rx"
+      state_characteristic: "change_second"
+      max_age:
+        minutes: 1
+      sampling_size: 30
+
+    - platform: statistics
+      name: "stat_net_gateway_tx_rate"
+      unique_id: "5a862731-ac33-4f65-a167-f9ca5fd26ed6"
+      entity_id: "sensor.net_gateway_bytes_tx"
+      state_characteristic: "change_second"
+      max_age:
+        minutes: 1
+      sampling_size: 30
 
     - name: "ping_google_ipv4"
       unique_id: "dc076d78-354e-439a-93a5-4354c1a2c9b3"
@@ -120,6 +138,16 @@ pkg_internet:
       sensor.net_gateway_bytes_tx:
         friendly_name: "WAN Transmitted"
         <<: *web_common
+
+      sensor.stat_net_gateway_rx_rate:
+        friendly_name: "WAN Download Rate"
+        icon: "mdi:download-network"
+        unit_of_measurement: "Mbps"
+
+      sensor.stat_net_gateway_tx_rate:
+        friendly_name: "WAN Upload Rate"
+        icon: "mdi:upload-network"
+        unit_of_measurement: "Mbps"
 
       sensor.ping_google_ipv4:
         friendly_name: "Google IPv4 Ping"
