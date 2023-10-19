@@ -75,7 +75,7 @@ pkg_internet:
         query: "ping_rtt_worst_seconds{ip=\"8.8.8.8\"}"
 
     - name: "ping_cloudflare_ipv4"
-      unique_id: "dc076d78-354e-439a-93a5-4354c1a2c9b3"
+      unique_id: "73a8b4a8-fc11-48c7-ad51-956e193732d6"
       <<:
         - *prometheus-common
         - *prometheus-ping
@@ -83,7 +83,7 @@ pkg_internet:
         query: "ping_rtt_worst_seconds{ip=\"1.1.1.1\"}"
 
     - name: "ping_etoast_ipv4"
-      unique_id: "dc076d78-354e-439a-93a5-4354c1a2c9b3"
+      unique_id: "a55f0188-19db-40a8-b2f2-e4965bfbd4b9"
       <<:
         - *prometheus-common
         - *prometheus-ping
