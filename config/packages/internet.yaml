@@ -63,23 +63,19 @@ pkg_internet:
       params:
         query: "node_network_transmit_bytes_total{device=\"mass-relay\",exported_device=\"vtnet7\"}"
 
-    - platform: statistics
-      name: "stat_net_gateway_rx_rate"
+    - name: "stat_net_gateway_rx_rate"
       unique_id: "480950d3-6eff-445a-bbe9-8cac4de9d611"
       entity_id: "sensor.net_gateway_bytes_rx"
-      state_characteristic: "change_second"
-      max_age:
-        minutes: 1
-      sampling_size: 30
+      <<: &rate-common
+        platform: statistics
+        state_characteristic: "change_second"
+        max_age:
+          minutes: 1
 
-    - platform: statistics
-      name: "stat_net_gateway_tx_rate"
+    - name: "stat_net_gateway_tx_rate"
       unique_id: "5a862731-ac33-4f65-a167-f9ca5fd26ed6"
       entity_id: "sensor.net_gateway_bytes_tx"
-      state_characteristic: "change_second"
-      max_age:
-        minutes: 1
-      sampling_size: 30
+      <<: *rate-common
 
     - name: "ping_google_ipv4"
       unique_id: "dc076d78-354e-439a-93a5-4354c1a2c9b3"
