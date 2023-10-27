@@ -81,8 +81,7 @@ pkg_pbx:
           friendly_name: "Study Phone Display"
           unique_id: "5373eb73-b2cd-4fa2-9c30-89551991b7c4"
           <<: &phone-display-common
-            icon: mdi:card-account-phone
-            effect_list_template: "{{ ['Default'] }}"
+            icon_template: mdi:card-account-phone
           turn_on:
             service: pyscript.cisco_phone_display
             data:
@@ -97,11 +96,6 @@ pkg_pbx:
               <<: &phone-display-off
                 state: 'Off'
                 interval: 720
-          set_effect:
-            - service: pyscript.cisco_phone_display
-              data:
-                target: *phone-target-study
-                state: 'Default'
 
         ip_phone_kids_room_display:
           friendly_name: "Kid's Room Phone Display"
@@ -117,11 +111,6 @@ pkg_pbx:
             data:
               <<: *phone-display-off
               target: *phone-target-kids
-          set_effect:
-            - service: pyscript.cisco_phone_display
-              data:
-                target: *phone-target-kids
-                state: 'Default'
 
         ip_phone_lounge_display:
           friendly_name: "Lounge Phone Display"
@@ -137,11 +126,6 @@ pkg_pbx:
             data:
               <<: *phone-display-off
               target: *phone-target-lounge
-          set_effect:
-            - service: pyscript.cisco_phone_display
-              data:
-                target: *phone-target-lounge
-                state: 'Default'
 
         ip_phone_master_bedroom_display:
           friendly_name: "Master Bedroom Phone Display"
@@ -157,11 +141,6 @@ pkg_pbx:
             data:
               <<: *phone-display-off
               target: *phone-target-bedroom
-          set_effect:
-            - service: pyscript.cisco_phone_display
-              data:
-                target: *phone-target-bedroom
-                state: 'Default'
 
 
   homeassistant:
