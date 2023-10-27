@@ -12,20 +12,12 @@ pkg_pbx:
         command: "ssh -F /config/ssh/config.pbx pbx /opt/homeassistant/tts.sh - 151"
 
     - notify:
-        name: "Study Phone Command"
-        command: "ssh -F /config/ssh/config.pbx pbx /opt/homeassistant/command.sh 10.0.97.32 -"
-
-    - notify:
         name: "Kid Phone Play"
         command: "ssh -F /config/ssh/config.pbx pbx /opt/homeassistant/play.sh - 152"
 
     - notify:
         name: "Kid Phone Announce"
         command: "ssh -F /config/ssh/config.pbx pbx /opt/homeassistant/tts.sh - 152"
-
-    - notify:
-        name: "Kid Phone Command"
-        command: "ssh -F /config/ssh/config.pbx pbx /opt/homeassistant/command.sh 10.0.97.33 -"
 
     - notify:
         name: "Lounge Phone Play"
@@ -36,10 +28,6 @@ pkg_pbx:
         command: "ssh -F /config/ssh/config.pbx pbx /opt/homeassistant/tts.sh - 153"
 
     - notify:
-        name: "Lounge Phone Command"
-        command: "ssh -F /config/ssh/config.pbx pbx /opt/homeassistant/command.sh 10.0.97.34 -"
-
-    - notify:
         name: "Master Bedroom Phone Play"
         command: "ssh -F /config/ssh/config.pbx pbx /opt/homeassistant/play.sh - 154"
 
@@ -48,36 +36,12 @@ pkg_pbx:
         command: "ssh -F /config/ssh/config.pbx pbx /opt/homeassistant/tts.sh - 154"
 
     - notify:
-        name: "Master Bedroom Phone Command"
-        command: "ssh -F /config/ssh/config.pbx pbx /opt/homeassistant/command.sh 10.0.97.35 -"
-
-    - notify:
         name: "Global Phone Play"
         command: "ssh -F /config/ssh/config.pbx pbx /opt/homeassistant/play.sh - 151 153 154"
 
     - notify:
         name: "Global Phone Announce"
         command: "ssh -F /config/ssh/config.pbx pbx /opt/homeassistant/tts.sh - 151 153 154"
-
-    - notify:
-        name: "Global Phone Command"
-        command: >-
-          ssh
-          -F /config/ssh/config.pbx
-          pbx
-          /opt/homeassistant/command.sh
-          10.0.97.32,10.0.97.34,10.0.97.35
-          -
-
-    - notify:
-        name: "All Phone Command"
-        command: >-
-          ssh
-          -F /config/ssh/config.pbx
-          pbx
-          /opt/homeassistant/command.sh
-          10.0.97.32,10.0.97.33,10.0.97.34,10.0.97.35
-          -
 
     - switch:
         name: "ip_phone_study_call"
@@ -117,61 +81,87 @@ pkg_pbx:
           friendly_name: "Study Phone Display"
           unique_id: "5373eb73-b2cd-4fa2-9c30-89551991b7c4"
           <<: &phone-display-common
-            icon_template: >-
-              {% if is_state(this.entity_id, 'on') %}
-                mdi:card-account-phone
-              {% else %}
-                mdi:card-account-phone-outline
-              {% endif %}
+            icon: mdi:card-account-phone
+            effect_list_template: "{{ ['Default'] }}"
           turn_on:
-            service: notify.study_phone_command
-            data: &phone-display-on
-              message: >
-                <?xml version="1.0" encoding="UTF-8"?>
-                <CiscoIPPhoneExecute>
-                <ExecuteItem URL="Display:On:1080" Priority="0" />
-                </CiscoIPPhoneExecute>
+            service: pyscript.cisco_phone_display
+            data:
+              target: &phone-target-study 10.0.97.32
+              <<: &phone-display-on
+                state: 'On'
+                interval: 720
           turn_off:
-            service: notify.study_phone_command
-            data: &phone-display-off
-              message: >
-                <?xml version="1.0" encoding="UTF-8"?>
-                <CiscoIPPhoneExecute>
-                <ExecuteItem URL="Display:Off:1080" Priority="0" />
-                </CiscoIPPhoneExecute>
+            service: pyscript.cisco_phone_display
+            data:
+              target: *phone-target-study
+              <<: &phone-display-off
+                state: 'Off'
+                interval: 720
+          set_effect:
+            - service: pyscript.cisco_phone_display
+              data:
+                target: *phone-target-study
+                state: 'Default'
 
         ip_phone_kids_room_display:
           friendly_name: "Kid's Room Phone Display"
           unique_id: "41d779a3-3ae5-4838-b2b8-5390c2d1f776"
           <<: *phone-display-common
           turn_on:
-            service: notify.kid_phone_command
-            data: *phone-display-on
+            service: pyscript.cisco_phone_display
+            data:
+              <<: *phone-display-on
+              target: &phone-target-kids 10.0.97.33
           turn_off:
-            service: notify.kid_phone_command
-            data: *phone-display-off
+            service: pyscript.cisco_phone_display
+            data:
+              <<: *phone-display-off
+              target: *phone-target-kids
+          set_effect:
+            - service: pyscript.cisco_phone_display
+              data:
+                target: *phone-target-kids
+                state: 'Default'
 
         ip_phone_lounge_display:
           friendly_name: "Lounge Phone Display"
           unique_id: "7dfed8bb-0e2c-4d82-ac7f-a6a91e308cd2"
           <<: *phone-display-common
           turn_on:
-            service: notify.lounge_phone_command
-            data: *phone-display-on
+            service: pyscript.cisco_phone_display
+            data:
+              <<: *phone-display-on
+              target: &phone-target-lounge 10.0.97.34
           turn_off:
-            service: notify.lounge_phone_command
-            data: *phone-display-off
+            service: pyscript.cisco_phone_display
+            data:
+              <<: *phone-display-off
+              target: *phone-target-lounge
+          set_effect:
+            - service: pyscript.cisco_phone_display
+              data:
+                target: *phone-target-lounge
+                state: 'Default'
 
         ip_phone_master_bedroom_display:
           friendly_name: "Master Bedroom Phone Display"
           unique_id: "3305deff-65df-4dbe-aa85-68fb6eae2268"
           <<: *phone-display-common
           turn_on:
-            service: notify.master_bedroom_phone_command
-            data: *phone-display-on
+            service: pyscript.cisco_phone_display
+            data:
+              <<: *phone-display-on
+              target: &phone-target-bedroom 10.0.97.35
           turn_off:
-            service: notify.master_bedroom_phone_command
-            data: *phone-display-off
+            service: pyscript.cisco_phone_display
+            data:
+              <<: *phone-display-off
+              target: *phone-target-bedroom
+          set_effect:
+            - service: pyscript.cisco_phone_display
+              data:
+                target: *phone-target-bedroom
+                state: 'Default'
 
 
   homeassistant:
