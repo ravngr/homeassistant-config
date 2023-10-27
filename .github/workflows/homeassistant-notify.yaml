@@ -1,12 +1,14 @@
 ---
 
-name: "Home Assistant Webhook Notification"
+name: "Home Assistant CD Webhook Notification"
 
 
 on:
-  release:
+  workflow_run:
+    workflows:
+      - "Home Assistant Configuration Check"
     types:
-      - published
+      - completed
   workflow_dispatch:
 
 
@@ -14,6 +16,18 @@ jobs:
   trigger-webhook:
     runs-on: ubuntu-latest
     steps:
-      - name: Trigger Home Assistant CD webhook
+      - name: "Check if CI workflow passed"
+        id: check_status
         run: |
-          curl -X GET "${{ secrets.HOMEASSISTANT_CD_WEBHOOK }}"
+          if [[ "${{ github.event.workflow_run.conclusion }}" == "success" ]]; then
+            echo "CI passed"
+            echo "::set-output name=passed::true"
+          else
+            echo "CI failed"
+            echo "::set-output name=passed::false"
+          fi
+
+      - name: "Trigger Home Assistant CD webhook"
+        if: steps.check_status.outputs.passed == 'true'
+        run: |
+          curl -sSL -X POST "${{ secrets.HOMEASSISTANT_CD_WEBHOOK }}"
