@@ -13,29 +13,105 @@ pkg_internet:
   command_line:
     # Fetch DNS records
     - sensor:
-        name: "dns_etoast_ipv4"
-        command: "dig +short ipv4.etoast.net A"
+        name: "dns_cloudflare_etoast_ipv4"
         unique_id: "37ad39dd-7a40-4795-9bd4-53ee9bfc9899"
-        scan_interval: 10
+        command: >-
+          sh -c \"
+          dig
+          @1.1.1.1
+          +stats
+          +nocmd
+          +nocomments
+          +noquestion
+          +time=3
+          +tries=1
+          +fail
+          ipv4.etoast.net
+          A |
+          awk '/Query time:/ {print $4}'\"
+        <<: &dig-common
+          command_timeout: 4
+          scan_interval: 5
 
     - sensor:
-        name: "dns_etoast_ipv6"
-        command: "dig +short ipv6.etoast.net AAAA"
+        name: "dns_cloudflare_etoast_ipv6"
         unique_id: "18a873be-fc6f-4553-a95d-394825e433ea"
-        scan_interval: 10
+        command: >-
+          sh -c \"
+          dig
+          @1.1.1.1
+          +stats
+          +nocmd
+          +nocomments
+          +noquestion
+          +time=3
+          +tries=1
+          +fail
+          ipv6.etoast.net
+          AAAA |
+          awk '/Query time:/ {print $4}'\"
+        <<: *dig-common
+
+    - sensor:
+        name: "dns_local_etoast_ipv4"
+        unique_id: "e3725881-e9ae-4fd6-8bf4-458a2cdb3130"
+        command: >-
+          sh -c \"
+          dig
+          +stats
+          +nocmd
+          +nocomments
+          +noquestion
+          +time=3
+          +tries=1
+          +fail
+          ipv4.etoast.net
+          A |
+          awk '/Query time:/ {print $4}'\"
+        <<: *dig-common
+
+    - sensor:
+        name: "dns_local_etoast_ipv6"
+        unique_id: "16e2d485-41b2-49af-8782-ea57b27217a4"
+        command: >-
+          sh -c \"
+          dig
+          +stats
+          +nocmd
+          +nocomments
+          +noquestion
+          +time=3
+          +tries=1
+          +fail
+          ipv6.etoast.net
+          AAAA |
+          awk '/Query time:/ {print $4}'\"
+        <<: *dig-common
 
     # Fetch IP
     - sensor:
-        name: "ip_external_ipv4"
+        name: "http_ping_ipv4"
         unique_id: "f6b0e912-8283-43aa-bbac-99bb7d6f8820"
-        command: "curl -Ls -m 5 https://ipv4.etoast.net/ip"
-        scan_interval: 10
+        command: "curl -w \"@/config/curl-metrics.json\" -o /dev/null -sL -m 3 \"https://ipv4.etoast.net/ping\""
+        <<: &curl-common
+          value_template: "{{ value_json.time_total }}"
+          json_attributes:
+            - time_namelookup
+            - time_connect
+            - time_appconnect
+            - time_pretransfer
+            - time_redirect
+            - time_starttransfer
+          command_timeout: 4
+          scan_interval: 5
+          device_class: duration
+          unit_of_measurement: s
 
     - sensor:
         name: "ip_external_ipv6"
         unique_id: "9a0716c2-dbe2-490b-9d6e-4ce41c5c97ae"
-        command: "curl -Ls -m 5 https://ipv6.etoast.net/ip"
-        scan_interval: 10
+        command: "curl -w \"@/config/curl-metrics.json\" -o /dev/null -sL -m 3 \"https://ipv6.etoast.net/ping\""
+        <<: *curl-common
 
   # Prometheus metrics
   sensor:
@@ -47,11 +123,11 @@ pkg_internet:
         method: GET
         scan_interval: 10
         timeout: 5
-      <<: &prometheus-data-rate
-        device_class: data_rate
+      <<: &prometheus-data-size
+        device_class: data_size
         icon: "mdi:router-network"
-        unit_of_measurement: "MB"
-        value_template: "{{ (value_json.data.result[0].value[1] | int) / 1024 / 1024 }}"
+        unit_of_measurement: "Mbit"
+        value_template: "{{ (value_json.data.result[0].value[1] | int) / 1024 / 1024 * 8 }}"
       params:
         query: "node_network_receive_bytes_total{device=\"mass-relay\",exported_device=\"vtnet7\"}"
 
@@ -59,7 +135,7 @@ pkg_internet:
       unique_id: "de2cf410-a5b0-4062-b111-517b7628adc2"
       <<:
         - *prometheus-common
-        - *prometheus-data-rate
+        - *prometheus-data-size
       params:
         query: "node_network_transmit_bytes_total{device=\"mass-relay\",exported_device=\"vtnet7\"}"
 
