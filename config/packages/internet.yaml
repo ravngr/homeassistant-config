@@ -31,6 +31,8 @@ pkg_internet:
         <<: &dig-common
           command_timeout: 4
           scan_interval: 5
+          device_class: duration
+          unit_of_measurement: ms
 
     - sensor:
         name: "dns_cloudflare_etoast_ipv6"
@@ -86,7 +88,7 @@ pkg_internet:
 
     # Check HTTP connectivity
     - sensor:
-        name: "http_ping_ipv4"
+        name: "http_ping_etoast_ipv4"
         unique_id: "f6b0e912-8283-43aa-bbac-99bb7d6f8820"
         command: "curl -w \"@/config/support/curl-metrics.json\" -o /dev/null -sL -m 3 \"https://ipv4.etoast.net/ping\""
         <<: &curl-common
@@ -104,14 +106,14 @@ pkg_internet:
           unit_of_measurement: s
 
     - sensor:
-        name: "ip_external_ipv6"
+        name: "http_ping_etoast_ipv6"
         unique_id: "9a0716c2-dbe2-490b-9d6e-4ce41c5c97ae"
         command: "curl -w \"@/config/support/curl-metrics.json\" -o /dev/null -sL -m 3 \"https://ipv6.etoast.net/ping\""
         <<: *curl-common
 
   # Prometheus metrics
   sensor:
-    - name: "net_gateway_bytes_rx"
+    - name: "net_gateway_mbit_rx"
       unique_id: "05a7c7c7-a621-4d81-954f-ef0a3be6fa61"
       <<: &prometheus-common
         platform: rest
@@ -127,7 +129,7 @@ pkg_internet:
       params:
         query: "node_network_receive_bytes_total{device=\"mass-relay\",exported_device=\"vtnet7\"}"
 
-    - name: "net_gateway_bytes_tx"
+    - name: "net_gateway_mbit_tx"
       unique_id: "de2cf410-a5b0-4062-b111-517b7628adc2"
       <<:
         - *prometheus-common
@@ -137,7 +139,7 @@ pkg_internet:
 
     - name: "stat_net_gateway_rx_rate"
       unique_id: "480950d3-6eff-445a-bbe9-8cac4de9d611"
-      entity_id: "sensor.net_gateway_bytes_rx"
+      entity_id: "sensor.net_gateway_mbit_rx"
       <<: &rate-common
         platform: statistics
         state_characteristic: "change_second"
@@ -146,7 +148,7 @@ pkg_internet:
 
     - name: "stat_net_gateway_tx_rate"
       unique_id: "5a862731-ac33-4f65-a167-f9ca5fd26ed6"
-      entity_id: "sensor.net_gateway_bytes_tx"
+      entity_id: "sensor.net_gateway_mbit_tx"
       <<: *rate-common
 
     - name: "ping_google_ipv4"
@@ -183,20 +185,28 @@ pkg_internet:
         <<: &web_common
           icon: "mdi:web"
 
-      sensor.dns_etoast_ipv4:
-        friendly_name: "etoast.net IPv4 Record"
+      sensor.dns_cloudflare_etoast_ipv4:
+        friendly_name: "Cloudflare DNS IPv4 Lookup Time"
         <<: *web_common
 
-      sensor.dns_etoast_ipv6:
-        friendly_name: "etoast.net IPv6 Record"
+      sensor.dns_cloudflare_etoast_ipv6:
+        friendly_name: "Cloudflare DNS IPv6 Lookup Time"
         <<: *web_common
 
-      sensor.ip_external_ipv4:
-        friendly_name: "External IPv4 Address"
+      sensor.dns_local_etoast_ipv4:
+        friendly_name: "Local DNS IPv4 Lookup Time"
         <<: *web_common
 
-      sensor.ip_external_ipv6:
-        friendly_name: "External IPv6 Address"
+      sensor.dns_local_etoast_ipv6:
+        friendly_name: "Local DNS IPv6 Lookup Time"
+        <<: *web_common
+
+      sensor.http_ping_etoast_ipv4:
+        friendly_name: "HTTP IPv4 Ping Time"
+        <<: *web_common
+
+      sensor.http_ping_etoast_ipv6:
+        friendly_name: "HTTP IPv6 Ping Time"
         <<: *web_common
 
       sensor.net_gateway_bytes_rx:
