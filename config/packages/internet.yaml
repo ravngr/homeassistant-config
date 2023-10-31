@@ -39,7 +39,7 @@ pkg_internet:
         unique_id: "18a873be-fc6f-4553-a95d-394825e433ea"
         command: >-
           dig
-          @1.1.1.1
+          @2606:4700:4700::1111
           +stats
           +nocmd
           +nocomments
@@ -53,7 +53,7 @@ pkg_internet:
         <<: *dig-common
 
     - sensor:
-        name: "dns_local_etoast_ipv4"
+        name: "dns_local_etoast"
         unique_id: "e3725881-e9ae-4fd6-8bf4-458a2cdb3130"
         command: >-
           dig
@@ -66,23 +66,6 @@ pkg_internet:
           +fail
           ipv4.etoast.net
           A |
-          awk '/Query time:/ {print $4}'
-        <<: *dig-common
-
-    - sensor:
-        name: "dns_local_etoast_ipv6"
-        unique_id: "16e2d485-41b2-49af-8782-ea57b27217a4"
-        command: >-
-          dig
-          +stats
-          +nocmd
-          +nocomments
-          +noquestion
-          +time=3
-          +tries=1
-          +fail
-          ipv6.etoast.net
-          AAAA |
           awk '/Query time:/ {print $4}'
         <<: *dig-common
 
