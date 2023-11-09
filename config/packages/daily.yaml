@@ -66,9 +66,9 @@ pkg_daily:
             timestamp: >
               {{
                 (
-                  today_at('20:00') +
+                  today_at('21:00') +
                   timedelta(
-                    minutes=range(240) | random,
+                    minutes=range(239) | random,
                     seconds=range(60) | random
                   )
                 ).timestamp()
@@ -84,19 +84,19 @@ pkg_daily:
       has_time: true
 
     daily_begin:
-      name: "Daily Start"
+      name: "Daytime start"
       icon: "mdi:weather-sunset-up"
       has_date: false
       has_time: true
 
     daily_end:
-      name: "Daily End"
+      name: "Daytime end"
       icon: "mdi:weather-sunset-down"
       has_date: false
       has_time: true
 
     daily_late:
-      name: "Daily Late"
+      name: "Day over"
       icon: "mdi:weather-night"
       has_date: false
       has_time: true
