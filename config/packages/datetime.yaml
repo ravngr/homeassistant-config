@@ -6,12 +6,12 @@ pkg_datetime:
       unique_id: "78153718-25e5-4e8e-8a16-e70b71810bd8"
       name: "datetime_tod_morning"
       after: "sunrise"
-      before: "12:00"
+      before: "10:00"
 
     - platform: tod
       unique_id: "31b00bf3-21e0-4baf-b9f5-5f63f2046a24"
       name: "datetime_tod_afternoon"
-      after: "12:00"
+      after: "3:00"
       before: "sunset"
 
     - platform: tod
@@ -51,14 +51,6 @@ pkg_datetime:
       binary_sensor.datetime_tod_night:
         friendly_name: "Night"
         icon: "mdi:weather-night"
-
-      binary_sensor.datetime_workday_today:
-        friendly_name: "Work Today"
-        icon: "mdi:briefcase"
-
-      binary_sensor.datetime_workday_tomorrow:
-        friendly_name: "Work Tomorrow"
-        icon: "mdi:briefcase"
 
       binary_sensor.datetime_week_even:
         friendly_name: "Even Week"
