@@ -3,7 +3,7 @@
 pkg_cd:
   automation:
     - id: "61f3c4a0-f808-494a-851b-867c152c4dcf"
-      alias: "pkg_cd_restart"
+      alias: "pkg_cd_webhook"
       description: "Update and restart on continuous deployment (CD) webhook"
       mode: single
       trigger:
@@ -33,4 +33,4 @@ pkg_cd:
   homeassistant:
     customize:
       automation.pkg_cd_restart:
-        friendly_name: "[pkg_cd] CD webhook"
+        friendly_name: "[pkg_cd] Continuous deployment webhook"
