@@ -1,0 +1,52 @@
+---
+
+pkg_google:
+  google_assistant:
+    project_id: !secret google_assistant_project_id
+    service_account:
+      client_email: !secret google_assistant_service_account_client_email
+      private_key: !secret google_assistant_service_account_private_key
+    expose_by_default: false
+    entity_config:
+      cover.study_curtain:
+        name: "Study Curtains"
+        room: "Study"
+
+      cover.master_curtain:
+        name: "Master Bedroom Curtains"
+        room: "Master Bedroom"
+        aliases:
+          - "Bedroom Curtains"
+
+      cover.kids_bedroom_curtain:
+        name: "Kid's Bedroom Curtains"
+        room: "Kid's Bedroom"
+        aliases:
+          - "Nursery Curtains"
+
+      cover.lounge_blind:
+        name: "Lounge Blinds"
+        room: "Lounge"
+        aliases:
+          - "Lounge Curtains"
+          - "Lounge Window"
+
+      vacuum.valetudo_boopbot:
+        room: "Bathroom"
+        aliases:
+          - "Upstairs robovac"
+          - "Upstairs robot"
+          - "Upstairs vacuum"
+          - "Bathroom robovac"
+          - "Bathroom robot"
+          - "Bathroom vacuum"
+
+      vacuum.valetudo_minesweeper:
+        room: "Kitchen"
+        aliases:
+          - "Downstairs robovac"
+          - "Downstairs robot"
+          - "Downstairs vacuum"
+          - "Kitchen robovac"
+          - "Kitchen robot"
+          - "Kitchen vacuum"
