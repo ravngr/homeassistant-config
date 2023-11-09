@@ -18,6 +18,7 @@ blueprint:
         target:
           entity:
             domain: light
+
     target_cover:
       name: "Room cover(s)"
       description: "Covers to control with button 4 (lower-right)"
@@ -83,7 +84,7 @@ action:
       - conditions:
           - "{{ trigger.payload == '1_double' }}"
         sequence:
-          - service: light.toggle
+          - service: light.turn_on
             data:
               brightness_pct: 5
             target: !input target_light
