@@ -34,7 +34,7 @@ pkg_vacuum:
       action:
         - choose:
             - conditions:
-                - "{{ trigger.from_state.state == 'error' }}"
+                - "{{ trigger.to_state.state == 'error' }}"
               sequence:
                 - service: persistent_notification.create
                   data:
@@ -64,7 +64,7 @@ pkg_vacuum:
       action:
         - choose:
             - conditions:
-                - "{{ trigger.from_state.state == 'error' }}"
+                - "{{ trigger.to_state.state == 'error' }}"
               sequence:
                 - service: persistent_notification.create
                   data:
