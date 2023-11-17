@@ -31,6 +31,21 @@ pkg_google:
           - "Lounge Curtains"
           - "Lounge Window"
 
+      light.study_room_lights:
+        name: "Ceiling Light"
+        room: "Study"
+
+      sensor.temperature_indoors_upstairs:
+        name: "Upstairs Temperature"
+        room: "Hall"
+        aliases:
+          - "Indoor Temperature"
+
+      switch.coffee_machine_coffee_machine_power:
+        name: "Kitchen"
+        aliases:
+          - "Coffee"
+
       vacuum.valetudo_boopbot:
         room: "Bathroom"
         aliases:
