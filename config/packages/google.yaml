@@ -31,6 +31,13 @@ pkg_google:
           - "Lounge Curtains"
           - "Lounge Window"
 
+      light.study_desk_lamps:
+        name: "Desk Lamps"
+        room: "Study"
+        aliases:
+          - "Desk Lights"
+          - "Study Lights"
+
       light.study_room_lights:
         name: "Ceiling Light"
         room: "Study"
