@@ -92,17 +92,28 @@ pkg_cover:
           optimistic: true
           friendly_name: "Lounge Blinds"
           unique_id: "ebb8fb57-9b16-43cc-b2a5-9ab7c3dfbdd4"
-          value_template: "{{ state_attr('cover.lounge_blinds_motor', 'current_position') | float(0) > 5 }}"
-          position_template: "{{ state_attr('cover.lounge_blinds_motor', 'current_position') | float(0) }}"
+          value_template: >-
+            {{
+              (
+                (
+                  states('input_number.lounge_blinds_close_position') | int(0)
+                ) -
+                state_attr('cover.lounge_blinds_motor', 'current_position') |
+              int(50)) |
+              abs > 5
+            }}
+          position_template: "{{ state_attr('cover.lounge_blinds_motor', 'current_position') | int(0) }}"
           availability_template: "{{ is_state('cover.lounge_blinds_motor', ['open', 'closed']) }}"
           open_cover:
-            service: cover.open_cover
-            data:
+            service: cover.set_cover_position
+            data_template:
               entity_id: cover.lounge_blinds_motor
+              position: "{{ states('input_number.lounge_blinds_open_position') | int(100) }}"
           close_cover:
-            service: cover.close_cover
-            data:
+            service: cover.set_cover_position
+            data_template:
               entity_id: cover.lounge_blinds_motor
+              position: "{{ states('input_number.lounge_blinds_close_position') | int(0) }}"
           stop_cover:
             service: cover.stop_cover
             data:
@@ -112,3 +123,17 @@ pkg_cover:
             data_template:
               entity_id: cover.lounge_blinds_motor
               position: "{{ position }}"
+
+  input_number:
+    lounge_blinds_close_position:
+      name: "Lounge Blinds Close Position"
+      icon: "mdi:blinds"
+      <<: &input-range
+        min: 0
+        max: 100
+        step: 5
+
+    lounge_blinds_open_position:
+      name: "Lounge Blinds Open Position"
+      icon: "mdi:blinds-open"
+      <<: *input-range
