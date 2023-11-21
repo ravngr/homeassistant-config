@@ -9,23 +9,23 @@ pkg_google:
     expose_by_default: false
     entity_config:
       cover.study_curtain:
-        name: "Study Curtains"
+        name: "Curtains"
         room: "Study"
 
       cover.master_curtain:
-        name: "Master Bedroom Curtains"
+        name: "Curtains"
         room: "Master Bedroom"
         aliases:
           - "Bedroom Curtains"
 
       cover.kids_bedroom_curtain:
-        name: "Kid's Bedroom Curtains"
+        name: "Curtains"
         room: "Kid's Bedroom"
         aliases:
           - "Nursery Curtains"
 
       cover.lounge_blind:
-        name: "Lounge Blinds"
+        name: "Blinds"
         room: "Lounge"
         aliases:
           - "Lounge Curtains"
@@ -36,39 +36,44 @@ pkg_google:
         room: "Study"
         aliases:
           - "Desk Lights"
-          - "Study Lights"
 
       light.study_room_lights:
         name: "Ceiling Light"
         room: "Study"
 
       sensor.temperature_indoors_upstairs:
-        name: "Upstairs Temperature"
+        name: "Temperature"
         room: "Hall"
         aliases:
           - "Indoor Temperature"
+          - "Upstairs Temperature"
+
+      switch.262100522684000806_bsh_common_setting_childlock:
+        name: "Dishwasher Child Lock"
+        room: "Kitchen"
 
       switch.coffee_machine_coffee_machine_power:
-        name: "Kitchen"
+        name: "Coffee Machine"
+        room: "Kitchen"
         aliases:
           - "Coffee"
 
       vacuum.valetudo_boopbot:
+        name: "Upstairs vacuum"
         room: "Bathroom"
         aliases:
           - "Upstairs robovac"
           - "Upstairs robot"
-          - "Upstairs vacuum"
           - "Bathroom robovac"
           - "Bathroom robot"
           - "Bathroom vacuum"
 
       vacuum.valetudo_minesweeper:
+        name: "Downstairs vacuum"
         room: "Kitchen"
         aliases:
           - "Downstairs robovac"
           - "Downstairs robot"
-          - "Downstairs vacuum"
           - "Kitchen robovac"
           - "Kitchen robot"
           - "Kitchen vacuum"
