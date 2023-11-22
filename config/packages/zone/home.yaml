@@ -14,3 +14,10 @@ pkg_zone_home:
       longitude: !secret homeassistant_longitude
       radius: 400
       passive: true
+
+    - name: "Local Area"
+      icon: "mdi:home-automation"
+      latitude: !secret homeassistant_latitude
+      longitude: !secret homeassistant_longitude
+      radius: 10000
+      passive: true
