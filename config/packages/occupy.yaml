@@ -146,13 +146,13 @@ pkg_occupy:
         friendly_name: "[pkg_occupy] Handle motion detection"
 
       binary_sensor.occupy_any_person:
-        friendly_name: "Any Person"
+        friendly_name: "Any Person Home"
 
-      binary_sensor.pkg_occupy_handle_entry:
-        friendly_name: "Any User"
+      binary_sensor.occupy_any_user:
+        friendly_name: "Any User Home"
 
       binary_sensor.occupy_all_user:
-        friendly_name: "All Users"
+        friendly_name: "All Users Home"
 
       binary_sensor.occupy_entry:
         friendly_name: "Occupancy entry sensors"
