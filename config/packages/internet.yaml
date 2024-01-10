@@ -1,15 +1,6 @@
 ---
 
 pkg_internet:
-  binary_sensor:
-    # Ping gateway
-    - platform: ping
-      name: "ping_gateway"
-      host: !secret ip_gateway
-      count: 2
-      scan_interval: 10
-
-
   command_line:
     # Fetch DNS records
     - sensor:
@@ -31,8 +22,9 @@ pkg_internet:
         <<: &dig-common
           command_timeout: 4
           scan_interval: 5
+          value_template: '{{ value | float / 1000 }}'
           device_class: duration
-          unit_of_measurement: ms
+          unit_of_measurement: s
 
     - sensor:
         name: "dns_cloudflare_etoast_ipv6"
@@ -71,7 +63,7 @@ pkg_internet:
 
     # Check HTTP connectivity
     - sensor:
-        name: "http_ping_etoast_ipv4"
+        name: "http_etoast_ipv4"
         unique_id: "f6b0e912-8283-43aa-bbac-99bb7d6f8820"
         command: "curl -w \"@/config/support/curl-metrics.json\" -o /dev/null -sL -m 3 \"https://ipv4.etoast.net/ping\""
         <<: &curl-common
@@ -89,7 +81,7 @@ pkg_internet:
           unit_of_measurement: s
 
     - sensor:
-        name: "http_ping_etoast_ipv6"
+        name: "http_etoast_ipv6"
         unique_id: "9a0716c2-dbe2-490b-9d6e-4ce41c5c97ae"
         command: "curl -w \"@/config/support/curl-metrics.json\" -o /dev/null -sL -m 3 \"https://ipv6.etoast.net/ping\""
         <<: *curl-common
@@ -184,12 +176,12 @@ pkg_internet:
         friendly_name: "Local DNS IPv6 Lookup Time"
         <<: *web_common
 
-      sensor.http_ping_etoast_ipv4:
-        friendly_name: "HTTP IPv4 Ping Time"
+      sensor.http_etoast_ipv4:
+        friendly_name: "HTTP IPv4 Fetch Time"
         <<: *web_common
 
-      sensor.http_ping_etoast_ipv6:
-        friendly_name: "HTTP IPv6 Ping Time"
+      sensor.http_etoast_ipv6:
+        friendly_name: "HTTP IPv6 Fetch Time"
         <<: *web_common
 
       sensor.net_gateway_bytes_rx:
