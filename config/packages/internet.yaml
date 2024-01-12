@@ -4,8 +4,8 @@ pkg_internet:
   command_line:
     # Fetch DNS records
     - sensor:
-        name: "dns_cloudflare_etoast_ipv4"
-        unique_id: "37ad39dd-7a40-4795-9bd4-53ee9bfc9899"
+        name: "internet_dns_cloudflare_etoast_ipv4"
+        unique_id: "3f8c9b74-54c2-457c-9260-dcfa736e2349"
         command: >-
           dig
           @1.1.1.1
@@ -21,14 +21,14 @@ pkg_internet:
           awk '/Query time:/ {print $4}'
         <<: &dig-common
           command_timeout: 4
-          scan_interval: 5
+          scan_interval: 10
           value_template: '{{ value | float / 1000 }}'
           device_class: duration
-          unit_of_measurement: s
+          unit_of_measurement: "s"
 
     - sensor:
-        name: "dns_cloudflare_etoast_ipv6"
-        unique_id: "18a873be-fc6f-4553-a95d-394825e433ea"
+        name: "internet_dns_cloudflare_etoast_ipv6"
+        unique_id: "9ef8f64c-8243-4e01-9b37-f89eef9694ee"
         command: >-
           dig
           @2606:4700:4700::1111
@@ -45,8 +45,8 @@ pkg_internet:
         <<: *dig-common
 
     - sensor:
-        name: "dns_local_etoast"
-        unique_id: "e3725881-e9ae-4fd6-8bf4-458a2cdb3130"
+        name: "local_dns_etoast_ipv4"
+        unique_id: "94c09ff4-4cc4-4d42-822c-2ffb9fbe8310"
         command: >-
           dig
           +stats
@@ -63,8 +63,8 @@ pkg_internet:
 
     # Check HTTP connectivity
     - sensor:
-        name: "http_etoast_ipv4"
-        unique_id: "f6b0e912-8283-43aa-bbac-99bb7d6f8820"
+        name: "internet_http_etoast_ipv4"
+        unique_id: "abe1cd20-d25b-4ca7-a3eb-a000c6487005"
         command: "curl -w \"@/config/support/curl-metrics.json\" -o /dev/null -sL -m 3 \"https://ipv4.etoast.net/ping\""
         <<: &curl-common
           value_template: "{{ value_json.time_total }}"
@@ -76,13 +76,13 @@ pkg_internet:
             - time_redirect
             - time_starttransfer
           command_timeout: 4
-          scan_interval: 5
+          scan_interval: 10
           device_class: duration
-          unit_of_measurement: s
+          unit_of_measurement: "s"
 
     - sensor:
-        name: "http_etoast_ipv6"
-        unique_id: "9a0716c2-dbe2-490b-9d6e-4ce41c5c97ae"
+        name: "internet_http_etoast_ipv6"
+        unique_id: "4b0c9b2c-897d-463a-82a8-83c888205729"
         command: "curl -w \"@/config/support/curl-metrics.json\" -o /dev/null -sL -m 3 \"https://ipv6.etoast.net/ping\""
         <<: *curl-common
 
@@ -126,61 +126,125 @@ pkg_internet:
       entity_id: "sensor.net_gateway_mbit_tx"
       <<: *rate-common
 
-    - name: "ping_google_ipv4"
-      unique_id: "dc076d78-354e-439a-93a5-4354c1a2c9b3"
+    - name: "internet_ping_google_ipv4"
+      unique_id: "8ef879c0-0674-491e-a864-ab77944a4235"
       <<: *prometheus-common
       <<: &prometheus-ping
         device_class: duration
         icon: "mdi:timer-outline"
-        unit_of_measurement: "ms"
-        value_template: "{{ (value_json.data.result[0].value[1] | float) * 1000 }}"
+        unit_of_measurement: "s"
+        value_template: "{{ value_json.data.result[0].value[1] | float }}"
       params:
         query: "ping_rtt_worst_seconds{ip=\"8.8.8.8\"}"
 
-    - name: "ping_cloudflare_ipv4"
-      unique_id: "73a8b4a8-fc11-48c7-ad51-956e193732d6"
+    - name: "internet_ping_cloudflare_ipv4"
+      unique_id: "5208e3d7-9b55-44e9-9178-b4dc93cc76b7"
       <<:
         - *prometheus-common
         - *prometheus-ping
       params:
         query: "ping_rtt_worst_seconds{ip=\"1.1.1.1\"}"
 
-    - name: "ping_etoast_ipv4"
-      unique_id: "a55f0188-19db-40a8-b2f2-e4965bfbd4b9"
+    - name: "internet_ping_etoast_ipv4"
+      unique_id: "535329e5-5ec0-430c-b21a-9aa50577a447"
       <<:
         - *prometheus-common
         - *prometheus-ping
       params:
         query: "ping_rtt_worst_seconds{ip=\"119.42.53.202\"}"
 
+  # Template sensor
+  template:
+    - trigger:
+        - platform: time_pattern
+          seconds: "/15"
+      binary_sensor:
+        - name: "internet_ipv4_connected"
+          unique_id: "75fafe5e-57fc-4fe8-b844-3ae3e260259e"
+          device_class: "connectivity"
+          icon: "mdi:web"
+          state: >-
+            {{
+              not is_state('sensor.internet_dns_cloudflare_etoast_ipv4', ['unavailable', 'unknown']) and
+              (now() - states.sensor.internet_dns_cloudflare_etoast_ipv4.last_updated) <= timedelta(seconds=15) and
+              not is_state('sensor.internet_http_etoast_ipv4', ['unavailable', 'unknown']) and
+              (now() - states.sensor.internet_http_etoast_ipv4.last_updated) <= timedelta(seconds=15) and
+              not is_state('sensor.internet_ping_etoast_ipv4', ['unavailable', 'unknown']) and
+              (now() - states.sensor.internet_ping_etoast_ipv4.last_updated) <= timedelta(seconds=15)
+            }}
+          attributes:
+            dns_ms: >-
+              {{
+                states('sensor.internet_dns_cloudflare_etoast_ipv4') | float(0) * 1000
+              }}
+            http_ms: >-
+              {{
+                states('sensor.internet_http_etoast_ipv4') | float(0) * 1000
+              }}
+            ping_ms: >-
+              {{
+                states('sensor.internet_ping_etoast_ipv4') | float(0) * 1000
+              }}
+
+        - name: "internet_ipv6_connected"
+          unique_id: "3731f6a6-408b-4250-8ce7-5a0493db5657"
+          device_class: "connectivity"
+          icon: "mdi:web"
+          state: >-
+            {{
+              not is_state('sensor.internet_dns_cloudflare_etoast_ipv6', ['unavailable', 'unknown']) and
+              (now() - states.sensor.internet_dns_cloudflare_etoast_ipv6.last_updated) <= timedelta(seconds=15) and
+              not is_state('sensor.internet_http_etoast_ipv6', ['unavailable', 'unknown']) and
+              (now() - states.sensor.internet_http_etoast_ipv6.last_updated) <= timedelta(seconds=15) and
+              not is_state('sensor.internet_ping_etoast_ipv6', ['unavailable', 'unknown']) and
+              (now() - states.sensor.internet_ping_etoast_ipv6.last_updated) <= timedelta(seconds=15)
+            }}
+          attributes:
+            dns_ms: >-
+              {{
+                states('sensor.internet_dns_cloudflare_etoast_ipv6') | float(0) * 1000
+              }}
+            http_ms: >-
+              {{
+                states('sensor.internet_http_etoast_ipv6') | float(0) * 1000
+              }}
+            ping_ms: >-
+              {{
+                states('sensor.internet_ping_etoast_ipv6') | float(0) * 1000
+              }}
+
   homeassistant:
     customize:
-      binary_sensor.ping_gateway:
-        friendly_name: "Internet Gateway"
+      binary_sensor.internet_ipv4_connected:
+        friendly_name: "Internet"
         <<: &web_common
           icon: "mdi:web"
 
-      sensor.dns_cloudflare_etoast_ipv4:
+      binary_sensor.internet_ipv6_connected:
+        friendly_name: "Internet IPv6"
+        <<: *web_common
+
+      binary_sensor.ping_gateway:
+        friendly_name: "Internet Gateway"
+        <<: *web_common
+
+      sensor.internet_dns_cloudflare_etoast_ipv4:
         friendly_name: "Cloudflare DNS IPv4 Lookup Time"
         <<: *web_common
 
-      sensor.dns_cloudflare_etoast_ipv6:
+      sensor.internet_dns_cloudflare_etoast_ipv6:
         friendly_name: "Cloudflare DNS IPv6 Lookup Time"
         <<: *web_common
 
-      sensor.dns_local_etoast_ipv4:
+      sensor.local_dns_etoast_ipv4:
         friendly_name: "Local DNS IPv4 Lookup Time"
         <<: *web_common
 
-      sensor.dns_local_etoast_ipv6:
-        friendly_name: "Local DNS IPv6 Lookup Time"
-        <<: *web_common
-
-      sensor.http_etoast_ipv4:
+      sensor.internet_http_etoast_ipv4:
         friendly_name: "HTTP IPv4 Fetch Time"
         <<: *web_common
 
-      sensor.http_etoast_ipv6:
+      sensor.internet_http_etoast_ipv6:
         friendly_name: "HTTP IPv6 Fetch Time"
         <<: *web_common
 
@@ -202,14 +266,14 @@ pkg_internet:
         icon: "mdi:upload-network"
         unit_of_measurement: "Mbps"
 
-      sensor.ping_google_ipv4:
+      sensor.internet_ping_google_ipv4:
         friendly_name: "Google IPv4 Ping"
         <<: *web_common
 
-      sensor.ping_cloudflare_ipv4:
+      sensor.internet_ping_cloudflare_ipv4:
         friendly_name: "Cloudflare IPv4 Ping"
         <<: *web_common
 
-      sensor.ping_etoast_ipv4:
+      sensor.internet_ping_etoast_ipv4:
         friendly_name: "etoast.net IPv4 Ping"
         <<: *web_common
