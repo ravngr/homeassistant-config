@@ -1,0 +1,65 @@
+---
+
+pkg_boot:
+  automation:
+    - id: "cc18d548-970e-418b-9729-22d294978e2c"
+      alias: "pkg_electrictoast_notify"
+      description: "Play startup/shutdown sounds in study"
+      mode: single
+      trigger:
+        - platform: homeassistant
+          event: start
+          id: start
+        - platform: homeassistant
+          event: shutdown
+          id: shutdown
+      condition:
+        - condition: template
+          value_template: "{{ is_state('switch.ip_phone_study', 'off') }}"
+      action:
+        - choose:
+            - conditions:
+                - condition: trigger
+                  id: start
+              sequence:
+                - if:
+                    - condition: state
+                      entity_id: input_boolean.shutdown_ok
+                      state: "off"
+                  then:
+                    - service: notify.persistent_notification
+                      data:
+                        title: Unsafe Shutdown Detected
+                        message: Automatically turning off lights
+                    - service: light.turn_off
+                      target:
+                        area_id:
+                          - hall
+                          - kid_s_room
+                          - kitchen
+                          - lounge
+                          - master_bedroom
+                          - study
+                          - void
+                          - workshop
+                - service: input_boolean.turn_off
+                  target:
+                    entity_id: input_boolean.shutdown_ok
+                - service: notify.study_phone_play
+                  data:
+                    message: winxp
+            - conditions:
+                - condition: trigger
+                  id: shutdown
+              sequence:
+                - service: input_boolean.turn_on
+                  target:
+                    entity_id: input_boolean.shutdown_ok
+                - service: notify.study_phone_play
+                  data:
+                    message: winxpshutdown
+
+  input_boolean:
+    shutdown_ok:
+      name: Shutdown Flag
+      icon: mdi:power
