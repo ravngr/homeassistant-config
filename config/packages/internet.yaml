@@ -21,7 +21,7 @@ pkg_internet:
           awk '/Query time:/ {print $4}'
         <<: &dig-common
           command_timeout: 4
-          scan_interval: 10
+          scan_interval: 5
           value_template: '{{ value | float / 1000 }}'
           device_class: duration
           unit_of_measurement: "s"
@@ -76,7 +76,7 @@ pkg_internet:
             - time_redirect
             - time_starttransfer
           command_timeout: 4
-          scan_interval: 10
+          scan_interval: 5
           device_class: duration
           unit_of_measurement: "s"
 
@@ -94,7 +94,7 @@ pkg_internet:
         platform: rest
         resource: !secret prometheus_api_url
         method: GET
-        scan_interval: 10
+        scan_interval: 5
         timeout: 5
       <<: &prometheus-data-size
         device_class: data_size
