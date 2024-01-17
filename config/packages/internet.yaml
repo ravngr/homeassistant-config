@@ -170,7 +170,7 @@ pkg_internet:
               not is_state('sensor.internet_http_etoast_ipv4', ['unavailable', 'unknown']) and
               (now() - states.sensor.internet_http_etoast_ipv4.last_updated) <= timedelta(seconds=15) and
               not is_state('sensor.internet_ping_etoast_ipv4', ['unavailable', 'unknown']) and
-              (now() - states.sensor.internet_ping_etoast_ipv4.last_updated) <= timedelta(seconds=15)
+              (now() - states.sensor.internet_ping_etoast_ipv4.last_updated) <= timedelta(seconds=35)
             }}
           attributes:
             dns_ms: >-
@@ -197,7 +197,7 @@ pkg_internet:
               not is_state('sensor.internet_http_etoast_ipv6', ['unavailable', 'unknown']) and
               (now() - states.sensor.internet_http_etoast_ipv6.last_updated) <= timedelta(seconds=15) and
               not is_state('sensor.internet_ping_etoast_ipv6', ['unavailable', 'unknown']) and
-              (now() - states.sensor.internet_ping_etoast_ipv6.last_updated) <= timedelta(seconds=15)
+              (now() - states.sensor.internet_ping_etoast_ipv6.last_updated) <= timedelta(seconds=35)
             }}
           attributes:
             dns_ms: >-
