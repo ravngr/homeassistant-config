@@ -129,5 +129,5 @@ action:
       - conditions:
           - "{{ trigger.payload == '4_hold' }}"
         sequence:
-          - service: cover.close
+          - service: cover.cover_close
             target: !input target_cover
