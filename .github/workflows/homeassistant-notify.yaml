@@ -16,18 +16,14 @@ jobs:
   trigger-webhook:
     runs-on: ubuntu-latest
     steps:
-      - name: "Check if CI workflow passed"
-        id: check_status
-        run: |
-          if [[ "${{ github.event.workflow_run.conclusion }}" == "success" ]]; then
-            echo "CI passed"
-            echo "::set-output name=passed::true"
-          else
-            echo "CI failed"
-            echo "::set-output name=passed::false"
-          fi
-
       - name: "Trigger Home Assistant CD webhook"
-        if: steps.check_status.outputs.passed == 'true'
+        if: github.event.workflow_run.conclusion == 'success'
+        env:
+          CA_CERT: ${{ secrets.HOMEASSISTANT_MTLS_CA_CERT }}
+          USER_CERT: ${{ secrets.HOMEASSISTANT_MTLS_USER_CERT }}
+          USER_KEY: ${{ secrets.HOMEASSISTANT_MTLS_USER_KEY }}
         run: |
-          curl -sSL -X POST "${{ secrets.HOMEASSISTANT_CD_WEBHOOK }}"
+          echo "${CA_CERT}" > ca.crt
+          echo "${USER_CERT}" > user.crt
+          echo "${USER_KEY}" > user.key
+          curl -sSL --cacert ca.crt --cert user.crt --key user.key -X POST "${{ secrets.HOMEASSISTANT_CD_WEBHOOK }}"
