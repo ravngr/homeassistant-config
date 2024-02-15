@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: "Trigger Home Assistant CD webhook"
-        if: github.event.workflow_run.conclusion == 'success'
+        if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
         env:
           CA_CERT: ${{ secrets.HOMEASSISTANT_MTLS_CA_CERT }}
           USER_CERT: ${{ secrets.HOMEASSISTANT_MTLS_USER_CERT }}
