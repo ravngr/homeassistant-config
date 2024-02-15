@@ -1,0 +1,78 @@
+---
+
+blueprint:
+  name: "[z2m-remote] Handle IKEA round Remote"
+  description: "Run actions in response to IKEA 5-button round remote events"
+  domain: automation
+  input:
+    topic_remote_action:
+      name: "Remote action topic"
+      description: "MQTT topic to listen to for actions, usually `zigbee2mqtt/<device name>/action`"
+      selector:
+        text:
+
+
+    action_middle_click:
+      name: Middle - Click
+      description: "Actions run on single press middle button"
+      <<: &action_common
+        default: []
+        selector:
+          action: {}
+
+    action_middle_hold:
+      name: Middle - Hold
+      description: "Actions run when middle button held (click action still runs)"
+      <<: *action_common
+
+
+    action_up_click:
+      name: Up - Click
+      <<: *action_common
+
+    action_up_hold:
+      name: Up - Hold
+      <<: *action_common
+
+    action_up_release:
+      name: Up - Release
+      <<: *action_common
+
+
+    action_down_click:
+      name: Down - Click
+      <<: *action_common
+
+    action_down_hold:
+      name: Down - Hold
+      <<: *action_common
+
+    action_down_release:
+      name: Down - Release
+      <<: *action_common
+
+
+    action_left_click:
+      name: Left - Click
+      <<: *action_common
+
+    action_left_hold:
+      name: Left - Hold
+      <<: *action_common
+
+    action_left_release:
+      name: Left - Release
+      <<: *action_common
+
+
+    action_right_click:
+      name: Right - Click
+      <<: *action_common
+
+    action_right_hold:
+      name: Right - Hold
+      <<: *action_common
+
+    action_right_release:
+      name: Right - Release
+      <<: *action_common
