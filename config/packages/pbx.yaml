@@ -36,6 +36,14 @@ pkg_pbx:
         command: "ssh -F /config/ssh/config.pbx pbx /opt/homeassistant/tts.sh - 154"
 
     - notify:
+        name: "Workshop Phone Play"
+        command: "ssh -F /config/ssh/config.pbx pbx /opt/homeassistant/play.sh - 155"
+
+    - notify:
+        name: "Workshop Phone Announce"
+        command: "ssh -F /config/ssh/config.pbx pbx /opt/homeassistant/tts.sh - 155"
+
+    - notify:
         name: "Global Phone Play"
         command: "ssh -F /config/ssh/config.pbx pbx /opt/homeassistant/play.sh - 151 153 154"
 
@@ -72,6 +80,13 @@ pkg_pbx:
         <<: *ip-phone-call-common
         command_off: "ssh -F /config/ssh/config.pbx pbx /opt/homeassistant/hangup.sh 104 154"
         command_state: "ssh -F /config/ssh/config.pbx pbx /opt/homeassistant/active.sh 104 154"
+
+    - switch:
+        name: "ip_phone_workshop_call"
+        unique_id: "dc184c40-8eb7-4908-80d1-2d0a2df49067"
+        <<: *ip-phone-call-common
+        command_off: "ssh -F /config/ssh/config.pbx pbx /opt/homeassistant/hangup.sh 105 155"
+        command_state: "ssh -F /config/ssh/config.pbx pbx /opt/homeassistant/active.sh 105 155"
 
 
   light:
@@ -142,6 +157,21 @@ pkg_pbx:
               <<: *phone-display-off
               target: *phone-target-bedroom
 
+        ip_phone_workshop_display:
+          friendly_name: "Workshop Phone Display"
+          unique_id: "7b71e3f9-b4fb-4a19-80cd-c8dd6bebdb3f"
+          <<: *phone-display-common
+          turn_on:
+            service: pyscript.cisco_phone_display
+            data:
+              <<: *phone-display-on
+              target: &phone-target-workshop 10.0.97.36
+          turn_off:
+            service: pyscript.cisco_phone_display
+            data:
+              <<: *phone-display-off
+              target: *phone-target-workshop
+
 
   homeassistant:
     customize:
@@ -159,4 +189,8 @@ pkg_pbx:
 
       switch.ip_phone_master_bedroom_call:
         friendly_name: "Master Bedroom Phone Call"
+        icon: "mdi:phone-forward"
+
+      switch.ip_phone_workshop_call:
+        friendly_name: "Workshop Phone Call"
         icon: "mdi:phone-forward"
