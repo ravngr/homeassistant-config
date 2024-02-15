@@ -9,7 +9,6 @@ pkg_mqtt:
         unique_id: "4b4d3277-6d83-4700-9318-e6dff3b1325f"
         <<: &mqtt-broker-common
           icon: "mdi:message-bulleted"
-          entity_category: "config"
 
           device:
             name: "Mosquitto"
