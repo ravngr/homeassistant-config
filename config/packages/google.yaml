@@ -8,7 +8,7 @@ pkg_google:
       private_key: !secret google_assistant_service_account_private_key
     expose_by_default: false
     entity_config:
-      climate.hall_air_conditioner_hall_air_conditioner:
+      climate.esphome_hall_ac_hall_air_conditioner:
         name: "Hall AC"
         room: "Hall"
         aliases:
