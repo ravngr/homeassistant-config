@@ -1,0 +1,9 @@
+---
+
+pkg_sonos:
+  # Sonos speaker manual address
+  # https://www.home-assistant.io/integrations/sonos
+  sonos:
+    media_player:
+      advertise_addr: !secret sonos_advertise_addr
+      hosts: !secret sonos_hosts
