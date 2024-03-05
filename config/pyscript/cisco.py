@@ -1,11 +1,26 @@
 import aiohttp
+import asyncio
 from typing import Optional
 
 
 # Reference: https://www.voipinfo.net/docs/cisco/CUIP_BK_P82B3B16_00_phones-services-application-development-notes.pdf
 
 
-_XML_SCHEMA_HEADER = '<?xml version="1.0" encoding="UTF-8"?>\n'
+_CISCO_TIMEOUT = aiohttp.ClientTimeout(total=5.0)
+_XML_SCHEMA_HEADER = '<?xml version="1.0" encoding="UTF-8"?>'
+
+
+async def _cisco_phone_command_send(session: aiohttp.Session, target: str, xml: str):
+    url = f"http://{target}/CGI/Execute"
+    payload = {'XML': xml}
+    log.debug(f"Cisco IP phone command to {url} with payload {payload!r}")
+
+    try:
+        async with session.post(url, data=payload) as resp:
+            resp_str = await resp.text()
+            log.debug(f"Response ({resp.status}): {resp}")
+    except aiohttp.ClientError as exc:
+        log.error(f"Error sending command to {url} (error: {exc!s})")
 
 
 async def _cisco_phone_command(target_csv: str, xml: str, username: Optional[str] = None, password: Optional[str] = None):
@@ -14,17 +29,20 @@ async def _cisco_phone_command(target_csv: str, xml: str, username: Optional[str
         password or 'password'
     )
 
-    target_list = target_csv.split(',')
+    async with aiohttp.ClientSession(auth=auth, raise_for_status=True, timeout=_CISCO_TIMEOUT) as session:
+        await asyncio.gather(
+            *[
+                _cisco_phone_command_send(
+                    session,
+                    target.strip(),
+                    xml
+                )
+                for target
+                in target_csv.split(',')
+            ]
+        )
 
-    for target in target_list:
-        url = f"http://{target}/CGI/Execute"
-
-        log.debug(f"Cisco IP phone command to {target}: {xml!r}")
-
-        async with aiohttp.ClientSession(auth=auth) as session:
-            async with session.post(url, data={'XML': xml}) as response:
-                response.raise_for_status()
-                log.debug(f"Response: {response!r}")
+    await session.close()
 
 
 @service
