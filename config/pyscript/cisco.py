@@ -10,19 +10,6 @@ _CISCO_TIMEOUT = aiohttp.ClientTimeout(total=5.0)
 _XML_SCHEMA_HEADER = '<?xml version="1.0" encoding="UTF-8"?>'
 
 
-async def _cisco_phone_command_send(session: aiohttp.Session, target: str, xml: str):
-    url = f"http://{target}/CGI/Execute"
-    payload = {'XML': xml}
-    log.debug(f"Cisco IP phone command to {url} with payload {payload!r}")
-
-    try:
-        async with session.post(url, data=payload) as resp:
-            resp_str = await resp.text()
-            log.debug(f"Response ({resp.status}): {resp}")
-    except aiohttp.ClientError as exc:
-        log.error(f"Error sending command to {url} (error: {exc!s})")
-
-
 async def _cisco_phone_command(target_csv: str, xml: str, username: Optional[str] = None, password: Optional[str] = None):
     auth = aiohttp.BasicAuth(
         username or 'username',
@@ -30,17 +17,18 @@ async def _cisco_phone_command(target_csv: str, xml: str, username: Optional[str
     )
 
     async with aiohttp.ClientSession(auth=auth, raise_for_status=True, timeout=_CISCO_TIMEOUT) as session:
-        await asyncio.gather(
-            *[
-                _cisco_phone_command_send(
-                    session,
-                    target.strip(),
-                    xml
-                )
-                for target
-                in target_csv.split(',')
-            ]
-        )
+        for target in target_csv.split(','):
+            url = f"http://{target.strip()}/CGI/Execute"
+            payload = {'XML': xml}
+            log.info(f"Cisco IP phone command to {url} with payload {payload!r}")
+
+            try:
+                async with session.post(url, data=payload) as resp:
+                    log.debug(f"Response ({resp.status}): {await resp.text()}")
+            except aiohttp.ClientError as exc:
+                log.error(f"Error sending command to {url} (error: {exc!s})")
+            except (AttributeError, TypeError):
+                log.debug('FIXME awful hack, python weirdness :shrug:')
 
     await session.close()
 
