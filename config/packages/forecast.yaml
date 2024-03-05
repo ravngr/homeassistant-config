@@ -26,58 +26,143 @@ pkg_forecast:
       step: 1
       unit_of_measurement: "hour"
 
-
   template:
-    binary_sensor:
-      - name: "Forecast Hot"
-        unique_id: "5f2ae338-8897-4ab3-a462-62bcc458d260"
-        icon: "mdi:thermometer-chevron-up"
-        device_class: heat
-        <<: &forecast_common
-          availability: >
+    - trigger:
+        - platform: time_pattern
+          minutes: /15
+        - platform: state
+          entity_id:
+            - input_number.forecast_hours
+      action:
+        - service: weather.get_forecasts
+          data:
+            type: hourly
+          target:
+            entity_id: "{{ states('sensor.secret_forecast_weather_entity_id') }}"
+          response_variable: hourly
+      sensor:
+        - name: forecast_temperature_max
+          unique_id: 8d47d130-24f8-40c6-acc5-79607eac18c3
+          state: |-
             {{
-              states('sensor.secret_forecast_weather_entity_id') in states.weather | map(attribute='entity_id') and
-              not is_state(
-                states('sensor.secret_forecast_weather_entity_id'),
-                [
-                  'unknown',
-                  'unavailable'
-                ]
-              )
+              hourly.forecast |
+              selectattr(
+                'datetime',
+                '<=',
+                (
+                  now() + timedelta(hours=states('input_number.forecast_hours') | float(0))
+                ).isoformat()
+              ) |
+              map(attribute='temperature') |
+              min
             }}
-          attributes:
-            forecast: >
-              {{
-                state_attr(states('sensor.secret_forecast_weather_entity_id'), 'forecast') or [] |
-                selectattr(
-                  'datetime',
-                  '<=',
-                  (
-                    now() +
-                    timedelta(
-                      hours=states('input_number.forecast_hours') | float
-                    )
-                  ).isoformat()
-                ) |
-                list
-              }}
-        state: >
-          {{
-            this.attributes.forecast |
-            selectattr('temperature', '>=', states('input_number.forecast_threshold_hot')) |
-            list |
-            count > 0
-          }}
+          unit_of_measurement: °C
 
-      - name: "Forecast Cold"
-        unique_id: "258ea6db-d37e-406f-aa30-6c26c41ade66"
+        - name: forecast_temperature_min
+          unique_id: 55d9b139-9cd4-4541-a977-845d2af0a11d
+          state: |-
+            {{
+              hourly.forecast |
+              selectattr(
+                'datetime',
+                '<=',
+                (
+                  now() + timedelta(hours=states('input_number.forecast_hours') | float(0))
+                ).isoformat()
+              ) |
+              map(attribute='temperature') |
+              max
+            }}
+          unit_of_measurement: °C
+
+        - name: forecast_temperature_mean
+          unique_id: 3d3a2651-c55d-46ad-b739-9e6e3bb1334a
+          state: |-
+            {{
+              hourly.forecast |
+              selectattr(
+                'datetime',
+                '<=',
+                (
+                  now() + timedelta(hours=states('input_number.forecast_hours') | float(0))
+                ).isoformat()
+              ) |
+              map(attribute='temperature') |
+              average |
+              round(1)
+            }}
+          unit_of_measurement: °C
+
+    - binary_sensor:
+        - name: forecast_hot
+          unique_id: "5f2ae338-8897-4ab3-a462-62bcc458d260"
+          icon: "mdi:thermometer-chevron-up"
+          device_class: heat
+          <<: &forecast_common
+            availability: >
+              {{
+                states('sensor.secret_forecast_weather_entity_id') in states.weather | map(attribute='entity_id') and
+                not is_state(
+                  states('sensor.secret_forecast_weather_entity_id'),
+                  [
+                    'unknown',
+                    'unavailable'
+                  ]
+                )
+              }}
+            attributes:
+              forecast: >
+                {{
+                  state_attr(states('sensor.secret_forecast_weather_entity_id'), 'forecast') or [] |
+                  selectattr(
+                    'datetime',
+                    '<=',
+                    (
+                      now() +
+                      timedelta(
+                        hours=states('input_number.forecast_hours') | float
+                      )
+                    ).isoformat()
+                  ) |
+                  list
+                }}
+          state: >
+            {{
+              this.attributes.forecast |
+              selectattr('temperature', '>=', states('input_number.forecast_threshold_hot')) |
+              list |
+              count > 0
+            }}
+
+        - name: forecast_cold
+          unique_id: "258ea6db-d37e-406f-aa30-6c26c41ade66"
+          icon: "mdi:thermometer-chevron-down"
+          device_class: cold
+          <<: *forecast_common
+          state: >
+            {{
+              this.attributes.forecast |
+              selectattr('temperature', '<=', states('input_number.forecast_threshold_cold')) |
+              list |
+              count > 0
+            }}
+
+  homeassistant:
+    customize:
+      binary_sensor.forecast_cold:
+        friendly_name: "Forecasting Cold Weather"
+
+      binary_sensor.forecast_hot:
+        friendly_name: "Forecasting Hot Weather"
+
+      sensor.forecast_temperature_max:
+        friendly_name: "Forecast Maximum Temperature"
+        icon: "mdi:thermometer-chevron-up"
+
+      sensor.forecast_temperature_min:
+        friendly_name: "Forecast Minimum Temperature"
         icon: "mdi:thermometer-chevron-down"
-        device_class: cold
-        <<: *forecast_common
-        state: >
-          {{
-            this.attributes.forecast |
-            selectattr('temperature', '<=', states('input_number.forecast_threshold_cold')) |
-            list |
-            count > 0
-          }}
+
+      sensor.forecast_temperature_mean:
+        friendly_name: "Forecast Average Temperature"
+        icon: "mdi:thermometer-auto"
