@@ -46,9 +46,9 @@ pkg_forecast:
           <<: &forecast-sensor-common
             device_class: temperature
             unit_of_measurement: °C
+          <<: &forecast-availability
             availability: >-
               {{
-                states('sensor.secret_forecast_weather_entity_id') in states.weather | map(attribute='entity_id') and
                 not is_state(
                   states('sensor.secret_forecast_weather_entity_id'),
                   [
@@ -59,7 +59,7 @@ pkg_forecast:
               }}
           state: >-
             {{
-              hourly.forecast |
+              hourly[states('sensor.secret_forecast_weather_entity_id')].forecast |
               selectattr(
                 'datetime',
                 '<=',
@@ -73,7 +73,7 @@ pkg_forecast:
           attributes:
             forecast_hot: >-
               {{
-                hourly.forecast |
+                hourly[states('sensor.secret_forecast_weather_entity_id')].forecast |
                 selectattr(
                   'datetime',
                   '<=',
@@ -91,10 +91,12 @@ pkg_forecast:
 
         - name: forecast_temperature_min
           unique_id: 55d9b139-9cd4-4541-a977-845d2af0a11d
-          <<: *forecast-sensor-common
+          <<:
+            - *forecast-sensor-common
+            - *forecast-availability
           state: >-
             {{
-              hourly.forecast |
+              hourly[states('sensor.secret_forecast_weather_entity_id')].forecast |
               selectattr(
                 'datetime',
                 '<=',
@@ -108,7 +110,7 @@ pkg_forecast:
           attributes:
             forecast_cold: >-
               {{
-                hourly.forecast |
+                hourly[states('sensor.secret_forecast_weather_entity_id')].forecast |
                 selectattr(
                   'datetime',
                   '<=',
@@ -126,10 +128,12 @@ pkg_forecast:
 
         - name: forecast_temperature_mean
           unique_id: 3d3a2651-c55d-46ad-b739-9e6e3bb1334a
-          <<: *forecast-sensor-common
+          <<:
+            - *forecast-sensor-common
+            - *forecast-availability
           state: >-
             {{
-              hourly.forecast |
+              hourly[states('sensor.secret_forecast_weather_entity_id')].forecast |
               selectattr(
                 'datetime',
                 '<=',
@@ -145,7 +149,7 @@ pkg_forecast:
             forecast: "{{ hourly.forecast }}"
             forecast_filtered: >-
               {{
-                hourly.forecast |
+                hourly[states('sensor.secret_forecast_weather_entity_id')].forecast |
                   selectattr(
                   'datetime',
                   '<=',
@@ -161,18 +165,7 @@ pkg_forecast:
           unique_id: "5f2ae338-8897-4ab3-a462-62bcc458d260"
           icon: "mdi:thermometer-chevron-up"
           device_class: heat
-          <<: &forecast-binary-sensor-common
-            availability: >-
-              {{
-                states('sensor.secret_forecast_weather_entity_id') in states.weather | map(attribute='entity_id') and
-                not is_state(
-                  states('sensor.secret_forecast_weather_entity_id'),
-                  [
-                    'unknown',
-                    'unavailable'
-                  ]
-                )
-              }}
+          <<: *forecast-availability
           state: >-
             {{
               (states('sensor.forecast_temperature_max') | float) >=
@@ -183,7 +176,7 @@ pkg_forecast:
           unique_id: "258ea6db-d37e-406f-aa30-6c26c41ade66"
           icon: "mdi:thermometer-chevron-down"
           device_class: cold
-          <<: *forecast-binary-sensor-common
+          <<: *forecast-availability
           state: >-
             {{
               (states('sensor.forecast_temperature_min') | float) >=
