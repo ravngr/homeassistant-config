@@ -14,9 +14,10 @@ pkg_core_logger:
 
       homeassistant.components.command_line:
         # Command state updates
-        - "Running state value command:"
+        - "^Running state value command:"
 
       homeassistant.components.command_line.utils:
         # curl: Failed to connect to host
-        - "Command failed (with return code 7): curl"
-        - "Empty reply found when expecting JSON data"
+        - "^Command failed (with return code 7): curl"
+        - "^Command failed (with return code 28): curl"
+        - "^Empty reply found when expecting JSON data"
