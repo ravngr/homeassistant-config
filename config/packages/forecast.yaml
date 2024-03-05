@@ -179,7 +179,7 @@ pkg_forecast:
           <<: *forecast-availability
           state: >-
             {{
-              (states('sensor.forecast_temperature_min') | float) >=
+              (states('sensor.forecast_temperature_min') | float) <=
               (states('input_number.forecast_threshold_cold') | float)
             }}
 
