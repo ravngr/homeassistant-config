@@ -11,3 +11,12 @@ pkg_core_logger:
       homeassistant.loader:
         # Suppress custom integrations warning
         - "We found a custom integration"
+
+      homeassistant.components.command_line:
+        # Command state updates
+        - "Running state value command:"
+
+      homeassistant.components.command_line.utils:
+        # curl: Failed to connect to host
+        - "Command failed (with return code 7): curl"
+        - "Empty reply found when expecting JSON data"
