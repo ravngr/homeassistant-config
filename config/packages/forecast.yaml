@@ -146,7 +146,7 @@ pkg_forecast:
               round(1)
             }}
           attributes:
-            forecast: "{{ hourly.forecast }}"
+            forecast: "{{ hourly[states('sensor.secret_forecast_weather_entity_id')].forecast }}"
             forecast_filtered: >-
               {{
                 hourly[states('sensor.secret_forecast_weather_entity_id')].forecast |
