@@ -23,7 +23,7 @@ jobs:
       matrix:
         hass-version:
           - stable
-          - beta
+          # - beta
       fail-fast: true
       max-parallel: 1
     steps:
