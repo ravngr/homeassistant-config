@@ -1,0 +1,92 @@
+---
+
+pkg_lock:
+  automation:
+    - id: "b8772ac4-20d4-4361-ace1-78878a7c5658"
+      alias: "pkg_lock_event"
+      description: "Parse and decode lock events"
+      mode: single
+      trigger:
+        - platform: state
+          entity_id: sensor.esphome_external_front_door_event
+      condition:
+        - condition: template
+          value_template: >-
+            {{
+              trigger.to_state.state != 'unavailable' and
+              trigger.to_state.state != 'unknown' and
+              trigger.to_state.state.startswith('{') and
+              trigger.to_state.state.endswith('{')
+            }}
+      action:
+        - variables:
+            event_json: "{{ trigger.to_state.state | from_json }}"
+            event_slot_dict: "{{ states('sensor.secret_lock_slots') | from_json }}"
+            event_state: "{{ event_json.get('state', 'unknown') | title }}"
+        - choose:
+            - conditions:
+                - condition: template
+                  value_template: "{{ event_json.get('source') == 'user' }}"
+              sequence:
+                - service: logbook.log
+                  data:
+                    <<: &logbook-common
+                      name: "{{ device_attr(trigger.entity_id, 'name') }}"
+                    message: "{{ event_state }} by Home Assistant"
+            - conditions:
+                - condition: template
+                  value_template: "{{ event_json.get('source') == 'pin' or event_json.get('source') == 'nfc' }}"
+              sequence:
+                - variables:
+                    event_slot: "{{ event_json.get('slot', -1) | int(-1) }}"
+                    event_slot_name: >-
+                      {%- if event_json.get('source') == 'pin' -%}
+                        {%- if event_slot == -1 -%}
+                          invalid PIN slot
+                        {%- elif event_slot == 0xF0 -%}
+                          temporary PIN
+                        {%- elif event_slot == 0xFB -%}
+                          master PIN
+                        {%- elif event_slot in event_slot_dict['pin'] -%}
+                          {{ event_slot_dict['pin'] }}
+                        {%- else -%}
+                          unknown PIN (slot: {{ event_slot }})
+                        {%- endif -%}
+                      {%- else -%}
+                        {%- if event_slot == -1 -%}
+                          invalid NFC slot
+                        {%- elif event_slot in event_slot_dict['nfc'] -%}
+                          {{ event_slot_dict['pin'] }}
+                        {%- else -%}
+                          unknown NFC (slot: {{ event_slot }})
+                        {%- endif -%}
+                      {%- endif -%}
+                - service: logbook.log
+                  data:
+                    <<: *logbook-common
+                    message: "{{ event_state }} using {{ event_slot_name }}"
+            - conditions:
+                - condition: template
+                  value_template: "{{ event_json.get('source') == 'timeout' }}"
+              sequence:
+                - service: logbook.log
+                  data:
+                    <<: *logbook-common
+                    message: "{{ event_state }} automatically"
+            - conditions:
+                - condition: template
+                  value_template: "{{ event_json.get('source') == 'jammed' }}"
+              sequence:
+                - service: logbook.log
+                  data:
+                    <<: *logbook-common
+                    message: "Lock jammed!"
+
+  template:
+    - trigger:
+        - platform: homeassistant
+          event: start
+      sensor:
+        - name: "secret_lock_slots"
+          unique_id: "e468e22c-867f-4811-ab56-422bc0dd9796"
+          state: !secret lock_event_slots
