@@ -68,8 +68,14 @@ pkg_internet:
         command: >-
           /config/support/curl_wrapper.sh -m 3 "https://ipv4.etoast.net/ping"
         <<: &curl-common
-          value_template: "{{ value_json.time_total }}"
+          availability: "{{ value != 'unknown' }}"
+          value_template: "{{ (value | from_json).time_total }}"
           json_attributes:
+            - curl_version
+            - http_code
+            - local_ip
+            - remote_ip
+            - remote_port
             - time_namelookup
             - time_connect
             - time_appconnect
