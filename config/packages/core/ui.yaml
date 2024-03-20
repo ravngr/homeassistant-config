@@ -37,3 +37,21 @@ pkg_ui_themes:
       sidebar_icon: "mdi:post"
       url_path: "config/logs"
       <<: *panel-common
+
+    - name: "ha_dev_service"
+      sidebar_title: "Services"
+      sidebar_icon: "mdi:room-service-outline"
+      url_path: "developer-tools/service"
+      <<: *panel-common
+
+    - name: "ha_dev_state"
+      sidebar_title: "States"
+      sidebar_icon: "mdi:state-machine"
+      url_path: "developer-tools/state"
+      <<: *panel-common
+
+    - name: "ha_dev_template"
+      sidebar_title: "Templates"
+      sidebar_icon: "mdi:code-block-braces"
+      url_path: "developer-tools/template"
+      <<: *panel-common
