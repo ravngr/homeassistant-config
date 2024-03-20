@@ -66,8 +66,7 @@ pkg_internet:
         name: "internet_http_etoast_ipv4"
         unique_id: "abe1cd20-d25b-4ca7-a3eb-a000c6487005"
         command: >-
-          curl -w "@/config/support/curl-metrics.json" -o /dev/null -sL -m 3 "https://ipv4.etoast.net/ping" ||
-          echo unknown
+          /config/support/curl_wrapper.sh -m 3 "https://ipv4.etoast.net/ping"
         <<: &curl-common
           value_template: "{{ value_json.time_total }}"
           json_attributes:
@@ -86,8 +85,7 @@ pkg_internet:
         name: "internet_http_etoast_ipv6"
         unique_id: "4b0c9b2c-897d-463a-82a8-83c888205729"
         command: >-
-          curl -w "@/config/support/curl-metrics.json" -o /dev/null -sL -m 3 "https://ipv6.etoast.net/ping" ||
-          echo unknown
+          /config/support/curl_wrapper.sh -m 3 "https://ipv6.etoast.net/ping"
         <<: *curl-common
 
   # Prometheus metrics
