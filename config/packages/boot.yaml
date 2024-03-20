@@ -57,7 +57,7 @@ pkg_boot:
                         tag: status
                         chronometer: true
                         visibility: public
-                      when: "{{ now() | as_timestamp | int }}"
+                      when: "{{ (now() + timedelta(minutes=1)) | as_timestamp | int }}"
                       timeout: 60
                       notification_icon: mdi:check
                 - service: notify.study_phone_play
@@ -76,7 +76,7 @@ pkg_boot:
                     title: Home Assistant Status
                     data:
                       <<: *status-notification-common
-                      when: "{{ (now() + timedelta(minutes=3)) | as_timestamp | int }}"
+                      when: "{{ (now() + timedelta(minutes=10)) | as_timestamp | int }}"
                       importance: high
                       timeout: 600
                       vibrationPattern: 100, 100, 100, 100
