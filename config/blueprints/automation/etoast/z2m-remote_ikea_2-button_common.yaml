@@ -1,0 +1,64 @@
+---
+
+blueprint:
+  name: "[z2m-remote] Handle IKEA Up/Down Remote with Common Actions"
+  description: "Run actions in response to IKEA 2-button flat remote events"
+  domain: automation
+  input:
+    topic_remote_action:
+      name: "Remote action topic"
+      description: "MQTT topic to listen to for actions, usually `zigbee2mqtt/<device name>/action`"
+      selector:
+        text:
+
+    light_up:
+      name: "Up/On light(s)"
+      description: "Lights to control with up/on button"
+      selector:
+        target:
+          entity:
+            domain: light
+
+    light_down:
+      name: "Down/Off light(s)"
+      description: "Lights to control with down/off button"
+      selector:
+        target:
+          entity:
+            domain: light
+
+mode: queued
+max_exceeded: silent
+trigger:
+  - platform: mqtt
+    topic: !input topic_remote_action
+action:
+  - choose:
+      - conditions:
+          - "{{ trigger.payload == 'on' }}"
+        sequence:
+          - service: light.turn_on
+            data:
+              brightness_pct: 5
+            target: !input light_up
+      - conditions:
+          - "{{ trigger.payload == 'off' }}"
+        sequence:
+          - service: light.turn_on
+            data:
+              brightness_pct: 5
+            target: !input light_down
+      - conditions:
+          - "{{ trigger.payload == 'brightness_move_up' }}"
+        sequence:
+          - service: light.turn_on
+            data:
+              brightness_pct: 5
+            target: !input light_up
+      - conditions:
+          - "{{ trigger.payload == 'brightness_move_down' }}"
+        sequence:
+          - service: light.turn_on
+            data:
+              brightness_pct: 5
+            target: !input light_down
