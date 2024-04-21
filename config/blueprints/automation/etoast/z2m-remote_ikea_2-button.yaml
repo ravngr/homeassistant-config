@@ -1,0 +1,63 @@
+---
+
+blueprint:
+  name: "[z2m-remote] Handle IKEA Up/Down Remote"
+  description: "Run actions in response to IKEA 2-button flat remote events"
+  domain: automation
+  input:
+    topic_remote_action:
+      name: "Remote action topic"
+      description: "MQTT topic to listen to for actions, usually `zigbee2mqtt/<device name>/action`"
+      selector:
+        text:
+
+    action_up_press:
+      name: Up/On - Click
+      description: "Actions run on single up/on press"
+      <<: &action_common
+        default: []
+        selector:
+          action: {}
+
+    action_up_hold:
+      name: Up/On - Hold
+      description: "Actions run on single up/on held"
+      <<: *action_common
+
+    action_down_press:
+      name: Down/Off - Press
+      description: "Actions run on single down/off press"
+      <<: *action_common
+
+    action_down_hold:
+      name: Down/Off - Hold
+      description: "Actions run on single down/off held"
+      <<: *action_common
+
+    action_release:
+      name: Middle - Hold
+      description: "Actions run after button held"
+      <<: *action_common
+
+mode: queued
+max_exceeded: silent
+trigger:
+  - platform: mqtt
+    topic: !input topic_remote_action
+action:
+  - choose:
+      - conditions:
+          - "{{ trigger.payload == 'on' }}"
+        sequence: !input "action_up_press"
+      - conditions:
+          - "{{ trigger.payload == 'off' }}"
+        sequence: !input "action_off_press"
+      - conditions:
+          - "{{ trigger.payload == 'brightness_move_up' }}"
+        sequence: !input "action_up_hold"
+      - conditions:
+          - "{{ trigger.payload == 'brightness_move_down' }}"
+        sequence: !input "action_down_hold"
+      - conditions:
+          - "{{ trigger.payload == 'brightness_stop' }}"
+        sequence: !input "action_release"
