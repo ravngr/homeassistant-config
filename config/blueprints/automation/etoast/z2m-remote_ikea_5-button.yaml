@@ -76,3 +76,54 @@ blueprint:
     action_right_release:
       name: Right - Release
       <<: *action_common
+
+
+mode: queued
+max_exceeded: silent
+trigger:
+  - platform: mqtt
+    topic: !input topic_remote_action
+action:
+  - choose:
+      - conditions:
+          - "{{ trigger.payload == 'arrow_left_click' }}"
+        sequence: !input "action_left_click"
+      - conditions:
+          - "{{ trigger.payload == 'arrow_left_hold' }}"
+        sequence: !input "action_left_hold"
+      - conditions:
+          - "{{ trigger.payload == 'arrow_left_release' }}"
+        sequence: !input "action_left_release"
+      - conditions:
+          - "{{ trigger.payload == 'arrow_right_click' }}"
+        sequence: !input "action_right_click"
+      - conditions:
+          - "{{ trigger.payload == 'arrow_right_hold' }}"
+        sequence: !input "action_right_hold"
+      - conditions:
+          - "{{ trigger.payload == 'arrow_right_release' }}"
+        sequence: !input "action_right_release"
+      - conditions:
+          - "{{ trigger.payload == 'brightness_down_click' }}"
+        sequence: !input "action_down_click"
+      - conditions:
+          - "{{ trigger.payload == 'brightness_down_hold' }}"
+        sequence: !input "action_down_hold"
+      - conditions:
+          - "{{ trigger.payload == 'brightness_down_release' }}"
+        sequence: !input "action_down_release"
+      - conditions:
+          - "{{ trigger.payload == 'brightness_up_click' }}"
+        sequence: !input "action_up_click"
+      - conditions:
+          - "{{ trigger.payload == 'brightness_up_hold' }}"
+        sequence: !input "action_up_hold"
+      - conditions:
+          - "{{ trigger.payload == 'brightness_up_release' }}"
+        sequence: !input "action_up_release"
+      - conditions:
+          - "{{ trigger.payload == 'toggle' }}"
+        sequence: !input "action_middle_click"
+      - conditions:
+          - "{{ trigger.payload == 'toggle_hold' }}"
+        sequence: !input "action_middle_hold"
