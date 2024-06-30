@@ -7,18 +7,7 @@ pkg_internet:
         name: "internet_dns_cloudflare_etoast_ipv4"
         unique_id: "3f8c9b74-54c2-457c-9260-dcfa736e2349"
         command: >-
-          dig
-          @1.1.1.1
-          +stats
-          +nocmd
-          +nocomments
-          +noquestion
-          +time=3
-          +tries=1
-          +fail
-          ipv4.etoast.net
-          A |
-          awk '/Query time:/ {print $4}'
+          /config/support/dig_wrapper.sh @1.1.1.1 ipv4.etoast.net A
         <<: &dig-common
           command_timeout: 4
           scan_interval: 5
@@ -30,35 +19,14 @@ pkg_internet:
         name: "internet_dns_cloudflare_etoast_ipv6"
         unique_id: "9ef8f64c-8243-4e01-9b37-f89eef9694ee"
         command: >-
-          dig
-          @2606:4700:4700::1111
-          +stats
-          +nocmd
-          +nocomments
-          +noquestion
-          +time=3
-          +tries=1
-          +fail
-          ipv6.etoast.net
-          AAAA |
-          awk '/Query time:/ {print $4}'
+          /config/support/dig_wrapper.sh @2606:4700:4700::1111 ipv6.etoast.net AAAA
         <<: *dig-common
 
     - sensor:
         name: "local_dns_etoast_ipv4"
         unique_id: "94c09ff4-4cc4-4d42-822c-2ffb9fbe8310"
         command: >-
-          dig
-          +stats
-          +nocmd
-          +nocomments
-          +noquestion
-          +time=3
-          +tries=1
-          +fail
-          ipv4.etoast.net
-          A |
-          awk '/Query time:/ {print $4}'
+          /config/support/dig_wrapper.sh ipv4.etoast.net A
         <<: *dig-common
 
     # Check HTTP connectivity
@@ -93,6 +61,23 @@ pkg_internet:
         command: >-
           /config/support/curl_wrapper.sh -m 3 "https://ipv6.etoast.net/ping"
         <<: *curl-common
+
+  input_number:
+    internet_http_low:
+      name: "Internet HTTP Slow Threshold"
+      icon: "mdi:speedometer-slow"
+      min: 0
+      max: 10
+      step: 0.01
+      unit_of_measurement: "second"
+
+    internet_http_medium:
+      name: "Internet HTTP Moderate Threshold"
+      icon: "mdi:speedometer-medium"
+      min: 0
+      max: 10
+      step: 0.01
+      unit_of_measurement: "second"
 
   # Prometheus metrics
   sensor:
@@ -134,33 +119,6 @@ pkg_internet:
       entity_id: "sensor.net_gateway_mbit_tx"
       <<: *rate-common
 
-    - name: "internet_ping_google_ipv4"
-      unique_id: "8ef879c0-0674-491e-a864-ab77944a4235"
-      <<: *prometheus-common
-      <<: &prometheus-ping
-        device_class: duration
-        icon: "mdi:timer-outline"
-        unit_of_measurement: "s"
-        value_template: "{{ value_json.data.result[0].value[1] | float }}"
-      params:
-        query: "ping_rtt_worst_seconds{ip=\"8.8.8.8\"}"
-
-    - name: "internet_ping_cloudflare_ipv4"
-      unique_id: "5208e3d7-9b55-44e9-9178-b4dc93cc76b7"
-      <<:
-        - *prometheus-common
-        - *prometheus-ping
-      params:
-        query: "ping_rtt_worst_seconds{ip=\"1.1.1.1\"}"
-
-    - name: "internet_ping_etoast_ipv4"
-      unique_id: "535329e5-5ec0-430c-b21a-9aa50577a447"
-      <<:
-        - *prometheus-common
-        - *prometheus-ping
-      params:
-        query: "ping_rtt_worst_seconds{ip=\"119.42.53.202\"}"
-
   # Template sensor
   template:
     - trigger:
@@ -176,9 +134,7 @@ pkg_internet:
               not is_state('sensor.internet_dns_cloudflare_etoast_ipv4', ['unavailable', 'unknown']) and
               (now() - states.sensor.internet_dns_cloudflare_etoast_ipv4.last_updated) <= timedelta(seconds=20) and
               not is_state('sensor.internet_http_etoast_ipv4', ['unavailable', 'unknown']) and
-              (now() - states.sensor.internet_http_etoast_ipv4.last_updated) <= timedelta(seconds=20) and
-              not is_state('sensor.internet_ping_etoast_ipv4', ['unavailable', 'unknown']) and
-              (now() - states.sensor.internet_ping_etoast_ipv4.last_updated) <= timedelta(seconds=35)
+              (now() - states.sensor.internet_http_etoast_ipv4.last_updated) <= timedelta(seconds=20)
             }}
           attributes:
             dns_ms: >-
@@ -188,10 +144,6 @@ pkg_internet:
             http_ms: >-
               {{
                 states('sensor.internet_http_etoast_ipv4') | float(0) * 1000
-              }}
-            ping_ms: >-
-              {{
-                states('sensor.internet_ping_etoast_ipv4') | float(0) * 1000
               }}
 
         - name: "internet_ipv6_connected"
@@ -203,9 +155,7 @@ pkg_internet:
               not is_state('sensor.internet_dns_cloudflare_etoast_ipv6', ['unavailable', 'unknown']) and
               (now() - states.sensor.internet_dns_cloudflare_etoast_ipv6.last_updated) <= timedelta(seconds=20) and
               not is_state('sensor.internet_http_etoast_ipv6', ['unavailable', 'unknown']) and
-              (now() - states.sensor.internet_http_etoast_ipv6.last_updated) <= timedelta(seconds=20) and
-              not is_state('sensor.internet_ping_etoast_ipv6', ['unavailable', 'unknown']) and
-              (now() - states.sensor.internet_ping_etoast_ipv6.last_updated) <= timedelta(seconds=35)
+              (now() - states.sensor.internet_http_etoast_ipv6.last_updated) <= timedelta(seconds=20)
             }}
           attributes:
             dns_ms: >-
@@ -215,10 +165,6 @@ pkg_internet:
             http_ms: >-
               {{
                 states('sensor.internet_http_etoast_ipv6') | float(0) * 1000
-              }}
-            ping_ms: >-
-              {{
-                states('sensor.internet_ping_etoast_ipv6') | float(0) * 1000
               }}
 
   homeassistant:
@@ -249,18 +195,18 @@ pkg_internet:
         <<: *web_common
 
       sensor.internet_http_etoast_ipv4:
-        friendly_name: "HTTP IPv4 Fetch Time"
+        friendly_name: "HTTP IPv4 etoast.net Fetch Time"
         <<: *web_common
 
       sensor.internet_http_etoast_ipv6:
-        friendly_name: "HTTP IPv6 Fetch Time"
+        friendly_name: "HTTP IPv6 etoast.net Fetch Time"
         <<: *web_common
 
-      sensor.net_gateway_bytes_rx:
+      sensor.net_gateway_mbit_rx:
         friendly_name: "WAN Received"
         <<: *web_common
 
-      sensor.net_gateway_bytes_tx:
+      sensor.net_gateway_mbit_tx:
         friendly_name: "WAN Transmitted"
         <<: *web_common
 
@@ -273,15 +219,3 @@ pkg_internet:
         friendly_name: "WAN Upload Rate"
         icon: "mdi:upload-network"
         unit_of_measurement: "Mbps"
-
-      sensor.internet_ping_google_ipv4:
-        friendly_name: "Google IPv4 Ping"
-        <<: *web_common
-
-      sensor.internet_ping_cloudflare_ipv4:
-        friendly_name: "Cloudflare IPv4 Ping"
-        <<: *web_common
-
-      sensor.internet_ping_etoast_ipv4:
-        friendly_name: "etoast.net IPv4 Ping"
-        <<: *web_common

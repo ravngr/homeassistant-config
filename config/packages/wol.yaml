@@ -1,6 +1,0 @@
----
-
-pkg_wol:
-  # Wake on LAN
-  # https://www.home-assistant.io/integrations/wake_on_lan/
-  wake_on_lan:
