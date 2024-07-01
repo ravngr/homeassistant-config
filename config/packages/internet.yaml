@@ -28,13 +28,13 @@ pkg_internet:
         command: >-
           /config/support/dig_wrapper.sh ipv4.etoast.net A - -4
         <<: *dig-common
-
+    
     - sensor:
-      name: "local_dns_etoast_ipv6"
-      unique_id: "9469db75-2bf6-4a46-b06b-856e3cc41503"
-      command: >-
-        /config/support/dig_wrapper.sh ipv6.etoast.net AAAA - -6
-      <<: *dig-common
+        name: "local_dns_etoast_ipv6"
+        unique_id: "9469db75-2bf6-4a46-b06b-856e3cc41503"
+        command: >-
+          /config/support/dig_wrapper.sh ipv6.etoast.net AAAA - -6
+        <<: *dig-common
 
     # Check HTTP connectivity
     - sensor:
