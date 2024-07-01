@@ -6,7 +6,7 @@
 dig_options=("+stats" "+nocmd" "+nocomments" "+noquestion" "+time=2" "+tries=1" "+fail")
 
 if [ "$#" -lt 3 ]; then
-    echo "Usage: $0 <domain> <record_type> <server> [options, ...]"
+    echo "Usage: $0 <domain> <record_type> <server or '-'> [options, ...]"
     exit 1
 fi
 
@@ -19,8 +19,13 @@ shift
 
 options=("${dig_options[@]}" "$@")
 
-dig_output=$(dig \
-    "@${server}" \
+if [ "${server}" = "-" ]; then
+    command=("dig")
+else
+    command=("dig" "@${server}")
+fi
+
+dig_output=$("${command[@]}" \
     "${domain}" \
     "${record_type}" \
     "${options[@]}" \

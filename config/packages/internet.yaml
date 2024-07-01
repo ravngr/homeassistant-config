@@ -7,7 +7,7 @@ pkg_internet:
         name: "internet_dns_cloudflare_etoast_ipv4"
         unique_id: "3f8c9b74-54c2-457c-9260-dcfa736e2349"
         command: >-
-          /config/support/dig_wrapper.sh @1.1.1.1 ipv4.etoast.net A
+          /config/support/dig_wrapper.sh ipv4.etoast.net A 1.1.1.1 -4
         <<: &dig-common
           command_timeout: 4
           scan_interval: 5
@@ -19,15 +19,22 @@ pkg_internet:
         name: "internet_dns_cloudflare_etoast_ipv6"
         unique_id: "9ef8f64c-8243-4e01-9b37-f89eef9694ee"
         command: >-
-          /config/support/dig_wrapper.sh @2606:4700:4700::1111 ipv6.etoast.net AAAA
+          /config/support/dig_wrapper.sh ipv6.etoast.net AAAA 2606:4700:4700::1111 -6
         <<: *dig-common
 
     - sensor:
         name: "local_dns_etoast_ipv4"
         unique_id: "94c09ff4-4cc4-4d42-822c-2ffb9fbe8310"
         command: >-
-          /config/support/dig_wrapper.sh ipv4.etoast.net A
+          /config/support/dig_wrapper.sh ipv4.etoast.net A - -4
         <<: *dig-common
+    
+    - sensor:
+      name: "local_dns_etoast_ipv6"
+      unique_id: "9469db75-2bf6-4a46-b06b-856e3cc41503"
+      command: >-
+        /config/support/dig_wrapper.sh ipv6.etoast.net AAAA - -6
+      <<: *dig-common
 
     # Check HTTP connectivity
     - sensor:
@@ -176,10 +183,6 @@ pkg_internet:
 
       binary_sensor.internet_ipv6_connected:
         friendly_name: "Internet IPv6"
-        <<: *web_common
-
-      binary_sensor.ping_gateway:
-        friendly_name: "Internet Gateway"
         <<: *web_common
 
       sensor.internet_dns_cloudflare_etoast_ipv4:
