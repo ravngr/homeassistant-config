@@ -23,12 +23,12 @@ dig_output=$(dig \
     "@${server}" \
     "${domain}" \
     "${record_type}" \
-    ${options[@]} \
+    "${options[@]}" \
 )
 
 if [[ $? -ne 0 ]]; then
     echo "unavailable"
-    exit 0
+    exit 1
 fi
 
 # Check if record name is in output (record found)
@@ -36,4 +36,5 @@ if echo "${dig_output}" | egrep -q "^${domain//./\\.}\."; then
     echo "${dig_output}" | awk '/Query time:/ {print $4}'
 else
     echo "unknown"
+    exit 1
 fi
