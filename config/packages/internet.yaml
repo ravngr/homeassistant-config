@@ -23,14 +23,14 @@ pkg_internet:
         <<: *dig-common
 
     - sensor:
-        name: "local_dns_etoast_ipv4"
+        name: "internet_dns_local_etoast_ipv4"
         unique_id: "94c09ff4-4cc4-4d42-822c-2ffb9fbe8310"
         command: >-
           /config/support/dig_wrapper.sh ipv4.etoast.net A - -4
         <<: *dig-common
 
     - sensor:
-        name: "local_dns_etoast_ipv6"
+        name: "internet_dns_local_etoast_ipv6"
         unique_id: "9469db75-2bf6-4a46-b06b-856e3cc41503"
         command: >-
           /config/support/dig_wrapper.sh ipv6.etoast.net AAAA - -6
@@ -99,7 +99,7 @@ pkg_internet:
 
   # Prometheus metrics
   sensor:
-    - name: "net_gateway_mbit_rx"
+    - name: "internet_gateway_rx_mbit"
       unique_id: "05a7c7c7-a621-4d81-954f-ef0a3be6fa61"
       <<: &prometheus-common
         platform: rest
@@ -115,7 +115,7 @@ pkg_internet:
       params:
         query: "node_network_receive_bytes_total{device=\"mass-relay\",exported_device=\"vtnet7\"}"
 
-    - name: "net_gateway_mbit_tx"
+    - name: "internet_gateway_tx_mbit"
       unique_id: "de2cf410-a5b0-4062-b111-517b7628adc2"
       <<:
         - *prometheus-common
@@ -123,7 +123,7 @@ pkg_internet:
       params:
         query: "node_network_transmit_bytes_total{device=\"mass-relay\",exported_device=\"vtnet7\"}"
 
-    - name: "stat_net_gateway_rx_rate"
+    - name: "internet_gateway_rx_rate"
       unique_id: "480950d3-6eff-445a-bbe9-8cac4de9d611"
       entity_id: "sensor.net_gateway_mbit_rx"
       <<: &rate-common
@@ -132,7 +132,7 @@ pkg_internet:
         max_age:
           minutes: 1
 
-    - name: "stat_net_gateway_tx_rate"
+    - name: "internet_gateway_tx_rate"
       unique_id: "5a862731-ac33-4f65-a167-f9ca5fd26ed6"
       entity_id: "sensor.net_gateway_mbit_tx"
       <<: *rate-common
@@ -143,16 +143,12 @@ pkg_internet:
         - platform: time_pattern
           seconds: "/15"
       binary_sensor:
-        - name: "internet_ipv4_connected"
+        - name: "internet_ipv4"
           unique_id: "75fafe5e-57fc-4fe8-b844-3ae3e260259e"
           device_class: "connectivity"
           icon: "mdi:web-check"
           state: >-
             {{
-              not is_state('sensor.internet_dns_cloudflare_etoast_ipv4', ['unavailable', 'unknown']) and
-              (now() - states.sensor.internet_dns_cloudflare_etoast_ipv4.last_updated) <= timedelta(
-                seconds=states('input_number.internet_connected_timeout') | float(30)
-              ) and
               not is_state('sensor.internet_http_etoast_ipv4', ['unavailable', 'unknown']) and
               (now() - states.sensor.internet_http_etoast_ipv4.last_updated) <= timedelta(
                 seconds=states('input_number.internet_connected_timeout') | float(30)
@@ -163,21 +159,42 @@ pkg_internet:
               {{
                 states('sensor.internet_dns_cloudflare_etoast_ipv4') | float(0) * 1000
               }}
+            dns_ok: >-
+              {{
+                not is_state('sensor.internet_dns_cloudflare_etoast_ipv4', ['unavailable', 'unknown']) and
+                (now() - states.sensor.internet_dns_cloudflare_etoast_ipv4.last_updated) <= timedelta(
+                  seconds=states('input_number.internet_connected_timeout') | float(30)
+                )
+              }}
+            local_dns_ms: >-
+              {{
+                states('sensor.internet_dns_local_etoast_ipv4') | float(0) * 1000
+              }}
+            local_dns_ok: >-
+              {{
+                not is_state('sensor.internet_dns_local_etoast_ipv4', ['unavailable', 'unknown']) and
+                (now() - states.sensor.internet_dns_local_etoast_ipv4.last_updated) <= timedelta(
+                  seconds=states('input_number.internet_connected_timeout') | float(30)
+                )
+              }}
             http_ms: >-
               {{
                 states('sensor.internet_http_etoast_ipv4') | float(0) * 1000
               }}
+            http_ok: >-
+              {{
+                not is_state('sensor.internet_http_etoast_ipv4', ['unavailable', 'unknown']) and
+                (now() - states.sensor.internet_http_etoast_ipv4.last_updated) <= timedelta(
+                  seconds=states('input_number.internet_connected_timeout') | float(30)
+                )
+              }}
 
-        - name: "internet_ipv6_connected"
+        - name: "internet_ipv6"
           unique_id: "3731f6a6-408b-4250-8ce7-5a0493db5657"
           device_class: "connectivity"
           icon: "mdi:web-check"
           state: >-
             {{
-              not is_state('sensor.internet_dns_cloudflare_etoast_ipv6', ['unavailable', 'unknown']) and
-              (now() - states.sensor.internet_dns_cloudflare_etoast_ipv6.last_updated) <= timedelta(
-                seconds=states('input_number.internet_connected_timeout') | float(30)
-              ) and
               not is_state('sensor.internet_http_etoast_ipv6', ['unavailable', 'unknown']) and
               (now() - states.sensor.internet_http_etoast_ipv6.last_updated) <= timedelta(
                 seconds=states('input_number.internet_connected_timeout') | float(30)
@@ -188,9 +205,34 @@ pkg_internet:
               {{
                 states('sensor.internet_dns_cloudflare_etoast_ipv6') | float(0) * 1000
               }}
+            dns_ok: >-
+              {{
+                not is_state('sensor.internet_dns_cloudflare_etoast_ipv6', ['unavailable', 'unknown']) and
+                (now() - states.sensor.internet_dns_cloudflare_etoast_ipv6.last_updated) <= timedelta(
+                  seconds=states('input_number.internet_connected_timeout') | float(30)
+                )
+              }}
+            local_dns_ms: >-
+              {{
+                states('sensor.internet_dns_local_etoast_ipv6') | float(0) * 1000
+              }}
+            local_dns_ok: >-
+              {{
+                not is_state('sensor.internet_dns_local_etoast_ipv6', ['unavailable', 'unknown']) and
+                (now() - states.sensor.internet_dns_local_etoast_ipv6.last_updated) <= timedelta(
+                  seconds=states('input_number.internet_connected_timeout') | float(30)
+                )
+              }}
             http_ms: >-
               {{
                 states('sensor.internet_http_etoast_ipv6') | float(0) * 1000
+              }}
+            http_ok: >-
+              {{
+                not is_state('sensor.internet_http_etoast_ipv6', ['unavailable', 'unknown']) and
+                (now() - states.sensor.internet_http_etoast_ipv6.last_updated) <= timedelta(
+                  seconds=states('input_number.internet_connected_timeout') | float(30)
+                )
               }}
 
         - name: "internet_http_slow"
@@ -217,49 +259,53 @@ pkg_internet:
 
   homeassistant:
     customize:
-      binary_sensor.internet_ipv4_connected:
+      binary_sensor.internet_ipv4:
         friendly_name: "Internet"
         <<: &web_common
           icon: "mdi:web"
 
-      binary_sensor.internet_ipv6_connected:
-        friendly_name: "Internet IPv6"
+      binary_sensor.internet_ipv6:
+        friendly_name: "Internet (IPv6)"
         <<: *web_common
 
       sensor.internet_dns_cloudflare_etoast_ipv4:
-        friendly_name: "Cloudflare DNS IPv4 Lookup Time"
+        friendly_name: "ipv4.etoast.net Cloudflare DNS Lookup"
         <<: *web_common
 
       sensor.internet_dns_cloudflare_etoast_ipv6:
-        friendly_name: "Cloudflare DNS IPv6 Lookup Time"
+        friendly_name: "ipv6.etoast.net Cloudflare DNS Lookup"
         <<: *web_common
 
-      sensor.local_dns_etoast_ipv4:
-        friendly_name: "Local DNS IPv4 Lookup Time"
+      sensor.internet_dns_local_etoast_ipv4:
+        friendly_name: "ipv4.etoast.net Local DNS Lookup"
+        <<: *web_common
+
+      sensor.internet_dns_local_etoast_ipv6:
+        friendly_name: "ipv6.etoast.net Local DNS Lookup"
         <<: *web_common
 
       sensor.internet_http_etoast_ipv4:
-        friendly_name: "HTTP IPv4 etoast.net Fetch Time"
+        friendly_name: "ipv4.etoast.net HTTP Request"
         <<: *web_common
 
       sensor.internet_http_etoast_ipv6:
-        friendly_name: "HTTP IPv6 etoast.net Fetch Time"
+        friendly_name: "ipv6.etoast.net HTTP Request"
         <<: *web_common
 
-      sensor.net_gateway_mbit_rx:
+      sensor.internet_gateway_rx_mbit:
         friendly_name: "WAN Received"
         <<: *web_common
 
-      sensor.net_gateway_mbit_tx:
+      sensor.internet_gateway_tx_mbit:
         friendly_name: "WAN Transmitted"
         <<: *web_common
 
-      sensor.stat_net_gateway_rx_rate:
-        friendly_name: "WAN Download Rate"
+      sensor.internet_gateway_rx_rate:
+        friendly_name: "Internet Download"
         icon: "mdi:download-network"
         unit_of_measurement: "Mbps"
 
-      sensor.stat_net_gateway_tx_rate:
-        friendly_name: "WAN Upload Rate"
+      sensor.internet_gateway_tx_rate:
+        friendly_name: "Internet Upload"
         icon: "mdi:upload-network"
         unit_of_measurement: "Mbps"
