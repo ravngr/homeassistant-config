@@ -50,10 +50,8 @@ fields:
         'wol/wol/set',
         {
             'wake': {
-                {
-                    'interface': interface,
-                    'mac': mac
-                }
+                'interface': interface,
+                'mac': mac
             }
         }
     )
