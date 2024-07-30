@@ -1,5 +1,9 @@
 ---
 
+# Remove file for CI/run
+# ci::remove
+# run::remove
+
 pkg_pyscript:
   pyscript:
     # https://hacs-pyscript.readthedocs.io/en/latest/reference.html#configuration
