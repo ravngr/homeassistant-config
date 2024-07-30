@@ -32,5 +32,5 @@ pkg_cd:
 
   homeassistant:
     customize:
-      automation.pkg_cd_restart:
+      automation.pkg_cd_webhook:
         friendly_name: "[pkg_cd] Continuous deployment webhook"
