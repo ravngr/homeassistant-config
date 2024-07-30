@@ -1,0 +1,28 @@
+---
+
+pkg_ptv:
+  template:
+    - trigger:
+        - platform: time_pattern
+          minutes: /5
+      sensor:
+        # Look for trains that leave from a certain platform
+        - name: "ptv_train_from_home"
+          unique_id: de72f86d-690d-4d7d-8389-35aecc8bb390
+          availability: >-
+            {{
+              states.sensor |
+              selectattr('entity_id', 'match', states('sensor.secret_ptv_home_train_select_entity_id')) |
+              selectattr('attributes.platform_number', 'eq', '3') |
+              map(attribute='state') |
+              list |
+              length > 0
+            }}
+          state: >-
+            {{
+              states.sensor |
+              selectattr('entity_id', 'match', states('sensor.secret_ptv_home_train_select_entity_id')) |
+              selectattr('attributes.platform_number', 'eq', '3') |
+              map(attribute='state') |
+              first
+            }}
