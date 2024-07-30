@@ -37,7 +37,7 @@ if [[ $? -ne 0 ]]; then
 fi
 
 # Check if record name is in output (record found)
-if echo "${dig_output}" | egrep -q "^${domain//./\\.}\."; then
+if echo "${dig_output}" | grep -Eq "^${domain//./\\.}\."; then
     echo "${dig_output}" | awk '/Query time:/ {print $4}'
 else
     echo "unknown"
