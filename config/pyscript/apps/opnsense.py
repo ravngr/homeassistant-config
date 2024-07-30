@@ -1,12 +1,12 @@
 import aiohttp
 import json
-from typing import Any, Optional
+from typing import Any
 
 
 _OPNSENSE_TIMEOUT = aiohttp.ClientTimeout(total=5.0)
 
 
-async def _opnsense_api_request(path: str, data: Optional[dict[str, Any]] = None):
+async def _opnsense_api_request(path: str, data: dict[str, Any]):
     url = f"http{'s' if pyscript.app_config.get('api_tls', False) else ''}://" \
           f"{pyscript.app_config.get('api_host')}/api/{path}"
 
@@ -15,17 +15,12 @@ async def _opnsense_api_request(path: str, data: Optional[dict[str, Any]] = None
         pyscript.app_config.get('api_secret')
     )
 
-    if data:
-        enc_data = json.dumps(data).encode()
-    else:
-        enc_data = None
-
     async with aiohttp.ClientSession(auth=auth, raise_for_status=True, timeout=_OPNSENSE_TIMEOUT) as session:
         try:
-            async with session.post(url, data=enc_data) as resp:
-                log.debug(f"Response ({resp.status}): {await resp.text()}")
+            async with session.post(url, json=data) as resp:
+                log.debug(f"Response ({resp.status}): {resp.json()!r}")
         except aiohttp.ClientError as exc:
-            log.error(f"Error sending command to {url} (data: {data!r}, encoded: {enc_data!r}, error: {exc!s})")
+            log.error(f"Error sending command to {url} (json: {data!r}, error: {exc!s})")
 
     await session.close()
 
@@ -54,7 +49,11 @@ fields:
     _opnsense_api_request(
         'wol/wol/set',
         {
-            'interface': interface,
-            'mac': mac
+            'wake': {
+                {
+                    'interface': interface,
+                    'mac': mac
+                }
+            }
         }
     )
