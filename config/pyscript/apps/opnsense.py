@@ -53,6 +53,8 @@ fields:
 
     _opnsense_api_request(
         'wol/wol/set',
-        interface=interface,
-        mac=mac
+        {
+            'interface': interface,
+            'mac': mac
+        }
     )
