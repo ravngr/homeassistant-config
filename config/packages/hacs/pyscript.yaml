@@ -1,0 +1,15 @@
+---
+
+pkg_pyscript:
+  pyscript:
+    # https://hacs-pyscript.readthedocs.io/en/latest/reference.html#configuration
+    allow_all_imports: true
+    hass_is_global: true
+
+    apps:
+      # OPNsense API key
+      opnsense:
+        api_host: !secret opnsense_api_host
+        api_tls: !secret opnsense_api_tls
+        api_key: !secret opnsense_api_key
+        api_secret: !secret opnsense_api_secret
