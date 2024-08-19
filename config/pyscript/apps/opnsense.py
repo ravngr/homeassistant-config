@@ -1,12 +1,11 @@
 import aiohttp
-import json
-from typing import Any
+from typing import Any, Optional
 
 
 _OPNSENSE_TIMEOUT = aiohttp.ClientTimeout(total=5.0)
 
 
-async def _opnsense_api_request(path: str, data: dict[str, Any]):
+async def _opnsense_api_request(path: str, data: Optional[dict[str, Any]] = None):
     url = f"http{'s' if pyscript.app_config.get('api_tls', False) else ''}://" \
           f"{pyscript.app_config.get('api_host')}/api/{path}"
 
@@ -23,6 +22,39 @@ async def _opnsense_api_request(path: str, data: dict[str, Any]):
             log.error(f"Error sending command to {url} (json: {data!r}, error: {exc!s})")
 
     await session.close()
+
+
+@service
+def opnsense_service_action(service: str, action: str):
+    """yaml
+name: Request OPNSense service to perform action
+description: Request the restart of a specified service on the OPNSense router.
+fields:
+  service:
+    description: Service name
+    example: 'unbound'
+    required: true
+    selector:
+      text: {}
+  action:
+    description: Service action to request
+    selector:
+      select:
+        options:
+          - label: Start
+            value: start
+          - label: Stop
+            value: stop
+          - label: Restart
+            value: restart
+          - label: Reconfigure
+            value: reconfigure
+    """
+    log.info(f"Restarting {service} service")
+
+    _opnsense_api_request(
+        f"{service}/service/{action}"
+    )
 
 
 @service
