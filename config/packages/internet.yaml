@@ -125,7 +125,7 @@ pkg_internet:
 
     - name: "internet_gateway_rx_rate"
       unique_id: "480950d3-6eff-445a-bbe9-8cac4de9d611"
-      entity_id: "sensor.net_gateway_mbit_rx"
+      entity_id: "sensor.internet_gateway_rx_mbit"
       <<: &rate-common
         platform: statistics
         state_characteristic: "change_second"
@@ -134,7 +134,7 @@ pkg_internet:
 
     - name: "internet_gateway_tx_rate"
       unique_id: "5a862731-ac33-4f65-a167-f9ca5fd26ed6"
-      entity_id: "sensor.net_gateway_mbit_tx"
+      entity_id: "sensor.internet_gateway_tx_mbit"
       <<: *rate-common
 
   # Template sensor
