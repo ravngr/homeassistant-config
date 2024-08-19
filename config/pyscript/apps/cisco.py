@@ -5,15 +5,14 @@ from typing import Optional
 
 # Reference: https://www.voipinfo.net/docs/cisco/CUIP_BK_P82B3B16_00_phones-services-application-development-notes.pdf
 
-
 _CISCO_TIMEOUT = aiohttp.ClientTimeout(total=5.0)
 _XML_SCHEMA_HEADER = '<?xml version="1.0" encoding="UTF-8"?>'
 
 
 async def _cisco_phone_command(target_csv: str, xml: str, username: Optional[str] = None, password: Optional[str] = None):
     auth = aiohttp.BasicAuth(
-        username or 'username',
-        password or 'password'
+        pyscript.app_config.get('auth_username', 'username'),
+        pyscript.app_config.get('auth_password', 'password')
     )
 
     async with aiohttp.ClientSession(auth=auth, raise_for_status=True, timeout=_CISCO_TIMEOUT) as session:
@@ -311,14 +310,6 @@ def _mirror_image(filename: str, data: bytes) -> str:
             cache_file.write(data)
     except Exception as exc:
         return None, exc
-
-
-@service
-def cisco_phone_image_auto(target: str, src_url: str, title: Optional[str] = None, prompt: Optional[str] = None, location_x: int = 0, location_y: int = 0, window_mode: str = '', priority: int = 0) -> None:
-    async with aiohttp.ClientSession() as session:
-        async with session.get(src_url) as response:
-            response.raise_for_status()
-            data = response.read()
 
 
 @service
