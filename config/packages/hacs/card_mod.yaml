@@ -1,0 +1,12 @@
+---
+
+# Remove file for CI/run
+# ci::remove
+# run::remove
+
+pkg_card_mod:
+  # Poissible fix for rendering issue
+  # https://github.com/sibbl/hass-lovelace-kindle-screensaver/issues/85
+  frontend:
+    extra_module_url:
+      - /hacsfiles/lovelace-card-mod/card-mod.js
