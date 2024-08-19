@@ -309,3 +309,9 @@ pkg_internet:
         friendly_name: "Internet Upload"
         icon: "mdi:upload-network"
         unit_of_measurement: "Mbps"
+
+      binary_sensor.internet_http_slow:
+        friendly_name: "Internet Heavy Load"
+
+      binary_sensor.internet_http_moderate:
+        friendly_name: "Internet Moderate Load"
