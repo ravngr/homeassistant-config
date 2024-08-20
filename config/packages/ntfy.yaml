@@ -22,7 +22,7 @@ pkg_ntfy:
         tags:
           - white_check_mark
           - house
-          - homeassistant
+          - app_homeassistant
 
     - platform: rest
       name: ntfy_net_warning
@@ -34,4 +34,4 @@ pkg_ntfy:
         tags:
           - warning
           - house
-          - homeassistant
+          - app_homeassistant
