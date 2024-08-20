@@ -1,0 +1,37 @@
+---
+
+pkg_ntfy:
+  notify:
+    # ntfy REST notification services
+    # https://docs.ntfy.sh/publish/#publish-as-json
+    - platform: rest
+      name: ntfy_net_ok
+      <<: &ntfy-common
+        resource: https://notify.macl.etoast.net/
+        headers:
+          Authorization: !secret ntfy_header_authorization
+        method: POST_JSON
+        title_param_name: title
+        message_param_name: message
+      data:
+        actions: &ntfy-common-actions
+          - action: view
+            label: Home Assistant
+            url: !secret homeassistant_external_url
+        topic: net
+        tags:
+          - white_check_mark
+          - house
+          - homeassistant
+
+    - platform: rest
+      name: ntfy_net_warning
+      <<: *ntfy-common
+      data:
+        actions: *ntfy-common-actions
+        priority: high
+        topic: net
+        tags:
+          - warning
+          - house
+          - homeassistant
