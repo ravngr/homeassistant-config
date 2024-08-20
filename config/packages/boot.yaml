@@ -13,9 +13,6 @@ pkg_boot:
         - platform: homeassistant
           event: shutdown
           id: shutdown
-      condition:
-        - condition: template
-          value_template: "{{ is_state('switch.ip_phone_study', 'off') }}"
       action:
         - choose:
             - conditions:
@@ -64,9 +61,14 @@ pkg_boot:
                       when: "{{ (now() + timedelta(minutes=1)) | as_timestamp | int }}"
                       timeout: 60
                       notification_icon: mdi:check
-                - service: notify.study_phone_play
-                  data:
-                    message: winxp
+                - if:
+                    - condition: state
+                      entity_id: switch.ip_phone_study
+                      state: "off"
+                  then:
+                    - service: notify.study_phone_play
+                      data:
+                        message: winxp
             - conditions:
                 - condition: trigger
                   id: shutdown
@@ -89,9 +91,15 @@ pkg_boot:
                       timeout: 600
                       vibrationPattern: 100, 100, 100, 100
                       notification_icon: mdi:alert
-                - service: notify.study_phone_play
-                  data:
-                    message: winxpshutdown
+                      condition:
+                - if:
+                    - condition: state
+                      entity_id: switch.ip_phone_study
+                      state: "off"
+                  then:
+                    - service: notify.study_phone_play
+                      data:
+                        message: winxpshutdown
 
   input_boolean:
     shutdown_ok:
