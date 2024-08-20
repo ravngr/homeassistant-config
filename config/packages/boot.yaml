@@ -45,6 +45,10 @@ pkg_boot:
                 - service: input_boolean.turn_off
                   target:
                     entity_id: input_boolean.shutdown_ok
+                - service: notify.ntfy_net_ok
+                  data:
+                    message: "Starting up version {{ states('sensor.current_version') }}"
+                    title: Home Assistant Startup
                 - service: notify.mobile_app_crucible
                   data:
                     message: Startup
@@ -70,6 +74,10 @@ pkg_boot:
                 - service: input_boolean.turn_on
                   target:
                     entity_id: input_boolean.shutdown_ok
+                - service: notify.ntfy_net_warning
+                  data:
+                    message: "Shutting down version {{ states('sensor.current_version') }}"
+                    title: Home Assistant Shutdown
                 - service: notify.mobile_app_crucible
                   data:
                     message: Shutdown
