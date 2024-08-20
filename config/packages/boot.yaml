@@ -49,7 +49,7 @@ pkg_boot:
                   data:
                     message: "Starting up version {{ states('sensor.current_version') }}"
                     title: Home Assistant Startup
-                - service: notify.mobile_app_crucible
+                - service: notify.mobile_app_toast_phone
                   data:
                     message: Startup
                     title: Home Assistant Status
@@ -78,7 +78,7 @@ pkg_boot:
                   data:
                     message: "Shutting down version {{ states('sensor.current_version') }}"
                     title: Home Assistant Shutdown
-                - service: notify.mobile_app_crucible
+                - service: notify.mobile_app_toast_phone
                   data:
                     message: Shutdown
                     title: Home Assistant Status
