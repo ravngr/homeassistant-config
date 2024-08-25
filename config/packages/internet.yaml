@@ -70,6 +70,15 @@ pkg_internet:
         <<: *curl-common
 
   input_number:
+    internet_connected_timeout:
+      name: "Internet Connected Timeout"
+      icon: "mdi:clock-end"
+      min: 1
+      max: 60
+      step: 1
+      unit_of_measurement: "second"
+      mode: box
+
     internet_http_low:
       name: "Internet HTTP Slow Threshold"
       icon: "mdi:speedometer-slow"
@@ -88,13 +97,22 @@ pkg_internet:
       unit_of_measurement: "second"
       mode: box
 
-    internet_connected_timeout:
-      name: "Internet Connected Timeout"
-      icon: "mdi:clock-end"
-      min: 1
-      max: 60
+    internet_limit_down:
+      name: "Internet Download Limit"
+      icon: "mdi:download-network-outline"
+      min: 0
+      max: 10000
       step: 1
-      unit_of_measurement: "second"
+      unit_of_measurement: "Mbps"
+      mode: box
+
+    internet_limit_up:
+      name: "Internet Download Limit"
+      icon: "mdi:upload-network-outline"
+      min: 0
+      max: 10000
+      step: 1
+      unit_of_measurement: "Mbps"
       mode: box
 
   # Prometheus metrics
@@ -155,6 +173,19 @@ pkg_internet:
               )
             }}
           attributes:
+            <<: &internet-attr-common
+              download_pct: &internet-download-pct >-
+                {{
+                  (states('sensor.internet_gateway_rx_rate') | float(0)) /
+                  (states('input_number.internet_limit_down') | float(100)) *
+                  100
+                }}
+              upload_pct: &internet-upload-pct >-
+                {{
+                  (states('sensor.internet_gateway_tx_rate') | float(0)) /
+                  (states('input_number.internet_limit_up') | float(100)) *
+                  100
+                }}
             dns_ms: >-
               {{
                 states('sensor.internet_dns_cloudflare_etoast_ipv4') | float(0) * 1000
@@ -257,6 +288,19 @@ pkg_internet:
             }}
           availability: "{{ is_number(states('sensor.internet_http_etoast_ipv4')) }}"
 
+      sensor:
+        - name: "internet_load_up"
+          unique_id: "a412d144-77f6-4a55-b04d-5cb7b8548630"
+          icon: "mdi:progress-download"
+          unit_of_measurement: "%"
+          state: *internet-download-pct
+
+        - name: "internet_load_down"
+          unique_id: "2bec0640-b0ae-43a8-bb34-985a809180eb"
+          icon: "mdi:progress-upload"
+          unit_of_measurement: "%"
+          state: *internet-upload-pct
+
   homeassistant:
     customize:
       binary_sensor.internet_ipv4:
@@ -310,8 +354,14 @@ pkg_internet:
         icon: "mdi:upload-network"
         unit_of_measurement: "Mbps"
 
+      sensor.internet_load_down:
+        friendly_name: "Internet Download Load"
+
+      sensor.internet_load_up:
+        friendly_name: "Internet Upload Load"
+
       binary_sensor.internet_http_slow:
-        friendly_name: "Internet Heavy Load"
+        friendly_name: "Internet HTTP Heavy Load"
 
       binary_sensor.internet_http_moderate:
-        friendly_name: "Internet Moderate Load"
+        friendly_name: "Internet HTTP Moderate Load"
