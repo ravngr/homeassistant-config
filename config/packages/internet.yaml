@@ -293,13 +293,13 @@ pkg_internet:
           unique_id: "a412d144-77f6-4a55-b04d-5cb7b8548630"
           icon: "mdi:progress-download"
           unit_of_measurement: "%"
-          state: *internet-download-pct
+          state: *internet-upload-pct
 
         - name: "internet_load_down"
           unique_id: "2bec0640-b0ae-43a8-bb34-985a809180eb"
           icon: "mdi:progress-upload"
           unit_of_measurement: "%"
-          state: *internet-upload-pct
+          state: *internet-download-pct
 
   homeassistant:
     customize:
