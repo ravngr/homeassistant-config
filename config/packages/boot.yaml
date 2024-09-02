@@ -3,7 +3,7 @@
 pkg_boot:
   automation:
     - id: "cc18d548-970e-418b-9729-22d294978e2c"
-      alias: "pkg_electrictoast_notify"
+      alias: "pkg_boot_notify"
       description: "Handle startup/shutdown"
       mode: single
       trigger:
