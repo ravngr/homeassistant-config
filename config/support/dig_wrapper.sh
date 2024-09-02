@@ -33,7 +33,7 @@ dig_output=$("${command[@]}" \
 
 if [[ $? -ne 0 ]]; then
     echo "unavailable"
-    exit 1
+    exit
 fi
 
 # Check if record name is in output (record found)
@@ -41,5 +41,5 @@ if echo "${dig_output}" | grep -Eq "^${domain//./\\.}\."; then
     echo "${dig_output}" | awk '/Query time:/ {print $4}'
 else
     echo "unknown"
-    exit 1
+    exit
 fi
