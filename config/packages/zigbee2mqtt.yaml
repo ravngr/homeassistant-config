@@ -76,7 +76,7 @@ pkg_zigbee2mqtt:
 
       - name: "Bridge Logs"
         icon: "mdi:zigbee"
-        object_id: "z2m_event"
+        object_id: "z2m_log"
         unique_id: "d1279225-5545-476e-a022-af0afe0d7c8e"
         entity_category: "diagnostic"
 
