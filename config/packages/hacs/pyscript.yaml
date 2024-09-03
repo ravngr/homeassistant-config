@@ -12,7 +12,12 @@ pkg_pyscript:
 
     apps:
       cisco:
+
+      # ntfy
       ntfy:
+        url: !secret ntfy_url
+        token: !secret ntfy_token
+        timeout: 5.0
 
       # OPNsense API key
       opnsense:
