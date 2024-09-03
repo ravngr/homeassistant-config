@@ -11,9 +11,14 @@ pkg_pyscript:
     hass_is_global: true
 
     apps:
+      cisco:
+      ntfy:
+
       # OPNsense API key
       opnsense:
         api_host: !secret opnsense_api_host
         api_tls: !secret opnsense_api_tls
         api_key: !secret opnsense_api_key
         api_secret: !secret opnsense_api_secret
+
+      pollen:
