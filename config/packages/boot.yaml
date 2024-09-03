@@ -42,10 +42,19 @@ pkg_boot:
                 - service: input_boolean.turn_off
                   target:
                     entity_id: input_boolean.shutdown_ok
-                - service: notify.ntfy_net_ok
+                - service: pyscript.ntfy_publish
                   data:
-                    message: "Starting up version {{ states('sensor.current_version') }}"
-                    title: Home Assistant Startup
+                    <<: &ntfy-common
+                      topic: home
+                      click: !secret homeassistant_external_url
+                      markdown: true
+                      icon: "{{ states('sensor.secret_homeassistant_external_url') }}/static/icons/favicon-192x192.png"
+                    title: "Home Assistant Startup"
+                    tags:
+                      - white_check_mark
+                      - house
+                      - app_homeassistant
+                    message: "Started Home assistant version **{{ states('sensor.current_version') }}**"
                 - service: notify.mobile_app_toast_phone
                   data:
                     message: Startup
@@ -76,10 +85,16 @@ pkg_boot:
                 - service: input_boolean.turn_on
                   target:
                     entity_id: input_boolean.shutdown_ok
-                - service: notify.ntfy_net_warning
+                - service: pyscript.ntfy_publish
                   data:
-                    message: "Shutting down version {{ states('sensor.current_version') }}"
-                    title: Home Assistant Shutdown
+                    <<: *ntfy-common
+                    title: "Home Assistant Shutdown"
+                    priority: "4"
+                    tags:
+                      - warning
+                      - house
+                      - app_homeassistant
+                    message: "Stopping Home assistant version **{{ states('sensor.current_version') }}**"
                 - service: notify.mobile_app_toast_phone
                   data:
                     message: Shutdown
