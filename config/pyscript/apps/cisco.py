@@ -1,5 +1,4 @@
 import aiohttp
-import asyncio
 from typing import Optional
 
 
@@ -10,10 +9,13 @@ _XML_SCHEMA_HEADER = '<?xml version="1.0" encoding="UTF-8"?>'
 
 
 async def _cisco_phone_command(target_csv: str, xml: str, username: Optional[str] = None, password: Optional[str] = None):
-    auth = aiohttp.BasicAuth(
-        pyscript.app_config.get('auth_username', 'username'),
-        pyscript.app_config.get('auth_password', 'password')
-    )
+    if username and password:
+        auth = aiohttp.BasicAuth(
+            username,
+            password
+        )
+    else:
+        auth = None
 
     async with aiohttp.ClientSession(auth=auth, raise_for_status=True, timeout=_CISCO_TIMEOUT) as session:
         for target in target_csv.split(','):
@@ -64,7 +66,9 @@ fields:
             f"<icon>{icon_url}</icon>"
             f"<image>{image_url}</image>"
             "</background></setBackground>"
-        )
+        ),
+        pyscript.app_config.get('auth_username'),
+        pyscript.app_config.get('auth_password')
     )
 
 
@@ -102,7 +106,9 @@ fields:
             "<CiscoIPPhoneExecute>"
             f"<ExecuteItem URL=\"Init:Services\" Priority=\"{priority}\" />"
             "</CiscoIPPhoneExecute>"
-        )
+        ),
+        pyscript.app_config.get('auth_username'),
+        pyscript.app_config.get('auth_password')
     )
 
 
@@ -147,7 +153,9 @@ fields:
             "<CiscoIPPhoneExecute>"
             f"<ExecuteItem URL=\"Dial:{number}:0::0\" Priority=\"{priority}\" />"
             "</CiscoIPPhoneExecute>"
-        )
+        ),
+        pyscript.app_config.get('auth_username'),
+        pyscript.app_config.get('auth_password')
     )
 
 
@@ -202,7 +210,9 @@ fields:
             "<CiscoIPPhoneExecute>"
             f"<ExecuteItem URL=\"Display:{state}:{interval or 0}\" Priority=\"{priority}\" />"
             "</CiscoIPPhoneExecute>"
-        )
+        ),
+        pyscript.app_config.get('auth_username'),
+        pyscript.app_config.get('auth_password')
     )
 
 
@@ -294,12 +304,13 @@ fields:
 
     _cisco_phone_command(
         target,
-
         _XML_SCHEMA_HEADER + (
             f"<CiscoIPPhoneImageFile{window_mode_str}>" +
             ''.join(body) +
             "</CiscoIPPhoneImageFile>"
-        )
+        ),
+        pyscript.app_config.get('auth_username'),
+        pyscript.app_config.get('auth_password')
     )
 
 
@@ -409,7 +420,9 @@ fields:
             "<CiscoIPPhoneExecute>"
             f"<ExecuteItem URL=\"Key:{key}\" Priority=\"{priority}\" />"
             "</CiscoIPPhoneExecute>"
-        )
+        ),
+        pyscript.app_config.get('auth_username'),
+        pyscript.app_config.get('auth_password')
     )
 
 
@@ -452,7 +465,9 @@ fields:
             "<CiscoIPPhoneExecute>"
             f"<ExecuteItem URL=\"Play:{filename}\" Priority=\"{priority}\" />"
             "</CiscoIPPhoneExecute>"
-        )
+        ),
+        pyscript.app_config.get('auth_username'),
+        pyscript.app_config.get('auth_password')
     )
 
 
@@ -513,5 +528,7 @@ fields:
             "<CiscoIPPhoneText>" +
             ''.join(body) +
             "</CiscoIPPhoneText>"
-        )
+        ),
+        pyscript.app_config.get('auth_username'),
+        pyscript.app_config.get('auth_password')
     )
