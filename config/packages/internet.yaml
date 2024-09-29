@@ -131,7 +131,7 @@ pkg_internet:
         unit_of_measurement: "Mbit"
         value_template: "{{ ((value_json.data.result[0].value[1] | int) / 1024 / 1024 * 8) | round(3) }}"
       params:
-        query: "node_network_receive_bytes_total{device=\"mass-relay\",exported_device=\"vtnet7\"}"
+        query: "node_network_receive_bytes_total{device=\"mass-relay\",exported_device=\"wan\"}"
 
     - name: "internet_gateway_tx_mbit"
       unique_id: "de2cf410-a5b0-4062-b111-517b7628adc2"
@@ -139,7 +139,7 @@ pkg_internet:
         - *prometheus-common
         - *prometheus-data-size
       params:
-        query: "node_network_transmit_bytes_total{device=\"mass-relay\",exported_device=\"vtnet7\"}"
+        query: "node_network_transmit_bytes_total{device=\"mass-relay\",exported_device=\"wan\"}"
 
     - name: "internet_gateway_rx_rate"
       unique_id: "480950d3-6eff-445a-bbe9-8cac4de9d611"
