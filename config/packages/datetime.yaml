@@ -23,7 +23,7 @@ pkg_datetime:
 
   template:
     - trigger:
-        - trigger: time_pattern
+        - platform: time_pattern
           minutes: 0
         - platform: homeassistant
           event: start
