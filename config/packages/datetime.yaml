@@ -22,21 +22,31 @@ pkg_datetime:
 
 
   template:
-    binary_sensor:
-      - name: "datetime_week_even"
-        unique_id: "19690948-9dfa-4d98-ab49-805d609c4830"
-        icon: "mdi:calendar-blank"
-        state: "{{ (now().isocalendar().week % 2) == 0 }}"
-        attributes: &datetime_week_commom
-          week: "{{ now().isocalendar().week }}"
-          weekday: "{{ now().isocalendar().weekday }}"
+    - trigger:
+        - trigger: time_pattern
+          minutes: 0
+        - platform: homeassistant
+          event: start
+          id: start
+      binary_sensor:
+        - name: "datetime_dst"
+          unique_id: "544ed945-c652-4c8e-921d-498aa40d897c"
+          icon: "mdi:calendar-clock-outline"
+          state: "{{ now().timetuple().tm_isdst > 0 }}"
 
-      - name: "datetime_week_odd"
-        unique_id: "563aef58-a83a-4f0f-88e9-2c804625b9d4"
-        icon: "mdi:calendar-blank-outline"
-        state: "{{ (now().isocalendar().week % 2) == 1 }}"
-        attributes: *datetime_week_commom
+        - name: "datetime_week_even"
+          unique_id: "19690948-9dfa-4d98-ab49-805d609c4830"
+          icon: "mdi:calendar-blank"
+          state: "{{ (now().isocalendar().week % 2) == 0 }}"
+          attributes: &datetime_week_common
+            week: "{{ now().isocalendar().week }}"
+            weekday: "{{ now().isocalendar().weekday }}"
 
+        - name: "datetime_week_odd"
+          unique_id: "563aef58-a83a-4f0f-88e9-2c804625b9d4"
+          icon: "mdi:calendar-blank-outline"
+          state: "{{ (now().isocalendar().week % 2) == 1 }}"
+          attributes: *datetime_week_common
 
   homeassistant:
     customize:
@@ -51,6 +61,9 @@ pkg_datetime:
       binary_sensor.datetime_tod_night:
         friendly_name: "Night"
         icon: "mdi:weather-night"
+
+      binary_sensor.datetime_dst:
+        friendly_name: "Daylight Savings"
 
       binary_sensor.datetime_week_even:
         friendly_name: "Even Week"
