@@ -11,7 +11,7 @@ pkg_internet:
         <<: &dig-common
           command_timeout: 4
           scan_interval: 5
-          availability: "{{ value != 'unknown' }}"
+          availability: "{{ value != 'unknown' and value != 'unavailable' }}"
           value_template: "{{ value | float(0) / 1000 }}"
           device_class: duration
           unit_of_measurement: "s"
@@ -44,7 +44,7 @@ pkg_internet:
         command: >-
           /config/support/curl_wrapper.sh -m 3 "https://ipv4.etoast.net/ping"
         <<: &curl-common
-          availability: "{{ value != 'unknown' }}"
+          availability: "{{ value != 'unknown' and value != 'unavailable' }}"
           value_template: "{{ (value | from_json).time_total }}"
           json_attributes:
             - curl_version
