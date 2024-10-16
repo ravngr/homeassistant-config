@@ -12,6 +12,9 @@ pkg_pyscript:
 
     apps:
       cisco:
+        auth_username: username
+        # pragma: allowlist nextline secret
+        auth_password: password
 
       # ntfy
       ntfy:
