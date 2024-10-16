@@ -119,12 +119,12 @@ pkg_occupy:
       - name: "occupy_any_user"
         unique_id: "6a2fe571-8530-47f7-87d7-3c950a635a64"
         <<: *occupy_binary_sensor_common
-        state: "{{ states('zone.home') | int(0) > 0 }}"
+        state: "{{ (states('zone.home') | int(0)) > 0 }}"
 
       - name: "occupy_all_user"
         unique_id: "c10fc9bb-9875-4445-8a50-f4ad4e743292"
         <<: *occupy_binary_sensor_common
-        state: "{{ states('zone.home') | int(0) == 2 }}"
+        state: "{{ (states('zone.home') | int(0)) == 2 }}"
 
 
   timer:
