@@ -3,10 +3,26 @@
 pkg_lounge:
   switch:
     - platform: template
-      value_template: "{{ states('sensor.zb_lounge_socket_tv_power') | float(0) > 10 }}"
       switches:
         lounge_tv:
-          value_template: "{{ is_state('sensor.skylight', 'on') }}"
+          friendly_name: "Lounge TV"
+          unique_id: "8452ac8c-f15c-4a00-aa2d-3d9561d9d2b7"
+          availability_template: >-
+            {{
+              not is_state(
+                states('sensor.secret_forecast_weather_entity_id'),
+                [
+                  'unknown',
+                  'unavailable'
+                ]
+              )
+            }}
+          value_template: >-
+            {{
+              states('sensor.zb_lounge_socket_tv_power') |
+              float(0) > 10
+            }}
+          icon_template: "mdi:television"
           turn_on:
             - <<: &toggle-tv
                 action: button.press
