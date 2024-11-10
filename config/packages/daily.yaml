@@ -58,7 +58,7 @@ pkg_daily:
           data:
             timestamp: >-
               {%- set set_dt = state_attr('sun.sun', 'next_setting') | as_datetime -%}
-              {%- set latest_dt = rise_dt.replace(hour=19, minute=30, second=0) -%}
+              {%- set latest_dt = set_dt.replace(hour=19, minute=30, second=0) -%}
               {%- set end_dt =
                 (
                   set_dt +
