@@ -71,7 +71,7 @@ pkg_daily:
               {%- if end_dt > latest_dt -%}
               {{ latest_dt.timestamp() }}
               {%- else -%}
-              {{ start_dt.timestamp() }}
+              {{ end_dt.timestamp() }}
               {%- endif -%}
           target:
             entity_id: input_datetime.daily_end
