@@ -45,7 +45,7 @@ pkg_daily:
                     minutes=range(-3, 4) | random,
                     seconds=range(-59, 60) | random
                   )
-                ).timestamp()
+                )
               -%}
               {%- if start_dt < earliest_dt -%}
               {{ earliest_dt.timestamp() }}
@@ -66,7 +66,7 @@ pkg_daily:
                     minutes=range(-3, 4) | random,
                     seconds=range(-59, 60) | random
                   )
-                ).timestamp()
+                )
               -%}
               {%- if end_dt > latest_dt -%}
               {{ latest_dt.timestamp() }}
