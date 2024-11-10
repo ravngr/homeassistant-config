@@ -35,30 +35,44 @@ pkg_daily:
       action:
         - service: input_datetime.set_datetime
           data:
-            timestamp: >
-              {{
+            timestamp: >-
+              {%- set rise_dt = state_attr('sun.sun', 'next_rising') | as_datetime -%}
+              {%- set earliest_dt = rise_dt.replace(hour=7, minute=0, second=0) -%}
+              {%- set start_dt =
                 (
-                  state_attr('sun.sun', 'next_rising') | as_datetime +
+                  rise_dt +
                   timedelta(
                     minutes=range(-3, 4) | random,
                     seconds=range(-59, 60) | random
                   )
                 ).timestamp()
-              }}
+              -%}
+              {%- if start_dt < earliest_dt -%}
+              {{ earliest_dt.timestamp() }}
+              {%- else -%}
+              {{ start_dt.timestamp() }}
+              {%- endif -%}
           target:
             entity_id: input_datetime.daily_begin
         - service: input_datetime.set_datetime
           data:
-            timestamp: >
-              {{
+            timestamp: >-
+              {%- set set_dt = state_attr('sun.sun', 'next_setting') | as_datetime -%}
+              {%- set latest_dt = rise_dt.replace(hour=19, minute=30, second=0) -%}
+              {%- set end_dt =
                 (
-                  state_attr('sun.sun', 'next_setting') | as_datetime +
+                  set_dt +
                   timedelta(
                     minutes=range(-3, 4) | random,
                     seconds=range(-59, 60) | random
                   )
                 ).timestamp()
-              }}
+              -%}
+              {%- if end_dt > latest_dt -%}
+              {{ latest_dt.timestamp() }}
+              {%- else -%}
+              {{ start_dt.timestamp() }}
+              {%- endif -%}
           target:
             entity_id: input_datetime.daily_end
         - service: input_datetime.set_datetime
