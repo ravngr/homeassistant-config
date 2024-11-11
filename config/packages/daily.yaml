@@ -36,7 +36,7 @@ pkg_daily:
         - service: input_datetime.set_datetime
           data:
             timestamp: >-
-              {%- set rise_dt = state_attr('sun.sun', 'next_rising') | as_datetime -%}
+              {%- set rise_dt = state_attr('sun.sun', 'next_rising') | as_datetime | as_local -%}
               {%- set earliest_dt = rise_dt.replace(hour=7, minute=0, second=0) -%}
               {%- set start_dt =
                 (
@@ -57,7 +57,7 @@ pkg_daily:
         - service: input_datetime.set_datetime
           data:
             timestamp: >-
-              {%- set set_dt = state_attr('sun.sun', 'next_setting') | as_datetime -%}
+              {%- set set_dt = state_attr('sun.sun', 'next_setting') | as_datetime | as_local -%}
               {%- set latest_dt = set_dt.replace(hour=19, minute=30, second=0) -%}
               {%- set end_dt =
                 (
