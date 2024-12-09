@@ -23,12 +23,11 @@ jobs:
       matrix:
         hass-version:
           - stable
-          # - beta
       fail-fast: true
       max-parallel: 1
     steps:
       - name: "Checkout configuration"
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           submodules: 'recursive'
 
@@ -38,17 +37,9 @@ jobs:
           mkdir "${RUNNER_TEMP}/config"
           "${GITHUB_WORKSPACE}/script/config_export.sh" "${RUNNER_TEMP}/config"
 
-      - name: "Run Home Assistant config test"
-        shell: "bash"
-        run: |
-          docker run \
-          --rm \
-          -v "${RUNNER_TEMP}/config:/config" \
-          "ghcr.io/home-assistant/home-assistant:${{ matrix.hass-version }}" \
-          python -m homeassistant --config "/config" --script check_config
-
-      - name: Save Home Assistant version
-        uses: actions/upload-artifact@v3
+      - name: "Run Home Assistant Configuration Check"
+        uses: frenck/action-home-assistant@v1
         with:
-          name: ha-version
-          path: ${RUNNER_TEMP}/config/.HA_VERSION
+          path: "${RUNNER_TEMP}/config"
+          secrets: "secrets.ci.yaml"  # pragma: allowlist secret
+          version: "${{ matrix.hass-version }}"
