@@ -1,0 +1,4 @@
+aioairctrl==0.2.5
+integrationhelper>=0.2.2
+home-connect-async==0.8.0
+cloudscraper
