@@ -15,7 +15,7 @@ pkg_net:
         device_class: "connectivity"
         icon: "mdi:check-network-outline"
         availability: "{{ value_json.data.result[0].value[1] | int(0) > 0 }}"
-        value_template: "{{ value_json.data.result[0].value[1] | int(0) == 2 }}"
+        value_template: "{{ value_json.data.result[0].value[1] | int(0) == 1 }}"
       params:
         query: "ifOperStatus{device=\"mass-transit-study\", ifName=\"Gi1/0/1\"}"
 
