@@ -34,12 +34,13 @@ jobs:
       - name: "Export configuration to temporary path"
         continue-on-error: true
         run: |
-          mkdir "${RUNNER_TEMP}/config"
+          mkdir -p "${RUNNER_TEMP}/config"
           "${GITHUB_WORKSPACE}/script/config_export.sh" "${RUNNER_TEMP}/config"
 
-      - name: "Run Home Assistant Configuration Check"
-        uses: frenck/action-home-assistant@v1
+      - name: "Run Home Assistant configuration check"
+        # v1.4.1
+        uses: frenck/action-home-assistant@941d5d917f4c1c7a7e7d4087526daf90d53f4437
         with:
           path: "${RUNNER_TEMP}/config"
-          secrets: "secrets.ci.yaml"  # pragma: allowlist secret
+          secrets: "config/secrets.ci.yaml"  # pragma: allowlist secret
           version: "${{ matrix.hass-version }}"
