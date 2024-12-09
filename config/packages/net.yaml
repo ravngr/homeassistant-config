@@ -2,45 +2,43 @@
 
 ## Network devices
 pkg_net:
-  template:
-    - trigger:
-        - platform: time_pattern
-          seconds: "/5"
-      binary_sensor:
-        - name: "switch_mass_transit_study_port_ge1"
-          unique_id: "1cbd0333-c600-4b8e-8ce4-53c0b1458f34"
-          <<: &prometheus-common
-            platform: rest
-            resource: !secret prometheus_api_url
-            method: GET
-          <<: &prometheus-port-status
-            device_class: "connectivity"
-            icon: "mdi:check-network-outline"
-            availability: "{{ value_json.data.result[0].value[1] | int(0) > 0 }}"
-            value_template: "{{ value_json.data.result[0].value[1] | int(0) == 2 }}"
-          params:
-            query: "ifOperStatus{device=\"mass-transit-study\", ifName=\"Gi1/0/1\"}"
+  binary_sensor:
+    - name: "switch_mass_transit_study_port_ge1"
+      unique_id: "1cbd0333-c600-4b8e-8ce4-53c0b1458f34"
+      <<: &prometheus-common
+        platform: rest
+        resource: !secret prometheus_api_url
+        method: GET
+        scan_interval: 5
+        timeout: 5
+      <<: &prometheus-port-status
+        device_class: "connectivity"
+        icon: "mdi:check-network-outline"
+        availability: "{{ value_json.data.result[0].value[1] | int(0) > 0 }}"
+        value_template: "{{ value_json.data.result[0].value[1] | int(0) == 2 }}"
+      params:
+        query: "ifOperStatus{device=\"mass-transit-study\", ifName=\"Gi1/0/1\"}"
 
-        - name: "switch_mass_transit_study_port_ge2"
-          unique_id: "721d72d7-991d-4464-a582-ec8b2c27735a"
-          <<:
-            - *prometheus-common
-            - *prometheus-port-status
-          params:
-            query: "ifOperStatus{device=\"mass-transit-study\", ifName=\"Gi1/0/2\"}"
+    - name: "switch_mass_transit_study_port_ge2"
+      unique_id: "721d72d7-991d-4464-a582-ec8b2c27735a"
+      <<:
+        - *prometheus-common
+        - *prometheus-port-status
+      params:
+        query: "ifOperStatus{device=\"mass-transit-study\", ifName=\"Gi1/0/2\"}"
 
-        - name: "switch_mass_transit_study_port_ge3"
-          unique_id: "adac3c74-3241-4ca7-8d33-edef089cc92d"
-          <<:
-            - *prometheus-common
-            - *prometheus-port-status
-          params:
-            query: "ifOperStatus{device=\"mass-transit-study\", ifName=\"Gi1/0/3\"}"
+    - name: "switch_mass_transit_study_port_ge3"
+      unique_id: "adac3c74-3241-4ca7-8d33-edef089cc92d"
+      <<:
+        - *prometheus-common
+        - *prometheus-port-status
+      params:
+        query: "ifOperStatus{device=\"mass-transit-study\", ifName=\"Gi1/0/3\"}"
 
-        - name: "switch_mass_transit_study_port_ge4"
-          unique_id: "957ddd09-0e3a-4cf7-b7bf-cc48e5d4b398"
-          <<:
-            - *prometheus-common
-            - *prometheus-port-status
-          params:
-            query: "ifOperStatus{device=\"mass-transit-study\", ifName=\"Gi1/0/4\"}"
+    - name: "switch_mass_transit_study_port_ge4"
+      unique_id: "957ddd09-0e3a-4cf7-b7bf-cc48e5d4b398"
+      <<:
+        - *prometheus-common
+        - *prometheus-port-status
+      params:
+        query: "ifOperStatus{device=\"mass-transit-study\", ifName=\"Gi1/0/4\"}"
