@@ -30,3 +30,8 @@ pkg_pyscript:
         api_secret: !secret opnsense_api_secret
 
       pollen:
+
+      proxmox:
+        api_host: !secret proxmox_api_host
+        api_tls: !secret proxmox_api_tls
+        api_token: !secret proxmox_api_token
