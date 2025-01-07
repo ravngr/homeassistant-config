@@ -27,7 +27,7 @@ pkg_cd:
 
 
   shell_command:
-    repo_update: "cd /repo/homeassistant-config && git pull && ./script/config_export.sh /config"
+    repo_update: "cd /repo/homeassistant-config && git pull && INSTALL_DEPS=1 ./script/config_export.sh /config"
 
 
   homeassistant:
