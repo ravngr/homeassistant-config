@@ -4,7 +4,7 @@ pkg_vacuum:
   automation:
     - id: pkg_vacuum_boopbot_handle_bin
       alias: "[pkg_vacuum] Handle boopbot bin status"
-      description: "Clear boopbot bin flag on webhook"
+      description: "Clear boopbot bin flag on webhook ($GitDate$)"
       mode: single
       trigger:
         - platform: webhook
@@ -131,7 +131,7 @@ pkg_vacuum:
     pkg_vacuum_boopbot_goto_bin:
       alias: "[pkg_vacuum] boopbot GoTo Bin"
       icon: "mdi:trash-can"
-      description: "Send boopbot to bin"
+      description: "Send boopbot to bin ($GitDate$)"
       mode: restart
       sequence:
         - action: mqtt.publish
@@ -150,7 +150,7 @@ pkg_vacuum:
     pkg_vacuum_boopbot_update_bin:
       alias: "[pkg_vacuum] Update boopbot bin location"
       icon: "mdi:map-check"
-      description: "Update bin location from vacuum current position"
+      description: "Update bin location from vacuum current position ($GitDate$)"
       mode: single
       sequence:
         - action: input_number.set_value

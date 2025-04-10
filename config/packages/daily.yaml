@@ -4,7 +4,7 @@ pkg_daily:
   automation:
     - id: "112b31ff-24e7-4cdf-9566-57c2ab6c015d"
       alias: "pkg_daily_update"
-      description: "Update daily datetimes"
+      description: "Update daily datetimes ($GitDate$)"
       mode: single
       trigger:
         - platform: time

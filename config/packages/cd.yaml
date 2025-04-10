@@ -4,7 +4,7 @@ pkg_cd:
   automation:
     - id: "61f3c4a0-f808-494a-851b-867c152c4dcf"
       alias: "pkg_cd_webhook"
-      description: "Update and restart on continuous deployment (CD) webhook"
+      description: "Update and restart on continuous deployment (CD) webhook ($GitDate$)"
       mode: single
       trigger:
         - platform: webhook
@@ -15,7 +15,7 @@ pkg_cd:
           local_only: false
       action:
         - alias: "Update configuration repository"
-          service: shell_command.repo_update
+          action: shell_command.repo_update
           response_variable: update
 
         - alias: "Check update return status"
@@ -23,7 +23,7 @@ pkg_cd:
           value_template: "{{ update.returncode == 0 and 'Already up to date' not in update.stdout }}"
 
         - alias: "Restart Home Assistant"
-          service: homeassistant.restart
+          action: homeassistant.restart
 
 
   shell_command:

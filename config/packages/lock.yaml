@@ -4,7 +4,7 @@ pkg_lock:
   automation:
     - id: "b8772ac4-20d4-4361-ace1-78878a7c5658"
       alias: "pkg_lock_event"
-      description: "Parse and decode lock events"
+      description: "Parse and decode lock events ($GitDate$)"
       mode: single
       trigger:
         - platform: state

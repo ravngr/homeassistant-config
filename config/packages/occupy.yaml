@@ -4,7 +4,7 @@ pkg_occupy:
   automation:
     - id: "38ac2ff3-b632-46aa-a47e-6bf3476a511a"
       alias: "pkg_occupy_away_clear"
-      description: "Clear away flag when home for a while"
+      description: "Clear away flag when home for a while ($GitDate$)"
       mode: single
       trigger:
         - platform: state
@@ -25,7 +25,7 @@ pkg_occupy:
 
     - id: "0bee0200-d027-4b5d-aeea-95aad427e6e1"
       alias: "pkg_occupy_handle_entry"
-      description: "Update timer based upon detected entry/exit"
+      description: "Update timer based upon detected entry/exit ($GitDate$)"
       mode: single
       trigger:
         - platform: event
@@ -46,7 +46,7 @@ pkg_occupy:
 
     - id: "c17fe9d7-4d93-441d-822e-b29ae9be6fdf"
       alias: "pkg_occupy_handle_motion"
-      description: "Update timer based upon detected motion"
+      description: "Update timer based upon detected motion ($GitDate$)"
       mode: single
       trigger:
         - platform: event

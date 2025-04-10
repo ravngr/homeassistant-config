@@ -3,8 +3,8 @@
 pkg_noop:
   script:
     noop:
-      alias: "[pkg_noop] No-Operation"
-      description: "A dummy null/no-op script"
+      alias: "[pkg_noop] No-Operation "
+      description: "A dummy null/no-op script ($GitDate$)"
       icon: "mdi:stop"
       mode: restart
       sequence: []
