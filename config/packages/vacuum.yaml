@@ -137,7 +137,7 @@ pkg_vacuum:
         - service: mqtt.publish
           data:
             topic: "valetudo/boopbot/GoToLocationCapability/go/set"
-            payload_template: >
+            payload: >
               {{
                 {
                   'coordinates': {
