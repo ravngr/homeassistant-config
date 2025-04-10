@@ -17,10 +17,10 @@ pkg_vacuum:
         - condition: template
           value_template: "{{ trigger.json.state }}"
       action:
-        - service: input_boolean.turn_off
+        - action: input_boolean.turn_off
           target:
             entity_id: input_boolean.boopbot_bin_full
-        - service: vacuum.return_to_base
+        - action: vacuum.return_to_base
           target:
             entity_id: vacuum.valetudo_boopbot
 
@@ -36,7 +36,7 @@ pkg_vacuum:
             - conditions:
                 - "{{ trigger.to_state.state == 'error' }}"
               sequence:
-                - service: persistent_notification.create
+                - action: persistent_notification.create
                   data:
                     notification_id: boopbot_error
                     title: boopbot Error
@@ -44,11 +44,11 @@ pkg_vacuum:
             - conditions:
                 - "{{ trigger.from_state.state == 'cleaning' }}"
               sequence:
-                - service: input_boolean.turn_on
+                - action: input_boolean.turn_on
                   target:
                     entity_id: input_boolean.boopbot_bin_full
 
-                - service: input_datetime.set_datetime
+                - action: input_datetime.set_datetime
                   data:
                     datetime: "{{ now() }}"
                   target:
@@ -66,7 +66,7 @@ pkg_vacuum:
             - conditions:
                 - "{{ trigger.to_state.state == 'error' }}"
               sequence:
-                - service: persistent_notification.create
+                - action: persistent_notification.create
                   data:
                     notification_id: minesweeper_error
                     title: minesweeper Error
@@ -74,11 +74,11 @@ pkg_vacuum:
             - conditions:
                 - "{{ trigger.from_state.state == 'cleaning' }}"
               sequence:
-                - service: input_boolean.turn_on
+                - action: input_boolean.turn_on
                   target:
                     entity_id: input_boolean.minesweeper_bin_full
 
-                - service: input_datetime.set_datetime
+                - action: input_datetime.set_datetime
                   data:
                     datetime: "{{ now() }}"
                   target:
@@ -134,7 +134,7 @@ pkg_vacuum:
       description: "Send boopbot to bin"
       mode: restart
       sequence:
-        - service: mqtt.publish
+        - action: mqtt.publish
           data:
             topic: "valetudo/boopbot/GoToLocationCapability/go/set"
             payload: >
@@ -153,12 +153,12 @@ pkg_vacuum:
       description: "Update bin location from vacuum current position"
       mode: single
       sequence:
-        - service: input_number.set_value
+        - action: input_number.set_value
           target:
             entity_id: input_number.boopbot_bin_x
           data:
             value: "{{ states('sensor.boopbot_x_position') | int(0) }}"
-        - service: input_number.set_value
+        - action: input_number.set_value
           target:
             entity_id: input_number.boopbot_bin_y
           data:

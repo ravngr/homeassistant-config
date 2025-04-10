@@ -28,7 +28,7 @@ pkg_lock:
                 - condition: template
                   value_template: "{{ event_json.get('source') == 'user' }}"
               sequence:
-                - service: logbook.log
+                - action: logbook.log
                   data:
                     <<: &logbook-common
                       name: "{{ device_attr(trigger.entity_id, 'name') }}"
@@ -61,7 +61,7 @@ pkg_lock:
                           unknown NFC (slot: {{ event_slot }})
                         {%- endif -%}
                       {%- endif -%}
-                - service: logbook.log
+                - action: logbook.log
                   data:
                     <<: *logbook-common
                     message: "{{ event_state }} using {{ event_slot_name }}"
@@ -69,7 +69,7 @@ pkg_lock:
                 - condition: template
                   value_template: "{{ event_json.get('source') == 'timeout' }}"
               sequence:
-                - service: logbook.log
+                - action: logbook.log
                   data:
                     <<: *logbook-common
                     message: "{{ event_state }} automatically"
@@ -77,7 +77,7 @@ pkg_lock:
                 - condition: template
                   value_template: "{{ event_json.get('source') == 'jammed' }}"
               sequence:
-                - service: logbook.log
+                - action: logbook.log
                   data:
                     <<: *logbook-common
                     message: "Lock jammed!"

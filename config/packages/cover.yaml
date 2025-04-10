@@ -14,19 +14,19 @@ pkg_cover:
           position_template: "{{ state_attr('cover.zb_study_cover_curtain', 'current_position') | float(0) }}"
           availability_template: "{{ is_state('cover.zb_study_cover_curtain', ['open', 'closed']) }}"
           open_cover:
-            service: cover.open_cover
+            action: cover.open_cover
             data:
               entity_id: cover.zb_study_cover_curtain
           close_cover:
-            service: cover.close_cover
+            action: cover.close_cover
             data:
               entity_id: cover.zb_study_cover_curtain
           stop_cover:
-            service: cover.stop_cover
+            action: cover.stop_cover
             data:
               entity_id: cover.zb_study_cover_curtain
           set_cover_position:
-            service: cover.set_cover_position
+            action: cover.set_cover_position
             data_template:
               entity_id: cover.zb_study_cover_curtain
               position: "{{ position }}"
@@ -41,19 +41,19 @@ pkg_cover:
           position_template: "{{ state_attr('cover.zb_master_cover_curtain', 'current_position') | float(0) }}"
           availability_template: "{{ is_state('cover.zb_master_cover_curtain', ['open', 'closed']) }}"
           open_cover:
-            service: cover.open_cover
+            action: cover.open_cover
             data:
               entity_id: cover.zb_master_cover_curtain
           close_cover:
-            service: cover.close_cover
+            action: cover.close_cover
             data:
               entity_id: cover.zb_master_cover_curtain
           stop_cover:
-            service: cover.stop_cover
+            action: cover.stop_cover
             data:
               entity_id: cover.zb_master_cover_curtain
           set_cover_position:
-            service: cover.set_cover_position
+            action: cover.set_cover_position
             data_template:
               entity_id: cover.zb_master_cover_curtain
               position: "{{ position }}"
@@ -68,19 +68,19 @@ pkg_cover:
           position_template: "{{ state_attr('cover.zb_kids_cover_curtain', 'current_position') | float(0) }}"
           availability_template: "{{ is_state('cover.zb_kids_cover_curtain', ['open', 'closed']) }}"
           open_cover:
-            service: cover.open_cover
+            action: cover.open_cover
             data:
               entity_id: cover.zb_kids_cover_curtain
           close_cover:
-            service: cover.close_cover
+            action: cover.close_cover
             data:
               entity_id: cover.zb_kids_cover_curtain
           stop_cover:
-            service: cover.stop_cover
+            action: cover.stop_cover
             data:
               entity_id: cover.zb_kids_cover_curtain
           set_cover_position:
-            service: cover.set_cover_position
+            action: cover.set_cover_position
             data_template:
               entity_id: cover.zb_kids_cover_curtain
               position: "{{ position }}"
@@ -105,21 +105,21 @@ pkg_cover:
           position_template: "{{ state_attr('cover.zb_lounge_cover_blind', 'current_position') | int(0) }}"
           availability_template: "{{ is_state('cover.zb_lounge_cover_blind', ['open', 'closed']) }}"
           open_cover:
-            service: cover.set_cover_position
+            action: cover.set_cover_position
             data_template:
               entity_id: cover.zb_lounge_cover_blind
               position: "{{ states('input_number.lounge_blinds_open_position') | int(100) }}"
           close_cover:
-            service: cover.set_cover_position
+            action: cover.set_cover_position
             data_template:
               entity_id: cover.zb_lounge_cover_blind
               position: "{{ states('input_number.lounge_blinds_close_position') | int(0) }}"
           stop_cover:
-            service: cover.stop_cover
+            action: cover.stop_cover
             data:
               entity_id: cover.zb_lounge_cover_blind
           set_cover_position:
-            service: cover.set_cover_position
+            action: cover.set_cover_position
             data_template:
               entity_id: cover.zb_lounge_cover_blind
               position: "{{ position }}"

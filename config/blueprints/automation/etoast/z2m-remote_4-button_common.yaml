@@ -77,21 +77,21 @@ action:
       - conditions:
           - "{{ trigger.payload == '1_single' }}"
         sequence:
-          - service: light.toggle
+          - action: light.toggle
             data:
               brightness_pct: 100
             target: !input target_light
       - conditions:
           - "{{ trigger.payload == '1_double' }}"
         sequence:
-          - service: light.turn_on
+          - action: light.turn_on
             data:
               brightness_pct: 5
             target: !input target_light
       - conditions:
           - "{{ trigger.payload == '1_hold' }}"
         sequence:
-          - service: light.turn_off
+          - action: light.turn_off
             target: !input target_light
 
       - conditions:
@@ -117,17 +117,17 @@ action:
       - conditions:
           - "{{ trigger.payload == '4_single' }}"
         sequence:
-          - service: cover.toggle
+          - action: cover.toggle
             target: !input target_cover
       - conditions:
           - "{{ trigger.payload == '4_double' }}"
         sequence:
-          - service: cover.set_cover_position
+          - action: cover.set_cover_position
             data:
               position: !input number_cover_partial_position
             target: !input target_cover
       - conditions:
           - "{{ trigger.payload == '4_hold' }}"
         sequence:
-          - service: cover.cover_close
+          - action: cover.cover_close
             target: !input target_cover

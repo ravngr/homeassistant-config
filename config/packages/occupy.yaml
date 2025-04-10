@@ -19,7 +19,7 @@ pkg_occupy:
             seconds: 0
           state: "on"
       action:
-        - service: input_boolean.turn_off
+        - action: input_boolean.turn_off
           target:
             entity_id: input_boolean.occupy_away
 
@@ -38,7 +38,7 @@ pkg_occupy:
               map(attribute='entity_id')) and trigger.event.data.new_state.state == 'on'
             }}
       action:
-        - service: timer.start
+        - action: timer.start
           data:
             duration: "{{ timedelta(minutes=states('input_number.occupy_timeout_entry') | int) }}"
           target:
@@ -59,7 +59,7 @@ pkg_occupy:
               map(attribute='entity_id')) and trigger.event.data.new_state.state == 'on'
             }}
       action:
-        - service: timer.start
+        - action: timer.start
           data:
             duration: "{{ timedelta(minutes=states('input_number.occupy_timeout_motion') | int) }}"
           target:

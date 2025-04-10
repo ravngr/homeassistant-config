@@ -37,28 +37,28 @@ action:
       - conditions:
           - "{{ trigger.payload == 'on' }}"
         sequence:
-          - service: light.toggle
+          - action: light.toggle
             data:
               brightness_pct: 100
             target: !input light_up
       - conditions:
           - "{{ trigger.payload == 'off' }}"
         sequence:
-          - service: light.toggle
+          - action: light.toggle
             data:
               brightness_pct: 100
             target: !input light_down
       - conditions:
           - "{{ trigger.payload == 'brightness_move_up' }}"
         sequence:
-          - service: light.turn_on
+          - action: light.turn_on
             data:
               brightness_pct: 5
             target: !input light_up
       - conditions:
           - "{{ trigger.payload == 'brightness_move_down' }}"
         sequence:
-          - service: light.turn_on
+          - action: light.turn_on
             data:
               brightness_pct: 5
             target: !input light_down

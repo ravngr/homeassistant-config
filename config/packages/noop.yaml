@@ -16,7 +16,7 @@ pkg_noop:
           friendly_name: "Dummy Light"
           unique_id: "eddf2a92-3b76-4b3d-8e0c-8d7e25011af4"
           turn_on: &noop-sevice
-            service: script.noop
+            action: script.noop
           turn_off: *noop-sevice
           icon_template: "mdi:lightbulb-off-outline"
           value_template: "off"

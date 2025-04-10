@@ -24,11 +24,11 @@ pkg_boot:
                       entity_id: input_boolean.shutdown_ok
                       state: "off"
                   then:
-                    - service: notify.persistent_notification
+                    - action: notify.persistent_notification
                       data:
                         title: Unsafe Shutdown Detected
                         message: Automatically turning off lights
-                    - service: light.turn_off
+                    - action: light.turn_off
                       target:
                         area_id:
                           - hall
@@ -39,10 +39,10 @@ pkg_boot:
                           - study
                           - void
                           - workshop
-                - service: input_boolean.turn_off
+                - action: input_boolean.turn_off
                   target:
                     entity_id: input_boolean.shutdown_ok
-                - service: pyscript.ntfy_publish
+                - action: pyscript.ntfy_publish
                   data:
                     <<: &ntfy-common
                       topic: home
@@ -55,7 +55,7 @@ pkg_boot:
                       - house
                       - app_homeassistant
                     message: "Started Home assistant version **{{ states('sensor.current_version') }}**"
-                - service: notify.mobile_app_toast_phone
+                - action: notify.mobile_app_toast_phone
                   data:
                     message: Startup
                     title: Home Assistant Status
@@ -75,17 +75,17 @@ pkg_boot:
                       entity_id: switch.ip_phone_study
                       state: "off"
                   then:
-                    - service: notify.study_phone_play
+                    - action: notify.study_phone_play
                       data:
                         message: winxp
             - conditions:
                 - condition: trigger
                   id: shutdown
               sequence:
-                - service: input_boolean.turn_on
+                - action: input_boolean.turn_on
                   target:
                     entity_id: input_boolean.shutdown_ok
-                - service: pyscript.ntfy_publish
+                - action: pyscript.ntfy_publish
                   data:
                     <<: *ntfy-common
                     title: "Home Assistant Shutdown"
@@ -95,7 +95,7 @@ pkg_boot:
                       - house
                       - app_homeassistant
                     message: "Stopping Home assistant version **{{ states('sensor.current_version') }}**"
-                - service: notify.mobile_app_toast_phone
+                - action: notify.mobile_app_toast_phone
                   data:
                     message: Shutdown
                     title: Home Assistant Status
@@ -112,7 +112,7 @@ pkg_boot:
                       entity_id: switch.ip_phone_study
                       state: "off"
                   then:
-                    - service: notify.study_phone_play
+                    - action: notify.study_phone_play
                       data:
                         message: winxpshutdown
 

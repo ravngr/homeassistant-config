@@ -34,7 +34,7 @@ pkg_forecast:
           entity_id:
             - input_number.forecast_hours
       action:
-        - service: weather.get_forecasts
+        - action: weather.get_forecasts
           data:
             type: hourly
           target:

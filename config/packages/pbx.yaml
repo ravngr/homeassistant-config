@@ -98,14 +98,14 @@ pkg_pbx:
           <<: &phone-display-common
             icon_template: mdi:card-account-phone
           turn_on:
-            service: pyscript.cisco_phone_display
+            action: pyscript.cisco_phone_display
             data:
               target: &phone-target-study 10.0.97.32
               <<: &phone-display-on
                 state: 'On'
                 interval: 720
           turn_off:
-            service: pyscript.cisco_phone_display
+            action: pyscript.cisco_phone_display
             data:
               target: *phone-target-study
               <<: &phone-display-off
@@ -117,12 +117,12 @@ pkg_pbx:
           unique_id: "41d779a3-3ae5-4838-b2b8-5390c2d1f776"
           <<: *phone-display-common
           turn_on:
-            service: pyscript.cisco_phone_display
+            action: pyscript.cisco_phone_display
             data:
               <<: *phone-display-on
               target: &phone-target-kids 10.0.97.33
           turn_off:
-            service: pyscript.cisco_phone_display
+            action: pyscript.cisco_phone_display
             data:
               <<: *phone-display-off
               target: *phone-target-kids
@@ -132,12 +132,12 @@ pkg_pbx:
           unique_id: "7dfed8bb-0e2c-4d82-ac7f-a6a91e308cd2"
           <<: *phone-display-common
           turn_on:
-            service: pyscript.cisco_phone_display
+            action: pyscript.cisco_phone_display
             data:
               <<: *phone-display-on
               target: &phone-target-lounge 10.0.97.34
           turn_off:
-            service: pyscript.cisco_phone_display
+            action: pyscript.cisco_phone_display
             data:
               <<: *phone-display-off
               target: *phone-target-lounge
@@ -147,12 +147,12 @@ pkg_pbx:
           unique_id: "3305deff-65df-4dbe-aa85-68fb6eae2268"
           <<: *phone-display-common
           turn_on:
-            service: pyscript.cisco_phone_display
+            action: pyscript.cisco_phone_display
             data:
               <<: *phone-display-on
               target: &phone-target-bedroom 10.0.97.35
           turn_off:
-            service: pyscript.cisco_phone_display
+            action: pyscript.cisco_phone_display
             data:
               <<: *phone-display-off
               target: *phone-target-bedroom
@@ -162,12 +162,12 @@ pkg_pbx:
           unique_id: "7b71e3f9-b4fb-4a19-80cd-c8dd6bebdb3f"
           <<: *phone-display-common
           turn_on:
-            service: pyscript.cisco_phone_display
+            action: pyscript.cisco_phone_display
             data:
               <<: *phone-display-on
               target: &phone-target-workshop 10.0.97.36
           turn_off:
-            service: pyscript.cisco_phone_display
+            action: pyscript.cisco_phone_display
             data:
               <<: *phone-display-off
               target: *phone-target-workshop
