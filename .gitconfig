@@ -1,0 +1,3 @@
+[filter "keywords"]
+	clean  = script/keywords-clean.sh
+	smudge = script/keywords-smudge.sh %f
