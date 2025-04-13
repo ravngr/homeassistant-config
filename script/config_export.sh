@@ -10,6 +10,12 @@ export REPO_PATH
 . "${REPO_PATH}/deps/bashplate/bashplate.sh"
 
 
+## Don't run as root
+if [ "$(id -u)" -eq 0 ]; then
+        echo 'This script must NOT be run by root' >&2
+        exit 1
+fi
+
 ## Arguments
 # Check for required arguments
 if [ $# -lt 1 ]; then
@@ -75,8 +81,9 @@ print_info "Fixing SSH file permissions"
 find "${export_path}/ssh" -type d -exec chmod 700 {} +
 find "${export_path}/ssh" -type f -exec chmod 600 {} +
 
-# Install pip dependencies if in container
-if [ -n "${INSTALL_DEPS:-}" ]; then
-    print_warn "Installing python dependencies"
-    pip install -r "${config_path}/hacs-requirements.txt"
+
+## Ensure environment supports HACS properly
+if [ ! -d "${HOME}/.local" ]; then
+    mkdir -p "${HOME}/.local"
+    ln -s "/usr/local/bin" "${HOME}/.local"
 fi
