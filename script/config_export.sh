@@ -11,7 +11,7 @@ export REPO_PATH
 
 
 ## Don't run as root
-if [ "$(id -u)" -eq 0 ] && [ -n "$SUPERVISOR_TOKEN" ]; then
+if [ "$(id -u)" -eq 0 ] && [ -z "$SUPERVISOR_TOKEN" ]; then
         echo 'This script must NOT be run by root unless inside HA OS' >&2
         exit 1
 fi
