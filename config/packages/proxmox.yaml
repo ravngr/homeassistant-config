@@ -6,3 +6,4 @@ pkg_proxmox:
       username: !secret proxmox_username
       password: !secret proxmox_password
       nodes: !secret proxmox_nodes
+      verify_ssl: false
