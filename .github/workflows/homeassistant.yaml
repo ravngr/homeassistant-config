@@ -7,11 +7,11 @@ on:
   push:
     paths:
       - .github/workflows/homeassistant.yaml
-      - config/**/*.yaml
+      - '*.yaml'
   pull_request:
     paths:
       - .github/workflows/homeassistant.yaml
-      - config/**/*.yaml
+      - '*.yaml'
   workflow_dispatch:
 
 

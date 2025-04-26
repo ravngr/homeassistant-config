@@ -6,20 +6,20 @@ staging
 
 
 ## Home Assistant
-config/.cloud
-config/.storage
-config/packages/zone/*.yaml
-!config/packages/zone/home.yaml
+.cloud
+.storage
+packages/zone/*.yaml
+!packages/zone/home.yaml
 
 # External/dependencies
-config/custom_components
-config/themes
-config/www/community
+custom_components
+themes
+www/community
 
 # Secrets
 ip_bans.yaml
 secrets.yaml
-config/ssh/config.*
+ssh/config.*
 
 # SQlite
 *.db
@@ -33,8 +33,8 @@ __pycache__
 
 
 ## SSH
-config/ssh/id_*
-config/ssh/known_hosts
+ssh/id_*
+ssh/known_hosts
 
 
 # Keep .gitkeep
