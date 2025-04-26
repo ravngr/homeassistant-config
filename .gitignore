@@ -6,6 +6,7 @@ staging
 
 
 ## Home Assistant
+.HA_VERSION
 .cloud
 .storage
 packages/zone/*.yaml
