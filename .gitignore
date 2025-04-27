@@ -40,3 +40,7 @@ ssh/known_hosts
 
 # Keep .gitkeep
 !.gitkeep
+
+# Built-in automations
+blueprints/template/homeassistant/inverted_binary_sensor.yaml
+blueprints/script/homeassistant/confirmable_notification.yaml
