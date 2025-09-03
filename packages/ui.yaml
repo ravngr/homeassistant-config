@@ -55,3 +55,9 @@ pkg_ui_themes:
       sidebar_icon: "mdi:code-block-braces"
       url_path: "developer-tools/template"
       <<: *panel-common
+
+    - name: "ha_hassio"
+      sidebar_title: "Add-Ons"
+      sidebar_icon: "mdi:home-plus"
+      url_path: "hassio/dashboard"
+      <<: *panel-common
