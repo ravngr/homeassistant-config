@@ -1,6 +1,4 @@
 ---
-
-
 homeassistant:
   # Basic configuration
   # https://www.home-assistant.io/docs/configuration/basic/
@@ -18,11 +16,15 @@ homeassistant:
   external_url: !secret homeassistant_external_url
   internal_url: !secret homeassistant_internal_url
 
-
   # Authentication providers
   # https://www.home-assistant.io/docs/authentication/providers/
   auth_providers:
     - type: homeassistant
+
+    - type: command_line
+      command: "/usr/bin/env"
+      args: ["python", "/config/support/ldap/ldap-auth.py"]
+      meta: true
 
     - type: trusted_networks
       trusted_networks: !secret homeassistant_auth_trusted_networks
@@ -37,23 +39,19 @@ homeassistant:
       include: !secret homeassistant_auth_notify_include
       message: "Home Assistant MFA code: {}"
 
-
   # Import packages
   # https://www.home-assistant.io/docs/configuration/packages/
   packages: !include_dir_merge_named packages
-
 
 # Automations
 # https://www.home-assistant.io/docs/automation/yaml/
 automation ui: !include automations.yaml
 automation manual: !include_dir_merge_list automations
 
-
 # Scenes
 # https://www.home-assistant.io/integrations/scene/
 scene ui: !include scenes.yaml
 scene manual: !include_dir_merge_list scenes
-
 
 # Scripts
 # https://www.home-assistant.io/integrations/script/

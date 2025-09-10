@@ -11,9 +11,11 @@ staging
 .storage
 packages/zone/*.yaml
 !packages/zone/home.yaml
+image/
 
 # External/dependencies
 custom_components
+!custom_components/ldap3_dummy
 themes
 www/community
 
@@ -21,6 +23,7 @@ www/community
 ip_bans.yaml
 secrets.yaml
 ssh/config.*
+.env
 
 # SQlite
 *.db
@@ -44,3 +47,8 @@ ssh/known_hosts
 # Built-in automations
 blueprints/template/homeassistant/inverted_binary_sensor.yaml
 blueprints/script/homeassistant/confirmable_notification.yaml
+
+
+# External tools
+.venv
+/support/ext
