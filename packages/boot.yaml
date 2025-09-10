@@ -1,5 +1,4 @@
 ---
-
 pkg_boot:
   automation:
     - id: "cc18d548-970e-418b-9729-22d294978e2c"
@@ -120,3 +119,8 @@ pkg_boot:
     shutdown_ok:
       name: Shutdown Flag
       icon: mdi:power
+
+  homeassistant:
+    customize:
+      automation.pkg_boot_notify:
+        friendly_name: "[pkg_boot] Startup/shutdown notifications"

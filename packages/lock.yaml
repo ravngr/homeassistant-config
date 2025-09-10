@@ -1,5 +1,4 @@
 ---
-
 pkg_lock:
   automation:
     - id: "b8772ac4-20d4-4361-ace1-78878a7c5658"
@@ -90,3 +89,8 @@ pkg_lock:
         - name: "secret_lock_slots"
           unique_id: "e468e22c-867f-4811-ab56-422bc0dd9796"
           state: !secret lock_event_slots
+
+  homeassistant:
+    customize:
+      automation.pkg_lock_event:
+        friendly_name: "[pkg_lock] Parse lock events"
