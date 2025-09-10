@@ -1,5 +1,4 @@
 ---
-
 pkg_ui_themes:
   # Frontend themes
   # https://www.home-assistant.io/integrations/frontend/
@@ -30,12 +29,6 @@ pkg_ui_themes:
       sidebar_title: "Integrations"
       sidebar_icon: "mdi:chip"
       url_path: "config/integrations"
-      <<: *panel-common
-
-    - name: "ha_logs"
-      sidebar_title: "Logs"
-      sidebar_icon: "mdi:post"
-      url_path: "config/logs"
       <<: *panel-common
 
     - name: "ha_dev_service"
