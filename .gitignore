@@ -12,6 +12,8 @@ staging
 packages/zone/*.yaml
 !packages/zone/home.yaml
 image/
+tts/
+www/
 
 # External/dependencies
 custom_components
@@ -52,3 +54,5 @@ blueprints/script/homeassistant/confirmable_notification.yaml
 # External tools
 .venv
 /support/ext
+.ha_run.lock
+.shopping_list.json
