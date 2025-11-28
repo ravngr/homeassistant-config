@@ -19,12 +19,12 @@ homeassistant:
   # Authentication providers
   # https://www.home-assistant.io/docs/authentication/providers/
   auth_providers:
-    - type: homeassistant
-
     - type: command_line
       command: "/usr/bin/env"
       args: ["python", "/config/support/ldap/ldap-auth.py"]
       meta: true
+
+    - type: homeassistant
 
     - type: trusted_networks
       trusted_networks: !secret homeassistant_auth_trusted_networks
@@ -36,7 +36,6 @@ homeassistant:
     - type: totp
 
     - type: notify
-      include: !secret homeassistant_auth_notify_include
       message: "Home Assistant MFA code: {}"
 
   # Import packages
