@@ -6,25 +6,24 @@ staging
 
 
 ## Home Assistant
-.HA_VERSION
-.cloud
-.storage
-packages/zone/*.yaml
-!packages/zone/home.yaml
-image/
-tts/
-www/
+/.HA_VERSION
+/.cloud
+/.storage
+/packages/zone/*.yaml
+!/packages/zone/home.yaml
+/image/
+/tts/
+/www/
 
 # External/dependencies
-custom_components
-!custom_components/ldap3_dummy
-themes
-www/community
+/custom_components
+!/custom_components/ldap3_dummy/*
+/themes
 
 # Secrets
 ip_bans.yaml
 secrets.yaml
-ssh/config.*
+/ssh/config.*
 .env
 
 # SQlite
@@ -39,16 +38,16 @@ __pycache__
 
 
 ## SSH
-ssh/id_*
-ssh/known_hosts
+/ssh/id_*
+/ssh/known_hosts
 
 
 # Keep .gitkeep
 !.gitkeep
 
 # Built-in automations
-blueprints/template/homeassistant/inverted_binary_sensor.yaml
-blueprints/script/homeassistant/confirmable_notification.yaml
+/blueprints/template/homeassistant/inverted_binary_sensor.yaml
+/blueprints/script/homeassistant/confirmable_notification.yaml
 
 
 # External tools
