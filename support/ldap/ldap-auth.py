@@ -3,9 +3,14 @@
 import os
 import os.path
 import sys
-from ldap3 import Server, Connection, ALL
+from ssl import CERT_REQUIRED
+
+from ldap3 import Server, Connection, Tls, ALL 
 from ldap3.core.exceptions import LDAPException
 from ldap3.utils.conv import escape_bytes, escape_filter_chars
+
+
+_LDAP_DEFAULT_TIMEOUT = 2
 
 
 def stderr_print(*args, **kwargs) -> None:
@@ -50,11 +55,30 @@ if __name__ == '__main__':
         stderr_print(f"Requirement LDAP environment variable {exc!r} is not defined")
         sys.exit(1)
     
+    try:
+        ldap_timeout = os.getenv('LDAP_TIMEOUT', _LDAP_DEFAULT_TIMEOUT)
+    except ValueError:
+        ldap_timeout = _LDAP_DEFAULT_TIMEOUT
+    
     ldap_admin_group = os.getenv('LDAP_ADMIN_GROUP')
     ldap_local_group = os.getenv('LDAP_LOCAL_GROUP')
     ldap_base_filter = os.getenv('LDAP_BASE_FILTER', 'objectClass=inetOrgPerson')
     ldap_username_attr = os.getenv('LDAP_USERNAME_ATTR', 'uid')
     ldap_name_attr = os.getenv('LDAP_NAME_ATTR', 'displayName')
+
+    ldap_tls_client_key_path = os.getenv('LDAP_TLS_CLIENT_KEY_PATH')
+    ldap_tls_client_cert_path = os.getenv('LDAP_TLS_CLIENT_CERT_PATH')
+    ldap_tls_ca_path = os.getenv('LDAP_TLS_CA_PATH')
+
+    ldap_tls = None
+
+    if ldap_tls_client_key_path or ldap_tls_client_cert_path or ldap_tls_ca_path:
+        ldap_tls = Tls(
+            local_private_key_file=ldap_tls_client_key_path,
+            local_certificate_file=ldap_tls_client_cert_path,
+            validate=CERT_REQUIRED,
+            ca_certs_file=ldap_tls_ca_path
+        )
 
     try:
         username = escape_filter_chars(os.environ['username'])
@@ -68,7 +92,11 @@ if __name__ == '__main__':
     ldap_filter = f"(&({ldap_base_filter})({user_filter}))"
 
     # Setup LDAP connection
-    ldap_server = Server(ldap_uri, get_info=ALL)
+    ldap_server = Server(
+        ldap_uri,
+        tls=ldap_tls,
+        connect_timeout=ldap_timeout
+    )
 
     try:
         with Connection(
@@ -76,6 +104,7 @@ if __name__ == '__main__':
             ldap_bind_dn,
             ldap_bind_password,
             auto_bind=True,
+            read_only=True,
             raise_exceptions=True
         ) as ldap_connection:
             user = get_user(
