@@ -21,7 +21,9 @@ homeassistant:
   auth_providers:
     - type: command_line
       command: "/usr/bin/env"
-      args: ["python", "/config/support/ldap/ldap-auth.py"]
+      args:
+        - "python"
+        - "/config/support/ldap/ldap-auth.py"
       meta: true
 
     - type: homeassistant

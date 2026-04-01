@@ -5,7 +5,7 @@ import os.path
 import sys
 from ssl import CERT_REQUIRED
 
-from ldap3 import Server, Connection, Tls, ALL 
+from ldap3 import Server, Connection, Tls, ALL
 from ldap3.core.exceptions import LDAPException
 from ldap3.utils.conv import escape_bytes, escape_filter_chars
 
@@ -36,7 +36,7 @@ def get_user(ldap_connection: Connection, ldap_base_dn: str, ldap_base_filter: s
             ldap_connection.entries[0].memberOf.values,
     elif len(ldap_search.entries) > 1:
         stderr_print(f"LDAP filter returned ")
-    
+
     return None
 
 
@@ -54,12 +54,12 @@ if __name__ == '__main__':
     except KeyError as exc:
         stderr_print(f"Requirement LDAP environment variable {exc!r} is not defined")
         sys.exit(1)
-    
+
     try:
         ldap_timeout = os.getenv('LDAP_TIMEOUT', _LDAP_DEFAULT_TIMEOUT)
     except ValueError:
         ldap_timeout = _LDAP_DEFAULT_TIMEOUT
-    
+
     ldap_admin_group = os.getenv('LDAP_ADMIN_GROUP')
     ldap_local_group = os.getenv('LDAP_LOCAL_GROUP')
     ldap_base_filter = os.getenv('LDAP_BASE_FILTER', 'objectClass=inetOrgPerson')
@@ -122,7 +122,7 @@ if __name__ == '__main__':
     if user is None:
         stderr_print(f"LDAP entry matching filter {ldap_filter!r} not found")
         sys.exit(1)
-    
+
     user_dn, user_name, user_groups = user
     user_admin = False
     user_local = False
@@ -132,7 +132,7 @@ if __name__ == '__main__':
 
     if ldap_local_group and ldap_local_group in user_groups:
         user_local = True
-    
+
     stderr_print(f"Matched user {user_dn!r}, admin={user_admin}, local={user_local}")
 
     # Validate password by connecting
