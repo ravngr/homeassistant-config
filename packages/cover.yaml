@@ -1,10 +1,9 @@
 ---
-
 pkg_cover:
-  cover:
-    - platform: template
-      covers:
-        study_curtain:
+  template:
+    - cover:
+        - device_class: curtain
+          default_entity_id: cover.study_curtain
           <<: &curtain_common
             device_class: curtain
             optimistic: true
@@ -31,9 +30,8 @@ pkg_cover:
               entity_id: cover.zb_study_cover_curtain
               position: "{{ position }}"
 
-    - platform: template
-      covers:
-        master_curtain:
+        - device_class: curtain
+          default_entity_id: master_curtain
           <<: *curtain_common
           friendly_name: "Master Bedroom Curtains"
           unique_id: "f7131551-49c7-4ce1-807a-433f369cda7a"
@@ -58,9 +56,8 @@ pkg_cover:
               entity_id: cover.zb_master_cover_curtain
               position: "{{ position }}"
 
-    - platform: template
-      covers:
-        kids_bedroom_curtain:
+        - device_class: curtain
+          default_entity_id: kids_bedroom_curtain
           <<: *curtain_common
           friendly_name: "Kid's Bedroom Curtains"
           unique_id: "9f404f1f-547f-45d2-931f-878ab4f0e46b"
@@ -85,10 +82,8 @@ pkg_cover:
               entity_id: cover.zb_kids_cover_curtain
               position: "{{ position }}"
 
-    - platform: template
-      covers:
-        lounge_blind:
-          device_class: blind
+        - device_class: blind
+          default_entity_id: lounge_blind
           optimistic: true
           friendly_name: "Lounge Blinds"
           unique_id: "ebb8fb57-9b16-43cc-b2a5-9ab7c3dfbdd4"

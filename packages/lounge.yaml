@@ -1,13 +1,22 @@
 ---
-
 pkg_lounge:
-  switch:
-    - platform: template
-      switches:
-        lounge_tv:
-          friendly_name: "Lounge TV"
-          unique_id: "8452ac8c-f15c-4a00-aa2d-3d9561d9d2b7"
-          availability_template: >-
+  template:
+    - switch:
+        - unique_id: 8452ac8c-f15c-4a00-aa2d-3d9561d9d2b7
+          turn_on:
+            - action: button.press
+              target:
+                entity_id:
+                  - button.esphome_lounge_tv_power
+            - action: script.wake_lounge_htpc
+          turn_off:
+            - action: button.press
+              target:
+                entity_id:
+                  - button.esphome_lounge_tv_power
+          default_entity_id: switch.lounge_tv
+          icon: mdi:television
+          availability: >-
             {{
               not is_state(
                 states('sensor.secret_forecast_weather_entity_id'),
@@ -17,16 +26,9 @@ pkg_lounge:
                 ]
               )
             }}
-          value_template: >-
+          name: Lounge TV
+          state: >-
             {{
               states('sensor.zb_lounge_socket_tv_power') |
               float(0) > 10
             }}
-          icon_template: "mdi:television"
-          turn_on:
-            - <<: &toggle-tv
-                action: button.press
-                target:
-                  entity_id: button.esphome_lounge_tv_power
-            - action: script.wake_lounge_htpc
-          turn_off: *toggle-tv

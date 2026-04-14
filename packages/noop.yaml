@@ -1,5 +1,4 @@
 ---
-
 pkg_noop:
   script:
     noop:
@@ -9,25 +8,22 @@ pkg_noop:
       mode: restart
       sequence: []
 
-  light:
-    - platform: template
-      lights:
-        dummy:
-          friendly_name: "Dummy Light"
-          unique_id: "eddf2a92-3b76-4b3d-8e0c-8d7e25011af4"
+  template:
+    - light:
+        - unique_id: eddf2a92-3b76-4b3d-8e0c-8d7e25011af4
           turn_on: &noop-sevice
-            action: script.noop
+            - action: script.noop
           turn_off: *noop-sevice
-          icon_template: "mdi:lightbulb-off-outline"
-          value_template: "off"
+          default_entity_id: light.dummy
+          icon: mdi:lightbulb-off-outline
+          name: Dummy Light
+          state: "off"
 
-  switch:
-    - platform: template
-      switches:
-        dummy:
-          friendly_name: "Dummy Switch"
-          unique_id: "827f1afa-8032-41e4-99b0-5e1c673b944c"
+    - switch:
+        - unique_id: 827f1afa-8032-41e4-99b0-5e1c673b944c
           turn_on: *noop-sevice
           turn_off: *noop-sevice
-          icon_template: "mdi:toggle-switch-off-outline"
-          value_template: "off"
+          default_entity_id: switch.dummy
+          icon: mdi:toggle-switch-off-outline
+          name: Dummy Switch
+          state: "off"
